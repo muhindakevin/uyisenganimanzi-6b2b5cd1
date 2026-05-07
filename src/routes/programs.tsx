@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import { HeartHandshake, GraduationCap, Sprout, Users } from "lucide-react";
+import { HeartHandshake, Sprout, Users } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({
   head: () => ({
@@ -15,10 +15,9 @@ export const Route = createFileRoute("/programs")({
 });
 
 const programs = [
-  { Icon: HeartHandshake, t: "Psychosocial Support", d: "Individual and group counseling, peer support clubs, and home visits delivered by trained community workers." },
-  { Icon: GraduationCap, t: "Education & Scholarships", d: "School fees, learning materials and tutoring that help vulnerable youth stay enrolled and succeed." },
-  { Icon: Sprout, t: "Livelihoods & Skills", d: "Vocational training, business mentorship and seed grants for young entrepreneurs and caregivers." },
-  { Icon: Users, t: "Community Resilience", d: "Sensitization, family strengthening, and partnerships with local leaders to protect children." },
+  { Icon: Users, t: "Child Protection", d: "Safeguarding children and adolescents through case management, family strengthening, and partnerships with local leaders to uphold children's rights." },
+  { Icon: HeartHandshake, t: "Mental Health", d: "Trauma-informed counseling, peer support clubs, and home visits delivered by trained psychosocial workers across Kigali, Southern and Eastern Provinces." },
+  { Icon: Sprout, t: "Economic Empowerment", d: "Vocational training, business mentorship and seed grants helping young people and caregivers build sustainable livelihoods." },
 ];
 
 function Programs() {
