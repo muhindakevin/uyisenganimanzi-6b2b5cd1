@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as GetInvolvedRouteImport } from './routes/get-involved'
+import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +24,11 @@ const ProgramsRoute = ProgramsRouteImport.update({
 const GetInvolvedRoute = GetInvolvedRouteImport.update({
   id: '/get-involved',
   path: '/get-involved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
   '/programs': typeof ProgramsRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
   '/programs': typeof ProgramsRoute
 }
@@ -60,21 +68,36 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
   '/programs': typeof ProgramsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/get-involved' | '/programs'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/gallery'
+    | '/get-involved'
+    | '/programs'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/get-involved' | '/programs'
-  id: '__root__' | '/' | '/about' | '/contact' | '/get-involved' | '/programs'
+  to: '/' | '/about' | '/contact' | '/gallery' | '/get-involved' | '/programs'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/gallery'
+    | '/get-involved'
+    | '/programs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  GalleryRoute: typeof GalleryRoute
   GetInvolvedRoute: typeof GetInvolvedRoute
   ProgramsRoute: typeof ProgramsRoute
 }
@@ -93,6 +116,13 @@ declare module '@tanstack/react-router' {
       path: '/get-involved'
       fullPath: '/get-involved'
       preLoaderRoute: typeof GetInvolvedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -123,9 +153,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  GalleryRoute: GalleryRoute,
   GetInvolvedRoute: GetInvolvedRoute,
   ProgramsRoute: ProgramsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

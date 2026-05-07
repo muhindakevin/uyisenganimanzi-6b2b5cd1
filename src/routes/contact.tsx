@@ -31,7 +31,7 @@ function Contact() {
         {[
           { Icon: MapPin, t: "Visit", d: "333V+8XW, Kigali, Rwanda" },
           { Icon: Phone, t: "Call", d: "0788 729 994", href: "tel:+250788729994" },
-          { Icon: Mail, t: "Email", d: "info@unm.org.rw", href: "mailto:info@unm.org.rw" },
+          { Icon: Mail, t: "Email", d: "info@uyisenganimanzi.org.rw", href: "mailto:info@uyisenganimanzi.org.rw" },
           { Icon: Clock, t: "Hours", d: "Mon–Fri · 9 am – 5 pm" },
         ].map(({ Icon, t, d, href }) => (
           <div key={t} className="flex items-start gap-4 rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
