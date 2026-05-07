@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/SiteLayout";
-import { HeartHandshake, GraduationCap, Sprout, Users } from "lucide-react";
+import { HeartHandshake, Sprout, Users } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({
   head: () => ({
