@@ -72,14 +72,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "uyisenganimanzi" },
+      { name: "description", content: "Rwandan Roots showcases photos and information about the Uyisenga Ni Imanzi (UNM) NGO in Kigali, Rwanda." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "uyisenganimanzi" },
+      { property: "og:description", content: "Rwandan Roots showcases photos and information about the Uyisenga Ni Imanzi (UNM) NGO in Kigali, Rwanda." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "uyisenganimanzi" },
+      { name: "twitter:description", content: "Rwandan Roots showcases photos and information about the Uyisenga Ni Imanzi (UNM) NGO in Kigali, Rwanda." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/CgHjoa5D0VevEhAiW70fCDJiSvb2/social-images/social-1778491806061-logo.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/CgHjoa5D0VevEhAiW70fCDJiSvb2/social-images/social-1778491806061-logo.webp" },
     ],
     links: [
       {
