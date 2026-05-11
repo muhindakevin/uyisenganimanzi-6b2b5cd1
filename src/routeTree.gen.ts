@@ -15,6 +15,12 @@ import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutIndexRouteImport } from './routes/about.index'
+import { Route as AboutTeamRouteImport } from './routes/about.team'
+import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-vision'
+import { Route as AboutImpactRouteImport } from './routes/about.impact'
+import { Route as AboutBeneficiariesRouteImport } from './routes/about.beneficiaries'
+import { Route as AboutApproachRouteImport } from './routes/about.approach'
 
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
@@ -46,31 +52,78 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutTeamRoute = AboutTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutMissionVisionRoute = AboutMissionVisionRouteImport.update({
+  id: '/mission-vision',
+  path: '/mission-vision',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutImpactRoute = AboutImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutBeneficiariesRoute = AboutBeneficiariesRouteImport.update({
+  id: '/beneficiaries',
+  path: '/beneficiaries',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutApproachRoute = AboutApproachRouteImport.update({
+  id: '/approach',
+  path: '/approach',
+  getParentRoute: () => AboutRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/about': typeof AboutRouteWithChildren
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
   '/programs': typeof ProgramsRoute
+  '/about/approach': typeof AboutApproachRoute
+  '/about/beneficiaries': typeof AboutBeneficiariesRoute
+  '/about/impact': typeof AboutImpactRoute
+  '/about/mission-vision': typeof AboutMissionVisionRoute
+  '/about/team': typeof AboutTeamRoute
+  '/about/': typeof AboutIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
   '/programs': typeof ProgramsRoute
+  '/about/approach': typeof AboutApproachRoute
+  '/about/beneficiaries': typeof AboutBeneficiariesRoute
+  '/about/impact': typeof AboutImpactRoute
+  '/about/mission-vision': typeof AboutMissionVisionRoute
+  '/about/team': typeof AboutTeamRoute
+  '/about': typeof AboutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
+  '/about': typeof AboutRouteWithChildren
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
   '/programs': typeof ProgramsRoute
+  '/about/approach': typeof AboutApproachRoute
+  '/about/beneficiaries': typeof AboutBeneficiariesRoute
+  '/about/impact': typeof AboutImpactRoute
+  '/about/mission-vision': typeof AboutMissionVisionRoute
+  '/about/team': typeof AboutTeamRoute
+  '/about/': typeof AboutIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,8 +134,25 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/get-involved'
     | '/programs'
+    | '/about/approach'
+    | '/about/beneficiaries'
+    | '/about/impact'
+    | '/about/mission-vision'
+    | '/about/team'
+    | '/about/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/gallery' | '/get-involved' | '/programs'
+  to:
+    | '/'
+    | '/contact'
+    | '/gallery'
+    | '/get-involved'
+    | '/programs'
+    | '/about/approach'
+    | '/about/beneficiaries'
+    | '/about/impact'
+    | '/about/mission-vision'
+    | '/about/team'
+    | '/about'
   id:
     | '__root__'
     | '/'
@@ -91,11 +161,17 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/get-involved'
     | '/programs'
+    | '/about/approach'
+    | '/about/beneficiaries'
+    | '/about/impact'
+    | '/about/mission-vision'
+    | '/about/team'
+    | '/about/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
+  AboutRoute: typeof AboutRouteWithChildren
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
   GetInvolvedRoute: typeof GetInvolvedRoute
@@ -146,12 +222,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about/': {
+      id: '/about/'
+      path: '/'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/team': {
+      id: '/about/team'
+      path: '/team'
+      fullPath: '/about/team'
+      preLoaderRoute: typeof AboutTeamRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/mission-vision': {
+      id: '/about/mission-vision'
+      path: '/mission-vision'
+      fullPath: '/about/mission-vision'
+      preLoaderRoute: typeof AboutMissionVisionRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/impact': {
+      id: '/about/impact'
+      path: '/impact'
+      fullPath: '/about/impact'
+      preLoaderRoute: typeof AboutImpactRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/beneficiaries': {
+      id: '/about/beneficiaries'
+      path: '/beneficiaries'
+      fullPath: '/about/beneficiaries'
+      preLoaderRoute: typeof AboutBeneficiariesRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/approach': {
+      id: '/about/approach'
+      path: '/approach'
+      fullPath: '/about/approach'
+      preLoaderRoute: typeof AboutApproachRouteImport
+      parentRoute: typeof AboutRoute
+    }
   }
 }
 
+interface AboutRouteChildren {
+  AboutApproachRoute: typeof AboutApproachRoute
+  AboutBeneficiariesRoute: typeof AboutBeneficiariesRoute
+  AboutImpactRoute: typeof AboutImpactRoute
+  AboutMissionVisionRoute: typeof AboutMissionVisionRoute
+  AboutTeamRoute: typeof AboutTeamRoute
+  AboutIndexRoute: typeof AboutIndexRoute
+}
+
+const AboutRouteChildren: AboutRouteChildren = {
+  AboutApproachRoute: AboutApproachRoute,
+  AboutBeneficiariesRoute: AboutBeneficiariesRoute,
+  AboutImpactRoute: AboutImpactRoute,
+  AboutMissionVisionRoute: AboutMissionVisionRoute,
+  AboutTeamRoute: AboutTeamRoute,
+  AboutIndexRoute: AboutIndexRoute,
+}
+
+const AboutRouteWithChildren = AboutRoute._addFileChildren(AboutRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
+  AboutRoute: AboutRouteWithChildren,
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
   GetInvolvedRoute: GetInvolvedRoute,
@@ -160,3 +298,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
