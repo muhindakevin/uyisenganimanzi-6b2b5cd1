@@ -1,12 +1,20 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 
+const aboutLinks = [
+  { to: "/about", label: "Our Story" },
+  { to: "/about/team", label: "Our Team" },
+  { to: "/about/mission-vision", label: "Mission & Vision" },
+  { to: "/about/impact", label: "Our Impact" },
+  { to: "/about/approach", label: "Our Approach" },
+  { to: "/about/beneficiaries", label: "Our Beneficiaries" },
+] as const;
+
 const nav = [
   { to: "/", label: "Home" },
-  { to: "/about", label: "About" },
   { to: "/programs", label: "Programs" },
   { to: "/gallery", label: "Gallery" },
   { to: "/get-involved", label: "Get Involved" },
@@ -23,13 +31,43 @@ export function SiteHeader() {
           <span className="hidden text-sm font-semibold uppercase tracking-wide text-foreground sm:inline">Uyisenga Ni Imanzi</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
-          {nav.map((n) => (
+          <Link
+            to="/"
+            className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            activeProps={{ className: "rounded-md px-3 py-2 text-sm font-medium text-foreground bg-secondary" }}
+            activeOptions={{ exact: true }}
+          >
+            Home
+          </Link>
+
+          {/* About dropdown */}
+          <div className="group relative">
+            <Link
+              to="/about"
+              className="flex items-center gap-1 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "flex items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-foreground bg-secondary" }}
+            >
+              About <ChevronDown className="h-3.5 w-3.5" />
+            </Link>
+            <div className="invisible absolute left-0 top-full z-50 w-56 translate-y-1 rounded-xl border border-border bg-popover p-1.5 opacity-0 shadow-lg transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100">
+              {aboutLinks.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className="block rounded-md px-3 py-2 text-sm text-foreground hover:bg-secondary"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {nav.slice(1).map((n) => (
             <Link
               key={n.to}
               to={n.to}
               className="rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               activeProps={{ className: "rounded-md px-3 py-2 text-sm font-medium text-foreground bg-secondary" }}
-              activeOptions={{ exact: n.to === "/" }}
             >
               {n.label}
             </Link>
@@ -49,7 +87,19 @@ export function SiteHeader() {
       {open && (
         <div className="border-t border-border/60 bg-background md:hidden">
           <nav className="mx-auto flex max-w-6xl flex-col p-4">
-            {nav.map((n) => (
+            <Link to="/" onClick={() => setOpen(false)} className="rounded-md px-3 py-2 text-sm text-foreground hover:bg-secondary">Home</Link>
+            <p className="mt-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">About</p>
+            {aboutLinks.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setOpen(false)}
+                className="rounded-md px-3 py-2 text-sm text-foreground hover:bg-secondary"
+              >
+                {l.label}
+              </Link>
+            ))}
+            {nav.slice(1).map((n) => (
               <Link
                 key={n.to}
                 to={n.to}
