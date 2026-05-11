@@ -152,6 +152,8 @@ function Index() {
           </div>
         </div>
       </section>
+
+      <PartnersMarquee />
     </SiteLayout>
   );
 }
