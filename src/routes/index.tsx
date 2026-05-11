@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, HeartHandshake, GraduationCap, Sprout } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
+import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
 import programsImg from "@/assets/programs.jpg";
