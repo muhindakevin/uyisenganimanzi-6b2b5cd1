@@ -1,14 +1,23 @@
+import imbuto from "@/assets/partners/imbuto.jpg";
+import wjr from "@/assets/partners/wjr.jpg";
+import streetchild from "@/assets/partners/streetchild.png";
+import ur from "@/assets/partners/ur.png";
+import ucl from "@/assets/partners/ucl.jpg";
+import lemonaid from "@/assets/partners/lemonaid.jpg";
+import leeds from "@/assets/partners/leeds.jpg";
+import irct from "@/assets/partners/irct.jpg";
+import cafod from "@/assets/partners/cafod.jpg";
+
 const partners = [
-  "UNICEF",
-  "USAID",
-  "Government of Rwanda",
-  "European Union",
-  "Global Fund",
-  "Save the Children",
-  "World Vision",
-  "Plan International",
-  "UNDP",
-  "WHO",
+  { name: "Imbuto Foundation", src: imbuto },
+  { name: "World Jewish Relief", src: wjr },
+  { name: "Street Child", src: streetchild },
+  { name: "University of Rwanda", src: ur },
+  { name: "UCL", src: ucl },
+  { name: "Lemonaid & ChariTea", src: lemonaid },
+  { name: "University of Leeds", src: leeds },
+  { name: "IRCT", src: irct },
+  { name: "CAFOD", src: cafod },
 ];
 
 export function PartnersMarquee() {
@@ -26,13 +35,18 @@ export function PartnersMarquee() {
       <div className="group relative mt-8 overflow-hidden">
         <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-card to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-card to-transparent" />
-        <div className="flex w-max animate-[marquee_35s_linear_infinite] gap-12 group-hover:[animation-play-state:paused]">
+        <div className="flex w-max animate-[marquee_40s_linear_infinite] gap-10 group-hover:[animation-play-state:paused]">
           {loop.map((p, i) => (
             <div
-              key={`${p}-${i}`}
-              className="flex h-16 min-w-[200px] items-center justify-center rounded-xl border border-border bg-background px-8 text-base font-semibold text-foreground/80"
+              key={`${p.name}-${i}`}
+              className="flex h-24 min-w-[200px] items-center justify-center rounded-xl border border-border bg-background px-6"
             >
-              {p}
+              <img
+                src={p.src}
+                alt={p.name}
+                loading="lazy"
+                className="max-h-16 max-w-[160px] object-contain"
+              />
             </div>
           ))}
         </div>
