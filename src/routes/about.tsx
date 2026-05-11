@@ -13,14 +13,15 @@ export const Route = createFileRoute("/about")({
   component: AboutLayout,
 });
 
-const tabs = [
+type Tab = { to: string; label: string; exact?: boolean };
+const tabs: Tab[] = [
   { to: "/about", label: "Our Story", exact: true },
   { to: "/about/team", label: "Our Team" },
   { to: "/about/mission-vision", label: "Mission & Vision" },
   { to: "/about/impact", label: "Our Impact" },
   { to: "/about/approach", label: "Our Approach" },
   { to: "/about/beneficiaries", label: "Our Beneficiaries" },
-] as const;
+];
 
 function AboutLayout() {
   return (
@@ -36,7 +37,7 @@ function AboutLayout() {
               <Link
                 key={t.to}
                 to={t.to}
-                activeOptions={{ exact: t.exact }}
+                activeOptions={{ exact: !!t.exact }}
                 className="whitespace-nowrap rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
                 activeProps={{ className: "whitespace-nowrap rounded-md px-3 py-2 text-sm font-medium text-primary bg-background shadow-sm" }}
               >
