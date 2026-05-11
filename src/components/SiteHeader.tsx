@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Heart } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logo from "@/assets/logo.png";
 
 const nav = [
   { to: "/", label: "Home" },
@@ -17,11 +18,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-2 font-semibold tracking-tight">
-          <span className="grid h-9 w-9 place-items-center rounded-lg bg-[image:var(--gradient-hero)] text-primary-foreground">
-            <Heart className="h-4 w-4" />
-          </span>
-          <span className="text-foreground">UNM</span>
+        <Link to="/" className="flex items-center gap-3 font-semibold tracking-tight">
+          <img src={logo} alt="Uyisenga Ni Imanzi logo" className="h-11 w-auto" />
+          <span className="hidden text-sm font-semibold uppercase tracking-wide text-foreground sm:inline">Uyisenga Ni Imanzi</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           {nav.map((n) => (
