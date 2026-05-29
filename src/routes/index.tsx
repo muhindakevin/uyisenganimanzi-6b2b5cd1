@@ -5,6 +5,7 @@ import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
 import programsImg from "@/assets/programs.jpg";
+import aboutImg from "@/assets/about.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -46,13 +47,12 @@ function Index() {
             </div>
           </div>
           <div className="relative">
-            <div className="absolute -inset-4 -z-10 rounded-3xl bg-[image:var(--gradient-hero)] opacity-20 blur-2xl" />
             <img
               src={heroImg}
               alt="Young people smiling together at a UNM community gathering in Kigali"
               width={1920}
               height={1280}
-              className="rounded-2xl object-cover shadow-[var(--shadow-elegant)] aspect-[4/3] w-full"
+              className="rounded-[2rem] object-cover shadow-[var(--shadow-elegant)] aspect-[4/3] w-full"
             />
           </div>
         </div>
@@ -75,29 +75,51 @@ function Index() {
         </div>
       </section>
 
-      {/* Pillars */}
+      {/* Programs */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="max-w-2xl">
-          <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Three pillars, one promise.
+          <p className="text-sm font-medium uppercase tracking-wider text-primary">Our Programs</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Child Protection, Economic Empowerment, and Mental Health.
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Everything we do is grounded in dignity, listening, and long-term impact.
+            Uyisenga Ni Imanzi supports the whole person through protection, livelihoods and healing. Each program combines caring staff, community trust and strong impact.
           </p>
         </div>
-        <div className="mt-10 grid gap-5 md:grid-cols-3">
+
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {[
-            { Icon: HeartHandshake, t: "Psychosocial Care", d: "Trauma-informed counseling, peer support and home visits for children and youth." },
-            { Icon: GraduationCap, t: "Education & Mentorship", d: "Scholarships, tutoring and mentoring that keep young people in school and thriving." },
-            { Icon: Sprout, t: "Livelihoods", d: "Vocational training and seed grants helping families build sustainable income." },
-          ].map(({ Icon, t, d }) => (
-            <div key={t} className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-shadow hover:shadow-[var(--shadow-elegant)]">
-              <div className="grid h-11 w-11 place-items-center rounded-xl bg-secondary text-primary">
-                <Icon className="h-5 w-5" />
+            {
+              title: "Child Protection",
+              description: "Safe spaces, child-centered support and protection services for vulnerable children.",
+              image: aboutImg,
+            },
+            {
+              title: "Economic Empowerment",
+              description: "Livelihood training, savings groups and income support that help families thrive.",
+              image: programsImg,
+            },
+            {
+              title: "Mental Health",
+              description: "Psychosocial wellbeing, trauma-informed care and healing circles for youth and families.",
+              image: heroImg,
+            },
+          ].map((program) => (
+            <article key={program.title} className="group overflow-hidden rounded-[2rem] border border-border bg-white shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+              <div className="relative h-64 overflow-hidden">
+                <img src={program.image} alt={program.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </div>
-              <h3 className="mt-5 text-lg font-semibold text-foreground">{t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{d}</p>
-            </div>
+              <div className="p-6">
+                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Program</p>
+                <h3 className="mt-4 text-2xl font-semibold text-foreground">{program.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{program.description}</p>
+                <div className="mt-6">
+                  <Button asChild size="sm" variant="secondary">
+                    <Link to="/programs">Learn more</Link>
+                  </Button>
+                </div>
+              </div>
+            </article>
           ))}
         </div>
       </section>

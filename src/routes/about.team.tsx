@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Mail, Phone, User } from "lucide-react";
 
 export const Route = createFileRoute("/about/team")({
@@ -6,6 +7,7 @@ export const Route = createFileRoute("/about/team")({
 });
 
 type Member = {
+  id: number;
   name: string;
   title: string;
   email?: string;
@@ -13,17 +15,27 @@ type Member = {
   photo?: string;
 };
 
-// Placeholder team — will be admin-managed once Lovable Cloud is enabled.
-const team: Member[] = [
-  { name: "Executive Director", title: "Executive Director", email: "info@uyisenganimanzi.org.rw", phone: "+250 788 729 994" },
-  { name: "Programs Manager", title: "Programs Manager", email: "info@uyisenganimanzi.org.rw" },
-  { name: "Mental Health Lead", title: "Psychosocial & Mental Health Lead", email: "info@uyisenganimanzi.org.rw" },
-  { name: "Child Protection Lead", title: "Child Protection Lead", email: "info@uyisenganimanzi.org.rw" },
-  { name: "Economic Empowerment Lead", title: "Economic Empowerment Lead", email: "info@uyisenganimanzi.org.rw" },
-  { name: "Finance & Admin", title: "Finance & Administration", email: "info@uyisenganimanzi.org.rw" },
+const DEFAULT_TEAM: Member[] = [
+  { id: 1, name: "Executive Director", title: "Executive Director", email: "info@uyisenganimanzi.org.rw", phone: "+250 788 729 994" },
+  { id: 2, name: "Programs Manager", title: "Programs Manager", email: "info@uyisenganimanzi.org.rw" },
+  { id: 3, name: "Mental Health Lead", title: "Psychosocial & Mental Health Lead", email: "info@uyisenganimanzi.org.rw" },
+  { id: 4, name: "Child Protection Lead", title: "Child Protection Lead", email: "info@uyisenganimanzi.org.rw" },
+  { id: 5, name: "Economic Empowerment Lead", title: "Economic Empowerment Lead", email: "info@uyisenganimanzi.org.rw" },
+  { id: 6, name: "Finance & Admin", title: "Finance & Administration", email: "info@uyisenganimanzi.org.rw" },
 ];
 
 function OurTeam() {
+  const [team, setTeam] = useState<Member[]>(DEFAULT_TEAM);
+
+  useEffect(() => {
+    fetch("/api/team")
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setTeam(data);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <h2 className="text-3xl font-semibold tracking-tight text-foreground">Our team</h2>
@@ -32,9 +44,9 @@ function OurTeam() {
       </p>
 
       <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {team.map((m) => (
+        {team.map((m: Member) => (
           <article
-            key={m.name}
+            key={m.id}
             className="group overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1"
           >
             <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
@@ -65,11 +77,6 @@ function OurTeam() {
           </article>
         ))}
       </div>
-
-      <p className="mt-10 rounded-xl border border-dashed border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
-        Tip: enable Lovable Cloud to let an admin add, edit and upload team
-        photos, names, titles and contacts directly from a dashboard.
-      </p>
     </section>
   );
 }

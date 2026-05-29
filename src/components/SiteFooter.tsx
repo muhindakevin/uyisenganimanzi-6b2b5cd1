@@ -12,10 +12,10 @@ export function SiteFooter() {
             through psychosocial care, education, and livelihoods.
           </p>
           <div className="mt-4 flex gap-3 text-muted-foreground">
-            <a href="https://facebook.com" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-foreground"><Facebook className="h-5 w-5" /></a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-foreground"><Instagram className="h-5 w-5" /></a>
-            <a href="https://x.com" target="_blank" rel="noreferrer" aria-label="X (Twitter)" className="hover:text-foreground"><Twitter className="h-5 w-5" /></a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-5 w-5" /></a>
+            <a href="https://www.facebook.com/uyisenganimanzi" target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-foreground"><Facebook className="h-5 w-5" /></a>
+            <a href="https://www.instagram.com/uyisenganimanzi_/" target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-foreground"><Instagram className="h-5 w-5" /></a>
+            <a href="https://x.com/UyisenganImanzi" target="_blank" rel="noreferrer" aria-label="X" className="hover:text-foreground"><Twitter className="h-5 w-5" /></a>
+            <a href="https://www.linkedin.com/in/uyisenga-ni-imanzi-b8820a97/" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="hover:text-foreground"><Linkedin className="h-5 w-5" /></a>
           </div>
         </div>
         <div>
@@ -24,14 +24,15 @@ export function SiteFooter() {
             <li><Link to="/about" className="hover:text-foreground">About</Link></li>
             <li><Link to="/programs" className="hover:text-foreground">Programs</Link></li>
             <li><Link to="/gallery" className="hover:text-foreground">Gallery</Link></li>
-            <li><Link to="/get-involved" className="hover:text-foreground">Get Involved</Link></li>
+            <li><Link to="/get-involved" className="hover:text-foreground">Press Room</Link></li>
             <li><Link to="/contact" className="hover:text-foreground">Contact</Link></li>
+            <li><Link to="/admin" className="hover:text-foreground">Admin</Link></li>
           </ul>
         </div>
         <div>
           <p className="text-sm font-semibold text-foreground">Contact</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> 333V+8XW, Kigali, Rwanda</li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> Kacyiru, Kigali, Rwanda</li>
             <li className="flex items-center gap-2"><Phone className="h-4 w-4" /> <a href="tel:+250788729994" className="hover:text-foreground">0788 729 994</a></li>
             <li className="flex items-center gap-2"><Mail className="h-4 w-4" /> <a href="mailto:info@uyisenganimanzi.org.rw" className="hover:text-foreground">info@uyisenganimanzi.org.rw</a></li>
           </ul>

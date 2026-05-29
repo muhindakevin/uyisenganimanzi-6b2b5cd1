@@ -1,8 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
-import heroImg from "@/assets/hero.jpg";
-import aboutImg from "@/assets/about.jpg";
-import programsImg from "@/assets/programs.jpg";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -16,16 +14,29 @@ export const Route = createFileRoute("/gallery")({
   component: Gallery,
 });
 
-const photos = [
-  { src: heroImg, caption: "Community gathering, Kigali" },
-  { src: aboutImg, caption: "Peer support session" },
-  { src: programsImg, caption: "Youth workshop" },
-  { src: heroImg, caption: "Field visit" },
-  { src: aboutImg, caption: "Mental health day" },
-  { src: programsImg, caption: "Skills training" },
+type GalleryImage = {
+  id: number;
+  title: string;
+  image: string;
+  description?: string;
+};
+
+const DEFAULT_GALLERY: GalleryImage[] = [
+  { id: 1, title: "Community Event", image: "/assets/gallery/1.jpg", description: "A community gathering." }
 ];
 
 function Gallery() {
+  const [photos, setPhotos] = useState<GalleryImage[]>(DEFAULT_GALLERY);
+
+  useEffect(() => {
+    fetch("/api/gallery")
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setPhotos(data);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <SiteLayout>
       <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 md:py-24">
@@ -40,10 +51,10 @@ function Gallery() {
 
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {photos.map((p, i) => (
-            <figure key={i} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
-              <img src={p.src} alt={p.caption} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform hover:scale-105" />
-              <figcaption className="px-4 py-3 text-sm text-muted-foreground">{p.caption}</figcaption>
+          {photos.map((p: any) => (
+            <figure key={p.id} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
+              <img src={p.image} alt={p.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform hover:scale-105" />
+              <figcaption className="px-4 py-3 text-sm text-muted-foreground">{p.description || p.title}</figcaption>
             </figure>
           ))}
         </div>

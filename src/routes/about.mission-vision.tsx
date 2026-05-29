@@ -1,9 +1,32 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
 import { Target, Eye, Heart } from "lucide-react";
 
 export const Route = createFileRoute("/about/mission-vision")({
   component: MissionVision,
 });
+
+type Content = {
+  mission: string;
+  vision: string;
+  impact: string;
+  contact: {
+    email: string;
+    phone: string;
+    address: string;
+  };
+};
+
+const DEFAULT_CONTENT: Content = {
+  mission: "To accompany young Rwandans on their journey to healing and opportunity—through psychosocial care, education and economic empowerment.",
+  vision: "A Rwanda where every young person has the support, skills and hope to shape their own future—and uplift those around them.",
+  impact: "We have impacted thousands of lives.",
+  contact: {
+    email: "info@uyisenganimanzi.org.rw",
+    phone: "+250 788 729 994",
+    address: "Kigali, Rwanda"
+  }
+};
 
 const values = [
   { t: "Dignity", d: "Every person we serve is met with respect and confidentiality." },
@@ -12,6 +35,15 @@ const values = [
 ];
 
 function MissionVision() {
+  const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((response) => response.json())
+      .then((data) => setContent({ ...DEFAULT_CONTENT, ...data, contact: { ...DEFAULT_CONTENT.contact, ...(data.contact || {}) } }))
+      .catch(() => {});
+  }, []);
+
   return (
     <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <div className="grid gap-6 md:grid-cols-2">
@@ -19,16 +51,14 @@ function MissionVision() {
           <Target className="h-8 w-8 text-primary" />
           <h2 className="mt-4 text-2xl font-semibold text-foreground">Our mission</h2>
           <p className="mt-3 text-muted-foreground">
-            To accompany young Rwandans on their journey to healing and opportunity—through
-            psychosocial care, education and economic empowerment.
+            {content.mission}
           </p>
         </div>
         <div className="rounded-2xl border border-border bg-card p-8 shadow-[var(--shadow-card)]">
           <Eye className="h-8 w-8 text-primary" />
           <h2 className="mt-4 text-2xl font-semibold text-foreground">Our vision</h2>
           <p className="mt-3 text-muted-foreground">
-            A Rwanda where every young person has the support, skills and hope to shape their own
-            future—and uplift those around them.
+            {content.vision}
           </p>
         </div>
       </div>

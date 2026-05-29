@@ -10,12 +10,24 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProgramsRouteImport } from './routes/programs'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as GetInvolvedRouteImport } from './routes/get-involved'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutIndexRouteImport } from './routes/about.index'
+import { Route as PressRoomPublicationsRouteImport } from './routes/press-room/publications'
+import { Route as PressRoomNewsRouteImport } from './routes/press-room/news'
+import { Route as PressRoomJobsRouteImport } from './routes/press-room/jobs'
+import { Route as ApiTeamRouteImport } from './routes/api/team'
+import { Route as ApiProgramsRouteImport } from './routes/api/programs'
+import { Route as ApiPressRoomRouteImport } from './routes/api/press-room'
+import { Route as ApiGalleryRouteImport } from './routes/api/gallery'
+import { Route as ApiContentRouteImport } from './routes/api/content'
+import { Route as ApiContactRouteImport } from './routes/api/contact'
+import { Route as ApiAuthRouteImport } from './routes/api/auth'
 import { Route as AboutTeamRouteImport } from './routes/about.team'
 import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-vision'
 import { Route as AboutImpactRouteImport } from './routes/about.impact'
@@ -25,6 +37,11 @@ import { Route as AboutApproachRouteImport } from './routes/about.approach'
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
   path: '/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GetInvolvedRoute = GetInvolvedRouteImport.update({
@@ -42,6 +59,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -56,6 +78,56 @@ const AboutIndexRoute = AboutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AboutRoute,
+} as any)
+const PressRoomPublicationsRoute = PressRoomPublicationsRouteImport.update({
+  id: '/press-room/publications',
+  path: '/press-room/publications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoomNewsRoute = PressRoomNewsRouteImport.update({
+  id: '/press-room/news',
+  path: '/press-room/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoomJobsRoute = PressRoomJobsRouteImport.update({
+  id: '/press-room/jobs',
+  path: '/press-room/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTeamRoute = ApiTeamRouteImport.update({
+  id: '/api/team',
+  path: '/api/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiProgramsRoute = ApiProgramsRouteImport.update({
+  id: '/api/programs',
+  path: '/api/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPressRoomRoute = ApiPressRoomRouteImport.update({
+  id: '/api/press-room',
+  path: '/api/press-room',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGalleryRoute = ApiGalleryRouteImport.update({
+  id: '/api/gallery',
+  path: '/api/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContentRoute = ApiContentRouteImport.update({
+  id: '/api/content',
+  path: '/api/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContactRoute = ApiContactRouteImport.update({
+  id: '/api/contact',
+  path: '/api/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthRoute = ApiAuthRouteImport.update({
+  id: '/api/auth',
+  path: '/api/auth',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AboutTeamRoute = AboutTeamRouteImport.update({
   id: '/team',
@@ -86,43 +158,79 @@ const AboutApproachRoute = AboutApproachRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRouteWithChildren
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
+  '/login': typeof LoginRoute
   '/programs': typeof ProgramsRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
   '/about/mission-vision': typeof AboutMissionVisionRoute
   '/about/team': typeof AboutTeamRoute
+  '/api/auth': typeof ApiAuthRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/content': typeof ApiContentRoute
+  '/api/gallery': typeof ApiGalleryRoute
+  '/api/press-room': typeof ApiPressRoomRoute
+  '/api/programs': typeof ApiProgramsRoute
+  '/api/team': typeof ApiTeamRoute
+  '/press-room/jobs': typeof PressRoomJobsRoute
+  '/press-room/news': typeof PressRoomNewsRoute
+  '/press-room/publications': typeof PressRoomPublicationsRoute
   '/about/': typeof AboutIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
+  '/login': typeof LoginRoute
   '/programs': typeof ProgramsRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
   '/about/mission-vision': typeof AboutMissionVisionRoute
   '/about/team': typeof AboutTeamRoute
+  '/api/auth': typeof ApiAuthRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/content': typeof ApiContentRoute
+  '/api/gallery': typeof ApiGalleryRoute
+  '/api/press-room': typeof ApiPressRoomRoute
+  '/api/programs': typeof ApiProgramsRoute
+  '/api/team': typeof ApiTeamRoute
+  '/press-room/jobs': typeof PressRoomJobsRoute
+  '/press-room/news': typeof PressRoomNewsRoute
+  '/press-room/publications': typeof PressRoomPublicationsRoute
   '/about': typeof AboutIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRouteWithChildren
+  '/admin': typeof AdminRoute
   '/contact': typeof ContactRoute
   '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
+  '/login': typeof LoginRoute
   '/programs': typeof ProgramsRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
   '/about/mission-vision': typeof AboutMissionVisionRoute
   '/about/team': typeof AboutTeamRoute
+  '/api/auth': typeof ApiAuthRoute
+  '/api/contact': typeof ApiContactRoute
+  '/api/content': typeof ApiContentRoute
+  '/api/gallery': typeof ApiGalleryRoute
+  '/api/press-room': typeof ApiPressRoomRoute
+  '/api/programs': typeof ApiProgramsRoute
+  '/api/team': typeof ApiTeamRoute
+  '/press-room/jobs': typeof PressRoomJobsRoute
+  '/press-room/news': typeof PressRoomNewsRoute
+  '/press-room/publications': typeof PressRoomPublicationsRoute
   '/about/': typeof AboutIndexRoute
 }
 export interface FileRouteTypes {
@@ -130,52 +238,100 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
     | '/contact'
     | '/gallery'
     | '/get-involved'
+    | '/login'
     | '/programs'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
     | '/about/mission-vision'
     | '/about/team'
+    | '/api/auth'
+    | '/api/contact'
+    | '/api/content'
+    | '/api/gallery'
+    | '/api/press-room'
+    | '/api/programs'
+    | '/api/team'
+    | '/press-room/jobs'
+    | '/press-room/news'
+    | '/press-room/publications'
     | '/about/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/contact'
     | '/gallery'
     | '/get-involved'
+    | '/login'
     | '/programs'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
     | '/about/mission-vision'
     | '/about/team'
+    | '/api/auth'
+    | '/api/contact'
+    | '/api/content'
+    | '/api/gallery'
+    | '/api/press-room'
+    | '/api/programs'
+    | '/api/team'
+    | '/press-room/jobs'
+    | '/press-room/news'
+    | '/press-room/publications'
     | '/about'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
     | '/contact'
     | '/gallery'
     | '/get-involved'
+    | '/login'
     | '/programs'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
     | '/about/mission-vision'
     | '/about/team'
+    | '/api/auth'
+    | '/api/contact'
+    | '/api/content'
+    | '/api/gallery'
+    | '/api/press-room'
+    | '/api/programs'
+    | '/api/team'
+    | '/press-room/jobs'
+    | '/press-room/news'
+    | '/press-room/publications'
     | '/about/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRouteWithChildren
+  AdminRoute: typeof AdminRoute
   ContactRoute: typeof ContactRoute
   GalleryRoute: typeof GalleryRoute
   GetInvolvedRoute: typeof GetInvolvedRoute
+  LoginRoute: typeof LoginRoute
   ProgramsRoute: typeof ProgramsRoute
+  ApiAuthRoute: typeof ApiAuthRoute
+  ApiContactRoute: typeof ApiContactRoute
+  ApiContentRoute: typeof ApiContentRoute
+  ApiGalleryRoute: typeof ApiGalleryRoute
+  ApiPressRoomRoute: typeof ApiPressRoomRoute
+  ApiProgramsRoute: typeof ApiProgramsRoute
+  ApiTeamRoute: typeof ApiTeamRoute
+  PressRoomJobsRoute: typeof PressRoomJobsRoute
+  PressRoomNewsRoute: typeof PressRoomNewsRoute
+  PressRoomPublicationsRoute: typeof PressRoomPublicationsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -185,6 +341,13 @@ declare module '@tanstack/react-router' {
       path: '/programs'
       fullPath: '/programs'
       preLoaderRoute: typeof ProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/get-involved': {
@@ -208,6 +371,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -228,6 +398,76 @@ declare module '@tanstack/react-router' {
       fullPath: '/about/'
       preLoaderRoute: typeof AboutIndexRouteImport
       parentRoute: typeof AboutRoute
+    }
+    '/press-room/publications': {
+      id: '/press-room/publications'
+      path: '/press-room/publications'
+      fullPath: '/press-room/publications'
+      preLoaderRoute: typeof PressRoomPublicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press-room/news': {
+      id: '/press-room/news'
+      path: '/press-room/news'
+      fullPath: '/press-room/news'
+      preLoaderRoute: typeof PressRoomNewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press-room/jobs': {
+      id: '/press-room/jobs'
+      path: '/press-room/jobs'
+      fullPath: '/press-room/jobs'
+      preLoaderRoute: typeof PressRoomJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/team': {
+      id: '/api/team'
+      path: '/api/team'
+      fullPath: '/api/team'
+      preLoaderRoute: typeof ApiTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/programs': {
+      id: '/api/programs'
+      path: '/api/programs'
+      fullPath: '/api/programs'
+      preLoaderRoute: typeof ApiProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/press-room': {
+      id: '/api/press-room'
+      path: '/api/press-room'
+      fullPath: '/api/press-room'
+      preLoaderRoute: typeof ApiPressRoomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/gallery': {
+      id: '/api/gallery'
+      path: '/api/gallery'
+      fullPath: '/api/gallery'
+      preLoaderRoute: typeof ApiGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/content': {
+      id: '/api/content'
+      path: '/api/content'
+      fullPath: '/api/content'
+      preLoaderRoute: typeof ApiContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/contact': {
+      id: '/api/contact'
+      path: '/api/contact'
+      fullPath: '/api/contact'
+      preLoaderRoute: typeof ApiContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth': {
+      id: '/api/auth'
+      path: '/api/auth'
+      fullPath: '/api/auth'
+      preLoaderRoute: typeof ApiAuthRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/about/team': {
       id: '/about/team'
@@ -290,11 +530,33 @@ const AboutRouteWithChildren = AboutRoute._addFileChildren(AboutRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRouteWithChildren,
+  AdminRoute: AdminRoute,
   ContactRoute: ContactRoute,
   GalleryRoute: GalleryRoute,
   GetInvolvedRoute: GetInvolvedRoute,
+  LoginRoute: LoginRoute,
   ProgramsRoute: ProgramsRoute,
+  ApiAuthRoute: ApiAuthRoute,
+  ApiContactRoute: ApiContactRoute,
+  ApiContentRoute: ApiContentRoute,
+  ApiGalleryRoute: ApiGalleryRoute,
+  ApiPressRoomRoute: ApiPressRoomRoute,
+  ApiProgramsRoute: ApiProgramsRoute,
+  ApiTeamRoute: ApiTeamRoute,
+  PressRoomJobsRoute: PressRoomJobsRoute,
+  PressRoomNewsRoute: PressRoomNewsRoute,
+  PressRoomPublicationsRoute: PressRoomPublicationsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

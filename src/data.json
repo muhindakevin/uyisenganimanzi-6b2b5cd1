@@ -1,0 +1,117 @@
+{
+  "team": [
+    {
+      "id": 1,
+      "name": "Executive Director",
+      "title": "Executive Director",
+      "email": "info@uyisenganimanzi.org.rw",
+      "phone": "+250 788 729 994",
+      "photo": ""
+    },
+    {
+      "id": 2,
+      "name": "Programs Manager",
+      "title": "Programs Manager",
+      "email": "info@uyisenganimanzi.org.rw",
+      "phone": "",
+      "photo": ""
+    },
+    {
+      "id": 3,
+      "name": "Mental Health Lead",
+      "title": "Psychosocial & Mental Health Lead",
+      "email": "info@uyisenganimanzi.org.rw",
+      "phone": "",
+      "photo": ""
+    },
+    {
+      "id": 4,
+      "name": "Child Protection Lead",
+      "title": "Child Protection Lead",
+      "email": "info@uyisenganimanzi.org.rw",
+      "phone": "",
+      "photo": ""
+    },
+    {
+      "id": 5,
+      "name": "Economic Empowerment Lead",
+      "title": "Economic Empowerment Lead",
+      "email": "info@uyisenganimanzi.org.rw",
+      "phone": "",
+      "photo": ""
+    },
+    {
+      "id": 6,
+      "name": "Finance & Admin",
+      "title": "Finance & Administration",
+      "email": "info@uyisenganimanzi.org.rw",
+      "phone": "",
+      "photo": ""
+    }
+  ],
+  "programs": [
+    {
+      "id": 1,
+      "title": "Child Protection Program",
+      "description": "Ensuring the safety and well-being of children through various initiatives.",
+      "image": ""
+    },
+    {
+      "id": 2,
+      "title": "Mental Health Support",
+      "description": "Providing psychosocial support to youth and families.",
+      "image": ""
+    },
+    {
+      "id": 3,
+      "title": "Economic Empowerment",
+      "description": "Empowering communities through economic opportunities.",
+      "image": ""
+    }
+  ],
+  "gallery": [
+    {
+      "id": 1,
+      "title": "Community Event",
+      "image": "/assets/gallery/1.jpg",
+      "description": "A community gathering."
+    }
+  ],
+  "pressRoom": [
+    {
+      "id": 1,
+      "title": "New psychosocial support group launches in Kigali",
+      "summary": "Uyisenga Ni Imanzi has opened a new support circle for youth focused on mental health, trauma recovery and peer connection.",
+      "category": "News",
+      "image": "/assets/hero.jpg"
+    },
+    {
+      "id": 2,
+      "title": "Youth entrepreneurship training begins",
+      "summary": "A new cohort of young entrepreneurs started hands-on business training and seed support in Rugando.",
+      "category": "News",
+      "image": "/assets/programs.jpg"
+    },
+    {
+      "id": 3,
+      "title": "Community healing event brings families together",
+      "summary": "Families from three districts gathered to celebrate resilience and rebuild hope through shared storytelling.",
+      "category": "News",
+      "image": "/assets/hero.jpg"
+    }
+  ],
+  "admin": {
+    "email": "admin@uyisenganimanzi.org.rw",
+    "password": "UnmAdmin123!"
+  },
+  "content": {
+    "mission": "Our mission is to support Rwandan children, youth, and families.",
+    "vision": "A future where every child thrives.",
+    "impact": "We have impacted thousands of lives.",
+    "contact": {
+      "email": "info@uyisenganimanzi.org.rw",
+      "phone": "+250 788 729 994",
+      "address": "Kigali, Rwanda"
+    }
+  }
+}
