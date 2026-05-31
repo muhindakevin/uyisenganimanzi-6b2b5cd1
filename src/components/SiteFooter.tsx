@@ -32,7 +32,7 @@ export function SiteFooter() {
         <div>
           <p className="text-sm font-semibold text-foreground">Contact</p>
           <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> Kacyiru, Kigali, Rwanda</li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> Kacyiru, KIGALI-RWANDA</li>
             <li className="flex items-center gap-2"><Phone className="h-4 w-4" /> <a href="tel:+250788729994" className="hover:text-foreground">0788 729 994</a></li>
             <li className="flex items-center gap-2"><Mail className="h-4 w-4" /> <a href="mailto:info@uyisenganimanzi.org.rw" className="hover:text-foreground">info@uyisenganimanzi.org.rw</a></li>
           </ul>

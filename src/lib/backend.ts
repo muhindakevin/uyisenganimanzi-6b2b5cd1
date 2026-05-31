@@ -56,6 +56,11 @@ export function sql() {
   return sqlClient;
 }
 
+async function query<T = Record<string, any>>(text: string, params: unknown[] = []): Promise<T[]> {
+  const result = await query(text, params);
+  return result as unknown as T[];
+}
+
 export function jsonError(message: string, status = 400) {
   return Response.json({ success: false, message }, { status });
 }
@@ -117,29 +122,29 @@ export async function requireAdminOr401(request: Request) {
 }
 
 export async function getAdminByEmail(email: string) {
-  const rows = await sql().query("select email, password_hash from admin_users where lower(email) = lower($1) limit 1", [
+  const rows = await query("select email, password_hash from admin_users where lower(email) = lower($1) limit 1", [
     email,
   ]);
   return rows[0] as { email: string; password_hash: string } | undefined;
 }
 
-function numberId<T extends { id: unknown }>(row: T) {
+function numberId<T extends Record<string, any>>(row: T) {
   return { ...row, id: Number(row.id) };
 }
 
-function numberIds<T extends { id: unknown }>(rows: T[]) {
+function numberIds<T extends Record<string, any>>(rows: T[]) {
   return rows.map(numberId);
 }
 
 export async function listTeam() {
-  return numberIds(await sql().query(
+  return numberIds(await query(
     "select id, name, title, email, phone, photo from team_members order by id asc",
   )) as TeamMember[];
 }
 
 export async function saveTeamMember(member: Partial<TeamMember>) {
   if (member.id) {
-    const rows = await sql().query(
+    const rows = await query(
       `update team_members
        set name = $2, title = $3, email = $4, phone = $5, photo = $6, updated_at = now()
        where id = $1
@@ -149,7 +154,7 @@ export async function saveTeamMember(member: Partial<TeamMember>) {
     return rows[0] ? (numberId(rows[0]) as TeamMember) : undefined;
   }
 
-  const rows = await sql().query(
+  const rows = await query(
     `insert into team_members (name, title, email, phone, photo)
      values ($1, $2, $3, $4, $5)
      returning id, name, title, email, phone, photo`,
@@ -159,18 +164,18 @@ export async function saveTeamMember(member: Partial<TeamMember>) {
 }
 
 export async function deleteTeamMember(id: number) {
-  await sql().query("delete from team_members where id = $1", [id]);
+  await query("delete from team_members where id = $1", [id]);
 }
 
 export async function listPrograms() {
-  return numberIds(await sql().query(
+  return numberIds(await query(
     "select id, title, description, image from programs order by id asc",
   )) as Program[];
 }
 
 export async function saveProgram(program: Partial<Program>) {
   if (program.id) {
-    const rows = await sql().query(
+    const rows = await query(
       `update programs
        set title = $2, description = $3, image = $4, updated_at = now()
        where id = $1
@@ -180,7 +185,7 @@ export async function saveProgram(program: Partial<Program>) {
     return rows[0] ? (numberId(rows[0]) as Program) : undefined;
   }
 
-  const rows = await sql().query(
+  const rows = await query(
     `insert into programs (title, description, image)
      values ($1, $2, $3)
      returning id, title, description, image`,
@@ -190,18 +195,18 @@ export async function saveProgram(program: Partial<Program>) {
 }
 
 export async function deleteProgram(id: number) {
-  await sql().query("delete from programs where id = $1", [id]);
+  await query("delete from programs where id = $1", [id]);
 }
 
 export async function listGallery() {
-  return numberIds(await sql().query(
+  return numberIds(await query(
     "select id, title, image, description from gallery_items order by id asc",
   )) as GalleryImage[];
 }
 
 export async function saveGalleryImage(image: Partial<GalleryImage>) {
   if (image.id) {
-    const rows = await sql().query(
+    const rows = await query(
       `update gallery_items
        set title = $2, image = $3, description = $4, updated_at = now()
        where id = $1
@@ -211,7 +216,7 @@ export async function saveGalleryImage(image: Partial<GalleryImage>) {
     return rows[0] ? (numberId(rows[0]) as GalleryImage) : undefined;
   }
 
-  const rows = await sql().query(
+  const rows = await query(
     `insert into gallery_items (title, image, description)
      values ($1, $2, $3)
      returning id, title, image, description`,
@@ -221,7 +226,7 @@ export async function saveGalleryImage(image: Partial<GalleryImage>) {
 }
 
 export async function deleteGalleryImage(id: number) {
-  await sql().query("delete from gallery_items where id = $1", [id]);
+  await query("delete from gallery_items where id = $1", [id]);
 }
 
 export async function listPressRoom(category?: string | null, limit?: number | null) {
@@ -230,7 +235,7 @@ export async function listPressRoom(category?: string | null, limit?: number | n
   if (category) params.push(category);
   const limitSql = limit ? `limit ${Math.max(1, Math.min(limit, 50))}` : "";
 
-  return numberIds(await sql().query(
+  return numberIds(await query(
     `select id, title, summary, category, image, created_at
      from press_room_items
      ${where}
@@ -242,7 +247,7 @@ export async function listPressRoom(category?: string | null, limit?: number | n
 
 export async function savePressRoomItem(item: Partial<PressRoomItem>) {
   if (item.id) {
-    const rows = await sql().query(
+    const rows = await query(
       `update press_room_items
        set title = $2, summary = $3, category = $4, image = $5, updated_at = now()
        where id = $1
@@ -252,7 +257,7 @@ export async function savePressRoomItem(item: Partial<PressRoomItem>) {
     return rows[0] ? (numberId(rows[0]) as PressRoomItem) : undefined;
   }
 
-  const rows = await sql().query(
+  const rows = await query(
     `insert into press_room_items (title, summary, category, image)
      values ($1, $2, $3, $4)
      returning id, title, summary, category, image, created_at`,
@@ -262,17 +267,17 @@ export async function savePressRoomItem(item: Partial<PressRoomItem>) {
 }
 
 export async function deletePressRoomItem(id: number) {
-  await sql().query("delete from press_room_items where id = $1", [id]);
+  await query("delete from press_room_items where id = $1", [id]);
 }
 
 export async function getSiteContent() {
-  const rows = await sql().query("select key, value from site_content");
+  const rows = await query("select key, value from site_content");
   return Object.fromEntries(rows.map((row) => [row.key, row.value])) as JsonRecord;
 }
 
 export async function updateSiteContent(updates: JsonRecord) {
   for (const [key, value] of Object.entries(updates)) {
-    await sql().query(
+    await query(
       `insert into site_content (key, value, updated_at)
        values ($1, $2::jsonb, now())
        on conflict (key) do update set value = excluded.value, updated_at = now()`,
@@ -283,7 +288,7 @@ export async function updateSiteContent(updates: JsonRecord) {
 }
 
 export async function saveContactMessage(message: JsonRecord) {
-  const rows = await sql().query(
+  const rows = await query(
     `insert into contact_messages (name, email, phone, subject, message)
      values ($1, $2, $3, $4, $5)
      returning id, created_at`,

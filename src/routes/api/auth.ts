@@ -19,17 +19,21 @@ export const Route = createFileRoute("/api/auth")({
         const validEnvLogin =
           envEmail && envPassword && email.toLowerCase() === envEmail.toLowerCase() && password === envPassword;
 
-        const admin = validEnvLogin ? { email } : await getAdminByEmail(email);
-        const validDatabaseLogin = admin && admin.password_hash === (await hashPassword(password));
+        const admin = validEnvLogin
+          ? { email, password_hash: "" }
+          : await getAdminByEmail(email);
+        const validDatabaseLogin =
+          !validEnvLogin && admin && admin.password_hash === (await hashPassword(password));
 
         if (!validEnvLogin && !validDatabaseLogin) {
           return jsonError("Email or password is incorrect.", 401);
         }
 
+        const adminEmail = admin?.email ?? email;
         return Response.json({
           success: true,
-          token: await createAdminToken(admin.email),
-          email: admin.email,
+          token: await createAdminToken(adminEmail),
+          email: adminEmail,
         });
       },
     },
