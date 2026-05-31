@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 
 export const Route = createFileRoute("/gallery")({
@@ -18,24 +18,30 @@ type GalleryImage = {
   id: number;
   title: string;
   image: string;
-  description?: string;
+  description?: string | null;
+  category?: string | null;
 };
 
-const DEFAULT_GALLERY: GalleryImage[] = [
-  { id: 1, title: "Community Event", image: "/assets/gallery/1.jpg", description: "A community gathering." }
-];
-
 function Gallery() {
-  const [photos, setPhotos] = useState<GalleryImage[]>(DEFAULT_GALLERY);
+  const [photos, setPhotos] = useState<GalleryImage[]>([]);
+  const [filter, setFilter] = useState<string>("All");
 
   useEffect(() => {
     fetch("/api/gallery")
       .then((response) => response.json())
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) setPhotos(data);
+        if (Array.isArray(data)) setPhotos(data);
       })
       .catch(() => {});
   }, []);
+
+  const categories = useMemo(() => {
+    const set = new Set<string>(["All"]);
+    photos.forEach((p) => set.add(p.category || "Event"));
+    return Array.from(set);
+  }, [photos]);
+
+  const visible = filter === "All" ? photos : photos.filter((p) => (p.category || "Event") === filter);
 
   return (
     <SiteLayout>
@@ -50,14 +56,54 @@ function Gallery() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {photos.map((p: any) => (
-            <figure key={p.id} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
-              <img src={p.image} alt={p.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform hover:scale-105" />
-              <figcaption className="px-4 py-3 text-sm text-muted-foreground">{p.description || p.title}</figcaption>
-            </figure>
+        <div className="mb-6 flex flex-wrap gap-2">
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setFilter(c)}
+              className={`rounded-full border px-4 py-1.5 text-sm transition ${
+                filter === c
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-card text-foreground hover:bg-muted"
+              }`}
+            >
+              {c}
+            </button>
           ))}
         </div>
+
+        {visible.length === 0 ? (
+          <p className="rounded-lg border border-dashed border-border p-10 text-center text-muted-foreground">
+            No photos yet. The admin can add image links from the dashboard.
+          </p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((p) => (
+              <figure
+                key={p.id}
+                className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]"
+              >
+                <img
+                  src={p.image}
+                  alt={p.title}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover transition-transform hover:scale-105"
+                />
+                <figcaption className="space-y-1 px-4 py-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-medium text-foreground">{p.title}</p>
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                      {p.category || "Event"}
+                    </span>
+                  </div>
+                  {p.description ? (
+                    <p className="text-sm text-muted-foreground">{p.description}</p>
+                  ) : null}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        )}
       </section>
     </SiteLayout>
   );
