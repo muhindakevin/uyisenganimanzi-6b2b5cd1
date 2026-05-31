@@ -23,6 +23,7 @@ export type GalleryImage = {
   title: string;
   image: string;
   description: string | null;
+  category: string | null;
 };
 
 export type PressRoomItem = {
@@ -57,7 +58,8 @@ export function sql() {
 }
 
 async function query<T = Record<string, any>>(text: string, params: unknown[] = []): Promise<T[]> {
-  const result = await query(text, params);
+  const client = sql() as unknown as { query: (text: string, params?: unknown[]) => Promise<T[]> };
+  const result = await client.query(text, params);
   return result as unknown as T[];
 }
 
@@ -200,7 +202,7 @@ export async function deleteProgram(id: number) {
 
 export async function listGallery() {
   return numberIds(await query(
-    "select id, title, image, description from gallery_items order by id asc",
+    "select id, title, image, description, category from gallery_items order by id asc",
   )) as GalleryImage[];
 }
 
@@ -208,19 +210,19 @@ export async function saveGalleryImage(image: Partial<GalleryImage>) {
   if (image.id) {
     const rows = await query(
       `update gallery_items
-       set title = $2, image = $3, description = $4, updated_at = now()
+       set title = $2, image = $3, description = $4, category = $5, updated_at = now()
        where id = $1
-       returning id, title, image, description`,
-      [image.id, image.title, image.image, image.description ?? null],
+       returning id, title, image, description, category`,
+      [image.id, image.title, image.image, image.description ?? null, image.category ?? "Event"],
     );
     return rows[0] ? (numberId(rows[0]) as GalleryImage) : undefined;
   }
 
   const rows = await query(
-    `insert into gallery_items (title, image, description)
-     values ($1, $2, $3)
-     returning id, title, image, description`,
-    [image.title, image.image, image.description ?? null],
+    `insert into gallery_items (title, image, description, category)
+     values ($1, $2, $3, $4)
+     returning id, title, image, description, category`,
+    [image.title, image.image, image.description ?? null, image.category ?? "Event"],
   );
   return numberId(rows[0]) as GalleryImage;
 }

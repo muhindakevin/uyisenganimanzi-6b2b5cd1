@@ -30,9 +30,11 @@ create table if not exists gallery_items (
   title text not null,
   image text not null,
   description text,
+  category text not null default 'Event',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+alter table gallery_items add column if not exists category text not null default 'Event';
 
 create table if not exists press_room_items (
   id bigint generated always as identity primary key,
