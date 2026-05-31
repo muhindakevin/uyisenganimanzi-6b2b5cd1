@@ -1,5 +1,6 @@
+-- Default admin: admin@gmail.com / Admin123 (SHA-256 of "Admin123")
 insert into admin_users (email, password_hash)
-values ('admin@uyisenganimanzi.org.rw', '75837f3cfd209cdf09f9ff4801fb70e0bd8ef99c9b275df5093fe5b0bfbf32e5')
+values ('admin@gmail.com', '9b8769a4a742959a2d0298c36fb70623f2dfacda8436237df08d8dfd5b37374c')
 on conflict (email) do update set password_hash = excluded.password_hash;
 
 insert into team_members (name, title, email, phone, photo)
