@@ -58,7 +58,8 @@ export function sql() {
 }
 
 async function query<T = Record<string, any>>(text: string, params: unknown[] = []): Promise<T[]> {
-  const result = await sql()(text, params);
+  const client = sql() as unknown as { query: (text: string, params?: unknown[]) => Promise<T[]> };
+  const result = await client.query(text, params);
   return result as unknown as T[];
 }
 
