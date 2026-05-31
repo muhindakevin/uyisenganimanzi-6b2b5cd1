@@ -128,11 +128,11 @@ export async function getAdminByEmail(email: string) {
   return rows[0] as { email: string; password_hash: string } | undefined;
 }
 
-function numberId<T extends { id: unknown }>(row: T) {
+function numberId<T extends Record<string, any>>(row: T) {
   return { ...row, id: Number(row.id) };
 }
 
-function numberIds<T extends { id: unknown }>(rows: T[]) {
+function numberIds<T extends Record<string, any>>(rows: T[]) {
   return rows.map(numberId);
 }
 
