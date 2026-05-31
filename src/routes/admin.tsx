@@ -537,31 +537,59 @@ function GalleryForm({
   saving: boolean;
   onSave: (i: GalleryImage) => void;
 }) {
-  const [form, setForm] = useState<GalleryImage>(image || { id: 0, title: "", image: "", description: "" });
+  const [form, setForm] = useState<GalleryImage>(
+    image || { id: 0, title: "", image: "", description: "", category: "Event" },
+  );
 
   useEffect(() => {
-    setForm(image || { id: 0, title: "", image: "", description: "" });
+    setForm(image || { id: 0, title: "", image: "", description: "", category: "Event" });
   }, [image]);
-
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    setForm({ ...form, image: await readFileAsDataUrl(file) });
-  }
 
   return (
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
-      <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
-      <TextareaField label="Description" value={form.description || ""} onChange={(description) => setForm({ ...form, description })} />
+      <Field
+        label="Title (what project or event was this for?)"
+        required
+        value={form.title}
+        onChange={(title) => setForm({ ...form, title })}
+      />
       <div>
-        <Label htmlFor="gallery-image">Image</Label>
-        <Input id="gallery-image" type="file" accept="image/*" required={!form.image} onChange={handleFileChange} />
-        {form.image ? <img src={form.image} alt="Gallery preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
+        <Label htmlFor="gallery-category">Classification</Label>
+        <select
+          id="gallery-category"
+          className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+          value={form.category || "Event"}
+          onChange={(event) => setForm({ ...form, category: event.target.value })}
+        >
+          <option value="Event">Event</option>
+          <option value="Project">Project</option>
+          <option value="Program">Program</option>
+          <option value="Community">Community</option>
+          <option value="Other">Other</option>
+        </select>
       </div>
+      <Field
+        label="Image link (URL)"
+        required
+        value={form.image}
+        onChange={(url) => setForm({ ...form, image: url })}
+      />
+      <p className="text-xs text-muted-foreground">
+        Paste a direct image URL (e.g. from Google Drive, Imgur, your social pages, or any hosted image).
+      </p>
+      {form.image ? (
+        <img src={form.image} alt="Gallery preview" className="mt-2 h-28 w-full rounded-md object-cover" />
+      ) : null}
+      <TextareaField
+        label="Short description (optional)"
+        value={form.description || ""}
+        onChange={(description) => setForm({ ...form, description })}
+      />
       <SubmitButton saving={saving} />
     </form>
   );
 }
+
 
 function PressRoomManager({
   pressRoom,
