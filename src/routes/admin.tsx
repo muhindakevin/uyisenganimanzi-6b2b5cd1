@@ -35,6 +35,7 @@ type GalleryImage = {
   title: string;
   image: string;
   description?: string | null;
+  category?: string | null;
 };
 
 type PressRoomItem = {
