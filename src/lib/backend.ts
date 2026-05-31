@@ -56,6 +56,11 @@ export function sql() {
   return sqlClient;
 }
 
+async function query<T = Record<string, any>>(text: string, params: unknown[] = []): Promise<T[]> {
+  const result = await sql().query(text, params);
+  return result as unknown as T[];
+}
+
 export function jsonError(message: string, status = 400) {
   return Response.json({ success: false, message }, { status });
 }
