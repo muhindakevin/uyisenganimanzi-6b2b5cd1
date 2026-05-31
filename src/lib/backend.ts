@@ -58,7 +58,7 @@ export function sql() {
 }
 
 async function query<T = Record<string, any>>(text: string, params: unknown[] = []): Promise<T[]> {
-  const result = await query(text, params);
+  const result = await sql()(text, params);
   return result as unknown as T[];
 }
 
