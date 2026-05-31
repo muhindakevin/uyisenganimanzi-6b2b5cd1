@@ -344,8 +344,8 @@ function AdminDashboard() {
             items={gallery}
             renderItem={(image) => (
               <>
-                <p className="font-semibold">{image.title}</p>
-                <p className="text-sm text-muted-foreground">{image.description}</p>
+                <p className="font-semibold">{image.title} <span className="ml-2 rounded bg-muted px-2 py-0.5 text-xs">{image.category || "Event"}</span></p>
+                <p className="text-sm text-muted-foreground truncate">{image.image}</p>
               </>
             )}
             formTitle={(image) => (image ? "Edit Gallery Image" : "Add Gallery Image")}
