@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import seedData from "@/data.json";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -37,6 +38,14 @@ export type PressRoomItem = {
 
 let sqlClient: ReturnType<typeof neon> | undefined;
 
+const fallbackData = seedData as unknown as {
+  team?: Array<Omit<TeamMember, "id"> & { id: number }>;
+  programs?: Array<Omit<Program, "id"> & { id: number }>;
+  gallery?: Array<Omit<GalleryImage, "id" | "category"> & { id: number; category?: string | null }>;
+  pressRoom?: Array<Omit<PressRoomItem, "id"> & { id: number }>;
+  content?: JsonRecord;
+};
+
 function getRuntimeEnv(name: string) {
   const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
   return process.env[name] || runtimeEnv?.[name];
@@ -48,6 +57,10 @@ function getDatabaseUrl() {
     throw new Error("DATABASE_URL is missing. Add your Neon connection string to .env or your hosting secrets.");
   }
   return databaseUrl;
+}
+
+function isMissingDatabaseError(error: unknown) {
+  return error instanceof Error && error.message.includes("DATABASE_URL is missing");
 }
 
 export function sql() {
@@ -139,9 +152,14 @@ function numberIds<T extends Record<string, any>>(rows: T[]) {
 }
 
 export async function listTeam() {
-  return numberIds(await query(
-    "select id, name, title, email, phone, photo from team_members order by id asc",
-  )) as TeamMember[];
+  try {
+    return numberIds(await query(
+      "select id, name, title, email, phone, photo from team_members order by id asc",
+    )) as TeamMember[];
+  } catch (error) {
+    if (!isMissingDatabaseError(error)) throw error;
+    return (fallbackData.team ?? []).map((member) => ({ ...member, id: Number(member.id) }));
+  }
 }
 
 export async function saveTeamMember(member: Partial<TeamMember>) {
@@ -170,9 +188,14 @@ export async function deleteTeamMember(id: number) {
 }
 
 export async function listPrograms() {
-  return numberIds(await query(
-    "select id, title, description, image from programs order by id asc",
-  )) as Program[];
+  try {
+    return numberIds(await query(
+      "select id, title, description, image from programs order by id asc",
+    )) as Program[];
+  } catch (error) {
+    if (!isMissingDatabaseError(error)) throw error;
+    return (fallbackData.programs ?? []).map((program) => ({ ...program, id: Number(program.id) }));
+  }
 }
 
 export async function saveProgram(program: Partial<Program>) {
@@ -201,9 +224,18 @@ export async function deleteProgram(id: number) {
 }
 
 export async function listGallery() {
-  return numberIds(await query(
-    "select id, title, image, description, category from gallery_items order by id asc",
-  )) as GalleryImage[];
+  try {
+    return numberIds(await query(
+      "select id, title, image, description, category from gallery_items order by id asc",
+    )) as GalleryImage[];
+  } catch (error) {
+    if (!isMissingDatabaseError(error)) throw error;
+    return (fallbackData.gallery ?? []).map((item) => ({
+      ...item,
+      id: Number(item.id),
+      category: item.category ?? "Event",
+    }));
+  }
 }
 
 export async function saveGalleryImage(image: Partial<GalleryImage>) {
@@ -237,14 +269,21 @@ export async function listPressRoom(category?: string | null, limit?: number | n
   if (category) params.push(category);
   const limitSql = limit ? `limit ${Math.max(1, Math.min(limit, 50))}` : "";
 
-  return numberIds(await query(
-    `select id, title, summary, category, image, created_at
-     from press_room_items
-     ${where}
-     order by created_at desc, id desc
-     ${limitSql}`,
-    params,
-  )) as PressRoomItem[];
+  try {
+    return numberIds(await query(
+      `select id, title, summary, category, image, created_at
+       from press_room_items
+       ${where}
+       order by created_at desc, id desc
+       ${limitSql}`,
+      params,
+    )) as PressRoomItem[];
+  } catch (error) {
+    if (!isMissingDatabaseError(error)) throw error;
+    const items = (fallbackData.pressRoom ?? []).filter((item) => !category || item.category === category);
+    const limited = limit ? items.slice(0, Math.max(1, Math.min(limit, 50))) : items;
+    return limited.map((item) => ({ ...item, id: Number(item.id) }));
+  }
 }
 
 export async function savePressRoomItem(item: Partial<PressRoomItem>) {
@@ -273,8 +312,13 @@ export async function deletePressRoomItem(id: number) {
 }
 
 export async function getSiteContent() {
-  const rows = await query("select key, value from site_content");
-  return Object.fromEntries(rows.map((row) => [row.key, row.value])) as JsonRecord;
+  try {
+    const rows = await query("select key, value from site_content");
+    return Object.fromEntries(rows.map((row) => [row.key, row.value])) as JsonRecord;
+  } catch (error) {
+    if (!isMissingDatabaseError(error)) throw error;
+    return (fallbackData.content ?? {}) as JsonRecord;
+  }
 }
 
 export async function updateSiteContent(updates: JsonRecord) {
