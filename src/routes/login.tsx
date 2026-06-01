@@ -18,8 +18,8 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('admin@uyisenganimanzi.org.rw')
-  const [password, setPassword] = useState('UnmAdmin123!')
+  const [email, setEmail] = useState('admin@gmail.com')
+  const [password, setPassword] = useState('Admin123')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
