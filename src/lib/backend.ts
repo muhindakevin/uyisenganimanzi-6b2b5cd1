@@ -38,11 +38,11 @@ export type PressRoomItem = {
 
 let sqlClient: ReturnType<typeof neon> | undefined;
 
-const fallbackData = seedData as {
-  team?: TeamMember[];
-  programs?: Program[];
-  gallery?: GalleryImage[];
-  pressRoom?: PressRoomItem[];
+const fallbackData = seedData as unknown as {
+  team?: Array<Omit<TeamMember, "id"> & { id: number }>;
+  programs?: Array<Omit<Program, "id"> & { id: number }>;
+  gallery?: Array<Omit<GalleryImage, "id" | "category"> & { id: number; category?: string | null }>;
+  pressRoom?: Array<Omit<PressRoomItem, "id"> & { id: number }>;
   content?: JsonRecord;
 };
 
