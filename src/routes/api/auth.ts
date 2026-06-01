@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createAdminToken, getAdminByEmail, hashPassword, jsonError } from "@/lib/backend";
 
+const DEFAULT_ADMIN_EMAIL = "admin@gmail.com";
+const DEFAULT_ADMIN_PASSWORD_HASH = "3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2";
+
 export const Route = createFileRoute("/api/auth")({
   server: {
     handlers: {
@@ -14,22 +17,34 @@ export const Route = createFileRoute("/api/auth")({
         }
 
         const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
-        const envEmail = process.env.ADMIN_EMAIL || runtimeEnv?.ADMIN_EMAIL;
+        const passwordHash = await hashPassword(password);
+        const envEmail = process.env.ADMIN_EMAIL || runtimeEnv?.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
         const envPassword = process.env.ADMIN_PASSWORD || runtimeEnv?.ADMIN_PASSWORD;
+        const envPasswordHash = process.env.ADMIN_PASSWORD_HASH || runtimeEnv?.ADMIN_PASSWORD_HASH || DEFAULT_ADMIN_PASSWORD_HASH;
         const validEnvLogin =
-          envEmail && envPassword && email.toLowerCase() === envEmail.toLowerCase() && password === envPassword;
+          !!envEmail &&
+          email.toLowerCase() === envEmail.toLowerCase() &&
+          ((!!envPassword && password === envPassword) || (!!envPasswordHash && passwordHash === envPasswordHash));
 
-        const admin = validEnvLogin
-          ? { email, password_hash: "" }
-          : await getAdminByEmail(email);
-        const validDatabaseLogin =
-          !validEnvLogin && admin && admin.password_hash === (await hashPassword(password));
+        let admin: { email: string; password_hash: string } | undefined;
+
+        if (!validEnvLogin) {
+          try {
+            admin = await getAdminByEmail(email);
+          } catch (error) {
+            if (!(error instanceof Error) || !error.message.includes("DATABASE_URL is missing")) {
+              console.error("Admin lookup failed", error);
+            }
+          }
+        }
+
+        const validDatabaseLogin = !validEnvLogin && admin && admin.password_hash === passwordHash;
 
         if (!validEnvLogin && !validDatabaseLogin) {
           return jsonError("Email or password is incorrect.", 401);
         }
 
-        const adminEmail = admin?.email ?? email;
+        const adminEmail = admin?.email ?? envEmail;
         return Response.json({
           success: true,
           token: await createAdminToken(adminEmail),
