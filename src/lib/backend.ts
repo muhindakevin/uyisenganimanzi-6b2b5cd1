@@ -25,6 +25,7 @@ export type GalleryImage = {
   image: string;
   description: string | null;
   category: string | null;
+  link: string | null;
 };
 
 export type PressRoomItem = {
@@ -226,7 +227,7 @@ export async function deleteProgram(id: number) {
 export async function listGallery() {
   try {
     return numberIds(await query(
-      "select id, title, image, description, category from gallery_items order by id asc",
+      "select id, title, image, description, category, link from gallery_items order by id asc",
     )) as GalleryImage[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
@@ -234,6 +235,7 @@ export async function listGallery() {
       ...item,
       id: Number(item.id),
       category: item.category ?? "Event",
+      link: (item as any).link ?? null,
     }));
   }
 }
@@ -242,19 +244,19 @@ export async function saveGalleryImage(image: Partial<GalleryImage>) {
   if (image.id) {
     const rows = await query(
       `update gallery_items
-       set title = $2, image = $3, description = $4, category = $5, updated_at = now()
+       set title = $2, image = $3, description = $4, category = $5, link = $6, updated_at = now()
        where id = $1
-       returning id, title, image, description, category`,
-      [image.id, image.title, image.image, image.description ?? null, image.category ?? "Event"],
+       returning id, title, image, description, category, link`,
+      [image.id, image.title, image.image, image.description ?? null, image.category ?? "Event", image.link ?? null],
     );
     return rows[0] ? (numberId(rows[0]) as GalleryImage) : undefined;
   }
 
   const rows = await query(
-    `insert into gallery_items (title, image, description, category)
-     values ($1, $2, $3, $4)
-     returning id, title, image, description, category`,
-    [image.title, image.image, image.description ?? null, image.category ?? "Event"],
+    `insert into gallery_items (title, image, description, category, link)
+     values ($1, $2, $3, $4, $5)
+     returning id, title, image, description, category, link`,
+    [image.title, image.image, image.description ?? null, image.category ?? "Event", image.link ?? null],
   );
   return numberId(rows[0]) as GalleryImage;
 }

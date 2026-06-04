@@ -36,6 +36,7 @@ type GalleryImage = {
   image: string;
   description?: string | null;
   category?: string | null;
+  link?: string | null;
 };
 
 type PressRoomItem = {
@@ -538,11 +539,11 @@ function GalleryForm({
   onSave: (i: GalleryImage) => void;
 }) {
   const [form, setForm] = useState<GalleryImage>(
-    image || { id: 0, title: "", image: "", description: "", category: "Event" },
+    image || { id: 0, title: "", image: "", description: "", category: "Event", link: "" },
   );
 
   useEffect(() => {
-    setForm(image || { id: 0, title: "", image: "", description: "", category: "Event" });
+    setForm(image || { id: 0, title: "", image: "", description: "", category: "Event", link: "" });
   }, [image]);
 
   return (
@@ -569,7 +570,7 @@ function GalleryForm({
         </select>
       </div>
       <Field
-        label="Image link (URL)"
+        label="Cover image link (URL)"
         required
         value={form.image}
         onChange={(url) => setForm({ ...form, image: url })}
@@ -580,6 +581,14 @@ function GalleryForm({
       {form.image ? (
         <img src={form.image} alt="Gallery preview" className="mt-2 h-28 w-full rounded-md object-cover" />
       ) : null}
+      <Field
+        label="Destination link (where clicking the cover goes)"
+        value={form.link || ""}
+        onChange={(link) => setForm({ ...form, link })}
+      />
+      <p className="text-xs text-muted-foreground">
+        Paste any URL — a full album, Facebook post, YouTube video, article, etc. Leave empty to disable the click.
+      </p>
       <TextareaField
         label="Short description (optional)"
         value={form.description || ""}
