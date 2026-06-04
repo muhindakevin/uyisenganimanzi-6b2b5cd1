@@ -546,6 +546,12 @@ function GalleryForm({
     setForm(image || { id: 0, title: "", image: "", description: "", category: "Event", link: "" });
   }, [image]);
 
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setForm({ ...form, image: await readFileAsDataUrl(file) });
+  };
+
   return (
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field
@@ -569,18 +575,16 @@ function GalleryForm({
           <option value="Other">Other</option>
         </select>
       </div>
-      <Field
-        label="Cover image link (URL)"
-        required
-        value={form.image}
-        onChange={(url) => setForm({ ...form, image: url })}
-      />
-      <p className="text-xs text-muted-foreground">
-        Paste a direct image URL (e.g. from Google Drive, Imgur, your social pages, or any hosted image).
-      </p>
-      {form.image ? (
-        <img src={form.image} alt="Gallery preview" className="mt-2 h-28 w-full rounded-md object-cover" />
-      ) : null}
+      <div>
+        <Label htmlFor="gallery-image">Cover image (upload from your device)</Label>
+        <Input id="gallery-image" type="file" accept="image/*" onChange={handleFileChange} />
+        <p className="mt-1 text-xs text-muted-foreground">
+          Pick a photo from your phone or computer. It becomes the cover that visitors click.
+        </p>
+        {form.image ? (
+          <img src={form.image} alt="Gallery preview" className="mt-3 h-28 w-full rounded-md object-cover" />
+        ) : null}
+      </div>
       <Field
         label="Destination link (where clicking the cover goes)"
         value={form.link || ""}
@@ -589,6 +593,7 @@ function GalleryForm({
       <p className="text-xs text-muted-foreground">
         Paste any URL — a full album, Facebook post, YouTube video, article, etc. Leave empty to disable the click.
       </p>
+
       <TextareaField
         label="Short description (optional)"
         value={form.description || ""}
