@@ -62,10 +62,14 @@ create table if not exists contact_messages (
 
 create index if not exists press_room_items_category_idx on press_room_items (category);
 create index if not exists press_room_items_created_at_idx on press_room_items (created_at desc);
-create unique index if not exists team_members_seed_unique_idx on team_members (name, title, coalesce(email, ''), coalesce(phone, ''), coalesce(photo, ''));
-create unique index if not exists programs_seed_unique_idx on programs (title, description, coalesce(image, ''));
-create unique index if not exists gallery_items_seed_unique_idx on gallery_items (title, image, coalesce(description, ''));
-create unique index if not exists press_room_items_seed_unique_idx on press_room_items (title, summary, category, coalesce(image, ''));
+drop index if exists team_members_seed_unique_idx;
+create unique index if not exists team_members_seed_unique_idx on team_members (name, title, coalesce(email, ''), coalesce(phone, ''), md5(coalesce(photo, '')));
+drop index if exists programs_seed_unique_idx;
+create unique index if not exists programs_seed_unique_idx on programs (title, md5(description), md5(coalesce(image, '')));
+drop index if exists gallery_items_seed_unique_idx;
+create unique index if not exists gallery_items_seed_unique_idx on gallery_items (title, md5(image), md5(coalesce(description, '')));
+drop index if exists press_room_items_seed_unique_idx;
+create unique index if not exists press_room_items_seed_unique_idx on press_room_items (title, md5(summary), category, md5(coalesce(image, '')));
 
 insert into admin_users (email, password_hash)
 values ('admin@uyisenganimanzi.org.rw', '75837f3cfd209cdf09f9ff4801fb70e0bd8ef99c9b275df5093fe5b0bfbf32e5')
