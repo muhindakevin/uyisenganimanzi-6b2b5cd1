@@ -54,6 +54,21 @@ type ProgramsPageContent = {
   description2: string;
 };
 
+type HeroContent = {
+  badge: string;
+  title: string;
+  description: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryLink: string;
+  ctaSecondaryLabel: string;
+  ctaSecondaryLink: string;
+  slides: string[];
+};
+
+type MomoAccount = { name: string; number: string };
+type BankAccount = { bank: string; accountName: string; accountNumber: string; swift?: string };
+type DonationContent = { intro: string; momo: MomoAccount[]; banks: BankAccount[] };
+
 type Content = {
   mission: string;
   vision: string;
@@ -73,6 +88,20 @@ const DEFAULT_PROGRAMS_PAGE: ProgramsPageContent = {
   description2:
     "Through our strategic initiatives, we empower vulnerable populations and foster sustainable development across Rwanda.",
 };
+
+const DEFAULT_HERO: HeroContent = {
+  badge: "Non-Governmental Organization · Kigali, Rwanda",
+  title: "Hope, healing and opportunity for every young Rwandan.",
+  description:
+    "Uyisenga Ni Imanzi walks alongside children, youth and families—providing psychosocial care, education and the tools to build resilient livelihoods.",
+  ctaPrimaryLabel: "Support our work",
+  ctaPrimaryLink: "/get-involved",
+  ctaSecondaryLabel: "Our programs",
+  ctaSecondaryLink: "/programs",
+  slides: ["", "", ""],
+};
+
+const DEFAULT_DONATION: DonationContent = { intro: "", momo: [], banks: [] };
 
 const DEFAULT_CONTENT: Content = {
   mission: "Our mission is to support Rwandan children, youth, and families.",
