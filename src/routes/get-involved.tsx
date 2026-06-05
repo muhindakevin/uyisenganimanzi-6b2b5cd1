@@ -61,12 +61,20 @@ const categories = [
 
 function PressRoom() {
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
+  const [donation, setDonation] = useState<DonationContent>({ momo: [], banks: [] });
 
   useEffect(() => {
     fetch('/api/press-room')
       .then((res) => res.json())
       .then((data) => setPressRoom(data))
       .catch(() => setPressRoom([]));
+    fetch('/api/content')
+      .then((res) => res.json())
+      .then((data) => {
+        const d = data?.donation as Partial<DonationContent> | undefined;
+        if (d) setDonation({ intro: d.intro, momo: d.momo || [], banks: d.banks || [] });
+      })
+      .catch(() => {});
   }, []);
 
   const newsItems = pressRoom.filter(item => item.category === 'News').slice(0, 3);
