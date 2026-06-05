@@ -888,3 +888,106 @@ function TextareaField({
     </div>
   );
 }
+
+function HeroForm({ hero, saving, onSave }: { hero: HeroContent; saving: boolean; onSave: (h: HeroContent) => void }) {
+  const [form, setForm] = useState<HeroContent>(hero);
+  useEffect(() => { setForm(hero); }, [hero]);
+
+  async function setSlide(index: number, file?: File) {
+    if (!file) return;
+    const dataUrl = await readFileAsDataUrl(file);
+    const slides = [...form.slides];
+    slides[index] = dataUrl;
+    setForm({ ...form, slides });
+  }
+
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <Field label="Badge text" value={form.badge} onChange={(badge) => setForm({ ...form, badge })} />
+      <TextareaField label="Title" value={form.title} onChange={(title) => setForm({ ...form, title })} />
+      <TextareaField label="Description" value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Primary button label" value={form.ctaPrimaryLabel} onChange={(v) => setForm({ ...form, ctaPrimaryLabel: v })} />
+        <Field label="Primary button link" value={form.ctaPrimaryLink} onChange={(v) => setForm({ ...form, ctaPrimaryLink: v })} />
+        <Field label="Secondary button label" value={form.ctaSecondaryLabel} onChange={(v) => setForm({ ...form, ctaSecondaryLabel: v })} />
+        <Field label="Secondary button link" value={form.ctaSecondaryLink} onChange={(v) => setForm({ ...form, ctaSecondaryLink: v })} />
+      </div>
+      <div className="space-y-3">
+        <Label>Hero slideshow images (3 — auto scroll)</Label>
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="rounded-md border border-border p-3">
+            <p className="text-sm font-medium">Slide {i + 1}</p>
+            <Input type="file" accept="image/*" onChange={(e) => setSlide(i, e.target.files?.[0])} className="mt-2" />
+            {form.slides[i] ? (
+              <img src={form.slides[i]} alt={`Slide ${i + 1}`} className="mt-2 h-28 w-full rounded-md object-cover" />
+            ) : null}
+          </div>
+        ))}
+      </div>
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
+function DonationForm({ donation, saving, onSave }: { donation: DonationContent; saving: boolean; onSave: (d: DonationContent) => void }) {
+  const [form, setForm] = useState<DonationContent>(donation);
+  useEffect(() => { setForm(donation); }, [donation]);
+
+  const updateMomo = (i: number, key: keyof MomoAccount, v: string) => {
+    const momo = form.momo.map((m, idx) => (idx === i ? { ...m, [key]: v } : m));
+    setForm({ ...form, momo });
+  };
+  const updateBank = (i: number, key: keyof BankAccount, v: string) => {
+    const banks = form.banks.map((b, idx) => (idx === i ? { ...b, [key]: v } : b));
+    setForm({ ...form, banks });
+  };
+
+  return (
+    <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <TextareaField label="Intro text (optional)" value={form.intro} onChange={(intro) => setForm({ ...form, intro })} />
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Mobile Money (MoMo)</h3>
+          <Button type="button" size="sm" variant="outline" onClick={() => setForm({ ...form, momo: [...form.momo, { name: "", number: "" }] })}>
+            <Plus className="mr-1 h-4 w-4" /> Add MoMo
+          </Button>
+        </div>
+        {form.momo.map((m, i) => (
+          <div key={i} className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-[1fr_1fr_auto]">
+            <Input placeholder="Account holder / label" value={m.name} onChange={(e) => updateMomo(i, "name", e.target.value)} />
+            <Input placeholder="MoMo number" value={m.number} onChange={(e) => updateMomo(i, "number", e.target.value)} />
+            <Button type="button" variant="destructive" size="sm" onClick={() => setForm({ ...form, momo: form.momo.filter((_, idx) => idx !== i) })}>
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold">Bank Accounts</h3>
+          <Button type="button" size="sm" variant="outline" onClick={() => setForm({ ...form, banks: [...form.banks, { bank: "", accountName: "", accountNumber: "", swift: "" }] })}>
+            <Plus className="mr-1 h-4 w-4" /> Add Bank
+          </Button>
+        </div>
+        {form.banks.map((b, i) => (
+          <div key={i} className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-2">
+            <Input placeholder="Bank name" value={b.bank} onChange={(e) => updateBank(i, "bank", e.target.value)} />
+            <Input placeholder="Account name" value={b.accountName} onChange={(e) => updateBank(i, "accountName", e.target.value)} />
+            <Input placeholder="Account number" value={b.accountNumber} onChange={(e) => updateBank(i, "accountNumber", e.target.value)} />
+            <Input placeholder="SWIFT (optional)" value={b.swift || ""} onChange={(e) => updateBank(i, "swift", e.target.value)} />
+            <div className="sm:col-span-2 flex justify-end">
+              <Button type="button" variant="destructive" size="sm" onClick={() => setForm({ ...form, banks: form.banks.filter((_, idx) => idx !== i) })}>
+                <Trash2 className="mr-1 h-4 w-4" /> Remove
+              </Button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
