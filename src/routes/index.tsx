@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, HeartHandshake, GraduationCap, Sprout } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { Button } from "@/components/ui/button";
@@ -19,43 +20,103 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+type HeroContent = {
+  badge: string;
+  title: string;
+  description: string;
+  ctaPrimaryLabel: string;
+  ctaPrimaryLink: string;
+  ctaSecondaryLabel: string;
+  ctaSecondaryLink: string;
+  slides: string[];
+};
+
+const DEFAULT_HERO: HeroContent = {
+  badge: "Non-Governmental Organization · Kigali, Rwanda",
+  title: "Hope, healing and opportunity for every young Rwandan.",
+  description:
+    "Uyisenga Ni Imanzi walks alongside children, youth and families—providing psychosocial care, education and the tools to build resilient livelihoods.",
+  ctaPrimaryLabel: "Support our work",
+  ctaPrimaryLink: "/get-involved",
+  ctaSecondaryLabel: "Our programs",
+  ctaSecondaryLink: "/programs",
+  slides: [heroImg, programsImg, aboutImg],
+};
+
 function Index() {
+  const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((r) => r.json())
+      .then((data) => {
+        const h = data?.hero as Partial<HeroContent> | undefined;
+        if (h) {
+          const slides = Array.isArray(h.slides) && h.slides.filter(Boolean).length > 0
+            ? (h.slides.filter(Boolean) as string[])
+            : DEFAULT_HERO.slides;
+          setHero({ ...DEFAULT_HERO, ...h, slides });
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (hero.slides.length < 2) return;
+    const id = setInterval(() => setActive((i) => (i + 1) % hero.slides.length), 5000);
+    return () => clearInterval(id);
+  }, [hero.slides.length]);
+
   return (
     <SiteLayout>
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 -z-10 bg-[image:var(--gradient-soft)]" />
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-24 md:items-center">
-          <div>
-            <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground">
-              Non-Governmental Organization · Kigali, Rwanda
-            </span>
-            <h1 className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl">
-              Hope, healing and opportunity for every young Rwandan.
-            </h1>
-            <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
-              Uyisenga Ni Imanzi walks alongside children, youth and families—
-              providing psychosocial care, education and the tools to build resilient livelihoods.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Button asChild size="lg">
-                <Link to="/get-involved">Support our work <ArrowRight className="ml-1 h-4 w-4" /></Link>
-              </Button>
-              <Button asChild size="lg" variant="outline">
-                <Link to="/programs">Our programs</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="relative">
-            <img
-              src={heroImg}
-              alt="Young people smiling together at a UNM community gathering in Kigali"
-              width={1920}
-              height={1280}
-              className="rounded-[2rem] object-cover shadow-[var(--shadow-elegant)] aspect-[4/3] w-full"
-            />
+      {/* Full-bleed hero slideshow */}
+      <section className="relative h-[78vh] min-h-[520px] w-full overflow-hidden">
+        {hero.slides.map((src, i) => (
+          <img
+            key={i}
+            src={src}
+            alt=""
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-in-out ${
+              i === active ? "opacity-100" : "opacity-0"
+            }`}
+            loading={i === 0 ? "eager" : "lazy"}
+          />
+        ))}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
+        <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-center px-4 text-center text-white sm:px-6">
+          <span className="inline-flex items-center rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
+            {hero.badge}
+          </span>
+          <h1 className="mt-5 text-3xl font-semibold tracking-tight sm:text-5xl md:text-6xl drop-shadow">
+            {hero.title}
+          </h1>
+          <p className="mt-5 max-w-2xl text-base text-white/90 sm:text-lg">
+            {hero.description}
+          </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg">
+              <Link to={hero.ctaPrimaryLink}>
+                {hero.ctaPrimaryLabel} <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-white/60 bg-transparent text-white hover:bg-white/15 hover:text-white">
+              <Link to={hero.ctaSecondaryLink}>{hero.ctaSecondaryLabel}</Link>
+            </Button>
           </div>
         </div>
+        {hero.slides.length > 1 && (
+          <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+            {hero.slides.map((_, i) => (
+              <button
+                key={i}
+                aria-label={`Go to slide ${i + 1}`}
+                onClick={() => setActive(i)}
+                className={`h-2 rounded-full transition-all ${i === active ? "w-8 bg-white" : "w-2 bg-white/50"}`}
+              />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Stats */}
@@ -89,25 +150,13 @@ function Index() {
 
         <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {[
-            {
-              title: "Child Protection",
-              description: "Safe spaces, child-centered support and protection services for vulnerable children.",
-              image: aboutImg,
-            },
-            {
-              title: "Economic Empowerment",
-              description: "Livelihood training, savings groups and income support that help families thrive.",
-              image: programsImg,
-            },
-            {
-              title: "Mental Health",
-              description: "Psychosocial wellbeing, trauma-informed care and healing circles for youth and families.",
-              image: heroImg,
-            },
+            { title: "Child Protection", description: "Safe spaces, child-centered support and protection services for vulnerable children.", image: aboutImg },
+            { title: "Economic Empowerment", description: "Livelihood training, savings groups and income support that help families thrive.", image: programsImg },
+            { title: "Mental Health", description: "Psychosocial wellbeing, trauma-informed care and healing circles for youth and families.", image: heroImg },
           ].map((program) => (
             <article key={program.title} className="group overflow-hidden rounded-[2rem] border border-border bg-white shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
               <div className="relative h-64 overflow-hidden">
-                <img src={program.image} alt={program.title} className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                <img src={program.image} alt={program.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
               </div>
               <div className="p-6">
                 <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Program</p>
@@ -121,37 +170,6 @@ function Index() {
               </div>
             </article>
           ))}
-        </div>
-      </section>
-
-      {/* Story strip */}
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="grid items-center gap-10 rounded-3xl border border-border bg-card p-6 sm:p-10 md:grid-cols-2">
-          <img
-            src={programsImg}
-            alt="UNM youth in a community workshop"
-            width={1600}
-            height={1066}
-            loading="lazy"
-            className="rounded-2xl object-cover aspect-[4/3] w-full"
-          />
-          <div>
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground">
-              A community-led approach since day one.
-            </h2>
-            <p className="mt-3 text-muted-foreground">
-              From our home in Kigali, our teams co-design programs with the young people
-              and families they serve—creating safe spaces where healing meets opportunity.
-            </p>
-            <div className="mt-6 flex gap-3">
-              <Button asChild>
-                <Link to="/about">Read our story</Link>
-              </Button>
-              <Button asChild variant="ghost">
-                <Link to="/contact">Visit us</Link>
-              </Button>
-            </div>
-          </div>
         </div>
       </section>
 
