@@ -25,6 +25,10 @@ type PressRoomItem = {
   image?: string;
 };
 
+type MomoAccount = { name: string; number: string };
+type BankAccount = { bank: string; accountName: string; accountNumber: string; swift?: string };
+type DonationContent = { intro?: string; momo: MomoAccount[]; banks: BankAccount[] };
+
 const ways = [
   { Icon: Heart, t: "Donate", d: "Your gift funds counseling sessions, school fees and starter kits for families.", cta: "Make a gift" },
   { Icon: Users, t: "Volunteer", d: "Share your skills—mentoring, training, communications—remotely or in Kigali.", cta: "Join the team" },
