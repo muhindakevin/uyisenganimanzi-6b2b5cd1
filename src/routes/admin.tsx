@@ -259,6 +259,22 @@ function AdminDashboard() {
         body: JSON.stringify(updates),
       });
       setProgramsPage((data.content.programsPage as ProgramsPageContent) || programsPage);
+      if (data.content.hero) {
+        const h = data.content.hero as Partial<HeroContent>;
+        setHero({
+          ...DEFAULT_HERO,
+          ...h,
+          slides: Array.isArray(h.slides) ? [...h.slides, "", "", ""].slice(0, 3) : hero.slides,
+        });
+      }
+      if (data.content.donation) {
+        const d = data.content.donation as Partial<DonationContent>;
+        setDonation({
+          intro: d.intro || "",
+          momo: Array.isArray(d.momo) ? d.momo : [],
+          banks: Array.isArray(d.banks) ? d.banks : [],
+        });
+      }
       setContent({
         ...content,
         ...data.content,
