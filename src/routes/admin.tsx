@@ -324,8 +324,10 @@ function AdminDashboard() {
 
       {error ? <p className="mb-6 rounded-lg border border-destructive p-4 text-destructive">{error}</p> : null}
 
-      <Tabs defaultValue="team" className="w-full">
-        <TabsList className="grid w-full grid-cols-6 gap-2">
+      <Tabs defaultValue="hero" className="w-full">
+        <TabsList className="grid w-full grid-cols-4 gap-2 md:grid-cols-8">
+          <TabsTrigger value="hero">Hero</TabsTrigger>
+          <TabsTrigger value="donation">Donate</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
           <TabsTrigger value="prog-page">Programs Page</TabsTrigger>
@@ -333,6 +335,25 @@ function AdminDashboard() {
           <TabsTrigger value="press">Press Room</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="hero">
+          <Card>
+            <CardHeader><CardTitle>Home Hero Section</CardTitle></CardHeader>
+            <CardContent>
+              <HeroForm hero={hero} saving={saving} onSave={(value) => saveContent({ hero: value })} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="donation">
+          <Card>
+            <CardHeader><CardTitle>Donation Information</CardTitle></CardHeader>
+            <CardContent>
+              <DonationForm donation={donation} saving={saving} onSave={(value) => saveContent({ donation: value })} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
 
         <TabsContent value="team">
           <ManagedList
