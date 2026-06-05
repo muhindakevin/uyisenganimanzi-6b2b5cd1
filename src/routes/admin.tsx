@@ -141,6 +141,8 @@ function AdminDashboard() {
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
+  const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
+  const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
   const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -165,6 +167,18 @@ function AdminDashboard() {
       setGallery(galleryRows);
       setPressRoom(pressRows);
       setProgramsPage((siteContent.programsPage as ProgramsPageContent) || DEFAULT_PROGRAMS_PAGE);
+      const heroIn = (siteContent.hero as Partial<HeroContent>) || {};
+      setHero({
+        ...DEFAULT_HERO,
+        ...heroIn,
+        slides: Array.isArray(heroIn.slides) ? [...heroIn.slides, "", "", ""].slice(0, 3) : DEFAULT_HERO.slides,
+      });
+      const donIn = (siteContent.donation as Partial<DonationContent>) || {};
+      setDonation({
+        intro: donIn.intro || "",
+        momo: Array.isArray(donIn.momo) ? donIn.momo : [],
+        banks: Array.isArray(donIn.banks) ? donIn.banks : [],
+      });
       setContent({
         ...DEFAULT_CONTENT,
         ...siteContent,
