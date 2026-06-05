@@ -49,9 +49,9 @@ function OurTeam() {
             key={m.id}
             className="group overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1"
           >
-            <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
+            <div className="relative aspect-[3/4] w-full overflow-hidden bg-secondary">
               {m.photo ? (
-                <img src={m.photo} alt={m.name} className="h-full w-full object-cover" loading="lazy" />
+                <img src={m.photo} alt={m.name} className="h-full w-full object-cover object-top" loading="lazy" />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary/10 to-primary/30">
                   <User className="h-16 w-16 text-primary/60" />
