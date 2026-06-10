@@ -172,57 +172,6 @@ function PressRoom() {
         </div>
       </section>
 
-      <section id="donate" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-10">
-          <div className="flex items-center gap-3">
-            <Heart className="h-6 w-6 text-primary" />
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground">Donate to UNM</h2>
-          </div>
-          {donation.intro ? (
-            <p className="mt-3 max-w-3xl text-muted-foreground">{donation.intro}</p>
-          ) : (
-            <p className="mt-3 max-w-3xl text-muted-foreground">
-              Your gift directly funds counseling, school fees, and starter kits for the families we serve. Use Mobile Money or a bank transfer below.
-            </p>
-          )}
-
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-border bg-background p-6">
-              <h3 className="text-lg font-semibold text-foreground">Mobile Money (MoMo)</h3>
-              {donation.momo.length === 0 ? (
-                <p className="mt-3 text-sm text-muted-foreground">MoMo details will appear here soon.</p>
-              ) : (
-                <ul className="mt-4 space-y-3">
-                  {donation.momo.map((m, i) => (
-                    <li key={i} className="flex flex-col rounded-lg bg-secondary px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="font-medium text-foreground">{m.name}</span>
-                      <span className="font-mono text-sm text-primary">{m.number}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="rounded-2xl border border-border bg-background p-6">
-              <h3 className="text-lg font-semibold text-foreground">Bank Accounts</h3>
-              {donation.banks.length === 0 ? (
-                <p className="mt-3 text-sm text-muted-foreground">Bank account details will appear here soon.</p>
-              ) : (
-                <ul className="mt-4 space-y-4">
-                  {donation.banks.map((b, i) => (
-                    <li key={i} className="rounded-lg bg-secondary px-4 py-3 text-sm">
-                      <p className="font-semibold text-foreground">{b.bank}</p>
-                      <p className="mt-1 text-muted-foreground">Account name: <span className="text-foreground">{b.accountName}</span></p>
-                      <p className="text-muted-foreground">Account #: <span className="font-mono text-foreground">{b.accountNumber}</span></p>
-                      {b.swift ? <p className="text-muted-foreground">SWIFT: <span className="font-mono text-foreground">{b.swift}</span></p> : null}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
     </SiteLayout>
   );
 }
