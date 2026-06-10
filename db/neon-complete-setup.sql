@@ -114,3 +114,8 @@ values
   ('contact', '{"email":"info@uyisenganimanzi.org.rw","phone":"+250 788 729 994","address":"Kacyiru, Kigali-Rwanda"}'::jsonb),
   ('programsPage', '{"label":"Our Programs","heading":"Uyisenga Ni Imanzi''s Programs","description1":"Since its establishment, Uyisenga Ni Imanzi has implemented various programs to support Rwandan children, youth, and families. Our work focuses on psychosocial support, education, livelihoods and community resilience.","description2":"Through our strategic initiatives, we empower vulnerable populations and foster sustainable development across Rwanda. We prioritize holistic support, community engagement, and evidence-based practices."}'::jsonb)
 on conflict (key) do update set value = excluded.value, updated_at = now();
+
+insert into site_content (key, value)
+values
+  ('stats', '[{"value":"20+","label":"Years of service"},{"value":"10k+","label":"Lives reached"},{"value":"30+","label":"Community partners"},{"value":"5","label":"Districts active"}]'::jsonb)
+on conflict (key) do nothing;
