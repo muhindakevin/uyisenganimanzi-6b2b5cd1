@@ -27,6 +27,7 @@ type Program = {
   id: number;
   title: string;
   description: string;
+  long_description?: string | null;
   image?: string | null;
 };
 
@@ -43,8 +44,22 @@ type PressRoomItem = {
   id: number;
   title: string;
   summary: string;
+  description?: string | null;
   category: "News" | "Publications" | "Jobs";
   image?: string | null;
+  document?: string | null;
+  document_name?: string | null;
+  link?: string | null;
+};
+
+type ContactMessage = {
+  id: number;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  subject?: string | null;
+  message?: string | null;
+  created_at?: string;
 };
 
 type ProgramsPageContent = {
@@ -53,6 +68,8 @@ type ProgramsPageContent = {
   description1: string;
   description2: string;
 };
+
+type HeroStat = { value: string; label: string };
 
 type HeroContent = {
   badge: string;
