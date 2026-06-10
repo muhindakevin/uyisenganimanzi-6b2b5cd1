@@ -361,14 +361,16 @@ function AdminDashboard() {
       {error ? <p className="mb-6 rounded-lg border border-destructive p-4 text-destructive">{error}</p> : null}
 
       <Tabs defaultValue="hero" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 gap-2 md:grid-cols-8">
+        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-10">
           <TabsTrigger value="hero">Hero</TabsTrigger>
+          <TabsTrigger value="stats">Stats</TabsTrigger>
           <TabsTrigger value="donation">Donate</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
           <TabsTrigger value="prog-page">Programs Page</TabsTrigger>
           <TabsTrigger value="gallery">Gallery</TabsTrigger>
           <TabsTrigger value="press">Press Room</TabsTrigger>
+          <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
         </TabsList>
 
@@ -381,14 +383,24 @@ function AdminDashboard() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="stats">
+          <Card>
+            <CardHeader><CardTitle>Home Page Stats (Numbers)</CardTitle></CardHeader>
+            <CardContent>
+              <StatsForm stats={stats} saving={saving} onSave={(value) => { saveContent({ stats: value }); setStats(value); }} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="donation">
           <Card>
-            <CardHeader><CardTitle>Donation Information</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Donation Information (Mobile Money & Bank Accounts)</CardTitle></CardHeader>
             <CardContent>
               <DonationForm donation={donation} saving={saving} onSave={(value) => saveContent({ donation: value })} />
             </CardContent>
           </Card>
         </TabsContent>
+
 
 
         <TabsContent value="team">
