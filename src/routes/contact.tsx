@@ -161,7 +161,7 @@ function Contact() {
               <div className="mt-8 grid gap-5 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full name</Label>
-                  <Input id="name" placeholder="Jane Doe" required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} className="h-11" />
+                  <Input id="name" placeholder="Your full name" required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} className="h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
