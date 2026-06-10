@@ -65,15 +65,15 @@ function PressRoom() {
 
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
         <div className="grid gap-5 md:grid-cols-3">
-          {ways.map(({ Icon, t, d, cta }) => (
+          {ways.map(({ Icon, t, d, cta, to }) => (
             <div key={t} className="flex flex-col rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-card)]">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-secondary text-primary">
+              <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary">
                 <Icon className="h-5 w-5" />
               </div>
               <h2 className="mt-5 text-xl font-semibold text-foreground">{t}</h2>
               <p className="mt-2 flex-1 text-muted-foreground">{d}</p>
               <Button asChild className="mt-5 self-start">
-                <a href="/contact">{cta}</a>
+                <Link to={to}>{cta}</Link>
               </Button>
             </div>
           ))}
