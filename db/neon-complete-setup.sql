@@ -60,16 +60,18 @@ create table if not exists contact_messages (
   created_at timestamptz not null default now()
 );
 
+-- Idempotent column additions (safe to re-run)
+alter table press_room_items add column if not exists document text;
+alter table press_room_items add column if not exists document_name text;
+alter table press_room_items add column if not exists description text;
+alter table press_room_items add column if not exists link text;
+alter table programs add column if not exists long_description text;
+alter table gallery_items add column if not exists category text;
+alter table gallery_items add column if not exists link text;
+
 create index if not exists press_room_items_category_idx on press_room_items (category);
 create index if not exists press_room_items_created_at_idx on press_room_items (created_at desc);
-drop index if exists team_members_seed_unique_idx;
-create unique index if not exists team_members_seed_unique_idx on team_members (name, title, coalesce(email, ''), coalesce(phone, ''), md5(coalesce(photo, '')));
-drop index if exists programs_seed_unique_idx;
-create unique index if not exists programs_seed_unique_idx on programs (title, md5(description), md5(coalesce(image, '')));
-drop index if exists gallery_items_seed_unique_idx;
-create unique index if not exists gallery_items_seed_unique_idx on gallery_items (title, md5(image), md5(coalesce(description, '')));
-drop index if exists press_room_items_seed_unique_idx;
-create unique index if not exists press_room_items_seed_unique_idx on press_room_items (title, md5(summary), category, md5(coalesce(image, '')));
+create index if not exists contact_messages_created_at_idx on contact_messages (created_at desc);
 
 insert into admin_users (email, password_hash)
 values ('admin@uyisenganimanzi.org.rw', '75837f3cfd209cdf09f9ff4801fb70e0bd8ef99c9b275df5093fe5b0bfbf32e5')
