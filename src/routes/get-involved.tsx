@@ -25,56 +25,26 @@ type PressRoomItem = {
   image?: string;
 };
 
-type MomoAccount = { name: string; number: string };
-type BankAccount = { bank: string; accountName: string; accountNumber: string; swift?: string };
-type DonationContent = { intro?: string; momo: MomoAccount[]; banks: BankAccount[] };
-
 const ways = [
-  { Icon: Heart, t: "Donate", d: "Your gift funds counseling sessions, school fees and starter kits for families.", cta: "Make a gift" },
-  { Icon: Users, t: "Volunteer", d: "Share your skills—mentoring, training, communications—remotely or in Kigali.", cta: "Join the team" },
-  { Icon: Handshake, t: "Partner", d: "Schools, companies and foundations: let's design impact together.", cta: "Start a conversation" },
+  { Icon: Heart, t: "Donate", d: "Your gift funds counseling sessions, school fees and starter kits for families.", cta: "Make a gift", to: "/donate" as const },
+  { Icon: Users, t: "Volunteer", d: "Share your skills—mentoring, training, communications—remotely or in Kigali.", cta: "Join the team", to: "/contact" as const },
+  { Icon: Handshake, t: "Partner", d: "Schools, companies and foundations: let's design impact together.", cta: "Start a conversation", to: "/contact" as const },
 ];
 
 const categories = [
-  {
-    Icon: Newspaper,
-    title: "News Stories",
-    description: "Latest updates and stories from our work",
-    link: "/press-room/news",
-    color: "text-blue-600"
-  },
-  {
-    Icon: FileText,
-    title: "Publications & Reports",
-    description: "Research, reports, and documentation",
-    link: "/press-room/publications",
-    color: "text-green-600"
-  },
-  {
-    Icon: Briefcase,
-    title: "Jobs and Tenders",
-    description: "Career opportunities and tenders",
-    link: "/press-room/jobs",
-    color: "text-purple-600"
-  }
+  { Icon: Newspaper, title: "News Stories", description: "Latest updates and stories from our work", link: "/press-room/news" as const },
+  { Icon: FileText, title: "Publications & Reports", description: "Research, reports, and documentation", link: "/press-room/publications" as const },
+  { Icon: Briefcase, title: "Jobs and Tenders", description: "Career opportunities and tenders", link: "/press-room/jobs" as const },
 ];
 
 function PressRoom() {
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
-  const [donation, setDonation] = useState<DonationContent>({ momo: [], banks: [] });
 
   useEffect(() => {
     fetch('/api/press-room')
       .then((res) => res.json())
       .then((data) => setPressRoom(data))
       .catch(() => setPressRoom([]));
-    fetch('/api/content')
-      .then((res) => res.json())
-      .then((data) => {
-        const d = data?.donation as Partial<DonationContent> | undefined;
-        if (d) setDonation({ intro: d.intro, momo: d.momo || [], banks: d.banks || [] });
-      })
-      .catch(() => {});
   }, []);
 
   const newsItems = pressRoom.filter(item => item.category === 'News').slice(0, 3);
