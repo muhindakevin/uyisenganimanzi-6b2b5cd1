@@ -363,3 +363,14 @@ export async function saveContactMessage(message: JsonRecord) {
   );
   return numberId(rows[0]) as { id: number; created_at: string };
 }
+
+export async function listContactMessages() {
+  const rows = await query(
+    "select id, name, email, phone, subject, message, created_at from contact_messages order by created_at desc limit 200",
+  );
+  return numberIds(rows);
+}
+
+export async function deleteContactMessage(id: number) {
+  await query("delete from contact_messages where id = $1", [id]);
+}
