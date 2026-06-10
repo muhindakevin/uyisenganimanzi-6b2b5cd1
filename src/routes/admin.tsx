@@ -157,6 +157,8 @@ function AdminDashboard() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [stats, setStats] = useState<HeroStat[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
@@ -171,18 +173,20 @@ function AdminDashboard() {
     setError("");
 
     try {
-      const [teamRows, programRows, galleryRows, pressRows, siteContent] = await Promise.all([
+      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows] = await Promise.all([
         apiRequest<Member[]>("/api/team"),
         apiRequest<Program[]>("/api/programs"),
         apiRequest<GalleryImage[]>("/api/gallery"),
         apiRequest<PressRoomItem[]>("/api/press-room"),
         apiRequest<Record<string, unknown>>("/api/content"),
+        apiRequest<ContactMessage[]>("/api/contact-messages").catch(() => []),
       ]);
 
       setTeam(teamRows);
       setPrograms(programRows);
       setGallery(galleryRows);
       setPressRoom(pressRows);
+      setMessages(Array.isArray(messageRows) ? messageRows : []);
       setProgramsPage((siteContent.programsPage as ProgramsPageContent) || DEFAULT_PROGRAMS_PAGE);
       const heroIn = (siteContent.hero as Partial<HeroContent>) || {};
       setHero({
@@ -190,6 +194,8 @@ function AdminDashboard() {
         ...heroIn,
         slides: Array.isArray(heroIn.slides) ? [...heroIn.slides, "", "", ""].slice(0, 3) : DEFAULT_HERO.slides,
       });
+      const statsIn = Array.isArray(siteContent.stats) ? (siteContent.stats as HeroStat[]) : [];
+      setStats(statsIn);
       const donIn = (siteContent.donation as Partial<DonationContent>) || {};
       setDonation({
         intro: donIn.intro || "",
@@ -210,6 +216,19 @@ function AdminDashboard() {
       setLoading(false);
     }
   }
+
+  async function deleteMessage(id: number) {
+    setSaving(true);
+    try {
+      await apiRequest("/api/contact-messages", { method: "DELETE", body: JSON.stringify({ id }) });
+      setMessages(messages.filter((m) => m.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to delete message.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
 
   useEffect(() => {
     const hasToken = !!getToken();
