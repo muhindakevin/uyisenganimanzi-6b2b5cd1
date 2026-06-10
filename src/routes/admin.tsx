@@ -501,10 +501,40 @@ function AdminDashboard() {
           />
         </TabsContent>
 
+        <TabsContent value="messages">
+          <Card>
+            <CardHeader><CardTitle>Contact Messages ({messages.length})</CardTitle></CardHeader>
+            <CardContent>
+              {messages.length === 0 ? (
+                <p className="text-muted-foreground">No messages yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {messages.map((m) => (
+                    <div key={m.id} className="rounded-lg border border-border bg-card p-4">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="font-semibold">{m.name || "(no name)"} {m.email ? <span className="font-normal text-muted-foreground">· {m.email}</span> : null}</p>
+                          {m.phone ? <p className="text-xs text-muted-foreground">{m.phone}</p> : null}
+                          {m.subject ? <p className="mt-1 text-sm font-medium">{m.subject}</p> : null}
+                          {m.created_at ? <p className="text-xs text-muted-foreground">{new Date(m.created_at).toLocaleString()}</p> : null}
+                        </div>
+                        <Button size="sm" variant="destructive" onClick={() => deleteMessage(m.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <p className="mt-3 whitespace-pre-wrap text-sm text-foreground">{m.message}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="content">
           <Card>
             <CardHeader>
-              <CardTitle>Content</CardTitle>
+              <CardTitle>Mission, Vision & Contact Info</CardTitle>
             </CardHeader>
             <CardContent>
               <ContentForm content={content} saving={saving} onSave={(value) => saveContent(value as unknown as Record<string, unknown>)} />
@@ -515,6 +545,31 @@ function AdminDashboard() {
     </div>
   );
 }
+
+function StatsForm({ stats, saving, onSave }: { stats: HeroStat[]; saving: boolean; onSave: (s: HeroStat[]) => void }) {
+  const [form, setForm] = useState<HeroStat[]>(stats);
+  useEffect(() => { setForm(stats); }, [stats]);
+
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <p className="text-sm text-muted-foreground">Add the numbers shown on your home page (e.g. "20+" with label "Years of service").</p>
+      {form.map((s, i) => (
+        <div key={i} className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-[1fr_2fr_auto]">
+          <Input placeholder="Value (e.g. 20+)" value={s.value} onChange={(e) => setForm(form.map((x, idx) => idx === i ? { ...x, value: e.target.value } : x))} />
+          <Input placeholder="Label (e.g. Years of service)" value={s.label} onChange={(e) => setForm(form.map((x, idx) => idx === i ? { ...x, label: e.target.value } : x))} />
+          <Button type="button" variant="destructive" size="sm" onClick={() => setForm(form.filter((_, idx) => idx !== i))}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={() => setForm([...form, { value: "", label: "" }])}>
+        <Plus className="mr-1 h-4 w-4" /> Add stat
+      </Button>
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
 
 function ManagedList<T extends { id: number }>({
   title,
