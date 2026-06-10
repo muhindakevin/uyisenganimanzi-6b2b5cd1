@@ -16,6 +16,7 @@ export type Program = {
   id: number;
   title: string;
   description: string;
+  long_description: string | null;
   image: string | null;
 };
 
@@ -32,8 +33,12 @@ export type PressRoomItem = {
   id: number;
   title: string;
   summary: string;
+  description: string | null;
   category: "News" | "Publications" | "Jobs";
   image: string | null;
+  document: string | null;
+  document_name: string | null;
+  link: string | null;
   created_at?: string;
 };
 
