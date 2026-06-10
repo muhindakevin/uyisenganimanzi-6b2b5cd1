@@ -82,10 +82,10 @@ function PressRoom() {
 
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
         <div className="grid gap-6 md:grid-cols-3">
-          {categories.map(({ Icon, title, description, link, color }) => (
+          {categories.map(({ Icon, title, description, link }) => (
             <Card key={title} className="group hover:shadow-lg transition-shadow">
               <CardHeader className="text-center">
-                <div className={`mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-secondary ${color}`}>
+                <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
                   <Icon className="h-8 w-8" />
                 </div>
                 <CardTitle className="text-xl">{title}</CardTitle>
