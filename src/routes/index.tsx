@@ -4,9 +4,6 @@ import { ArrowRight } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { Button } from "@/components/ui/button";
-import heroImg from "@/assets/hero.jpg";
-import programsImg from "@/assets/programs.jpg";
-import aboutImg from "@/assets/about.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,20 +28,25 @@ type HeroContent = {
   slides: string[];
 };
 
+type Stat = { value: string; label: string };
+type Program = { id: number; title: string; description: string; image?: string | null };
+
 const DEFAULT_HERO: HeroContent = {
   badge: "Non-Governmental Organization · Kigali, Rwanda",
   title: "Hope, healing and opportunity for every young Rwandan.",
   description:
     "Uyisenga Ni Imanzi walks alongside children, youth and families—providing psychosocial care, education and the tools to build resilient livelihoods.",
   ctaPrimaryLabel: "Support our work",
-  ctaPrimaryLink: "/get-involved",
+  ctaPrimaryLink: "/donate",
   ctaSecondaryLabel: "Our programs",
   ctaSecondaryLink: "/programs",
-  slides: [heroImg, programsImg, aboutImg],
+  slides: [],
 };
 
 function Index() {
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
+  const [stats, setStats] = useState<Stat[]>([]);
+  const [programs, setPrograms] = useState<Program[]>([]);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -53,11 +55,16 @@ function Index() {
       .then((data) => {
         const h = data?.hero as Partial<HeroContent> | undefined;
         if (h) {
-          const slides = Array.isArray(h.slides) && h.slides.filter(Boolean).length > 0
-            ? (h.slides.filter(Boolean) as string[])
-            : DEFAULT_HERO.slides;
+          const slides = Array.isArray(h.slides) ? (h.slides.filter(Boolean) as string[]) : [];
           setHero({ ...DEFAULT_HERO, ...h, slides });
         }
+        if (Array.isArray(data?.stats)) setStats(data.stats);
+      })
+      .catch(() => {});
+    fetch("/api/programs")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setPrograms(data.slice(0, 3));
       })
       .catch(() => {});
   }, []);
@@ -70,8 +77,7 @@ function Index() {
 
   return (
     <SiteLayout>
-      {/* Full-bleed hero slideshow */}
-      <section className="relative h-[78vh] min-h-[520px] w-full overflow-hidden">
+      <section className="relative h-[78vh] min-h-[520px] w-full overflow-hidden bg-gradient-to-br from-primary via-primary-glow to-accent">
         {hero.slides.map((src, i) => (
           <img
             key={i}
@@ -119,63 +125,56 @@ function Index() {
         )}
       </section>
 
-      {/* Stats */}
-      <section className="border-y border-border bg-card">
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4">
-          {[
-            { v: "20+", l: "Years of service" },
-            { v: "10k+", l: "Lives reached" },
-            { v: "30+", l: "Community partners" },
-            { v: "5", l: "Districts active" },
-          ].map((s) => (
-            <div key={s.l}>
-              <p className="text-3xl font-semibold text-foreground">{s.v}</p>
-              <p className="mt-1 text-sm text-muted-foreground">{s.l}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {stats.length > 0 && (
+        <section className="border-y border-border bg-card">
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4">
+            {stats.map((s, i) => (
+              <div key={i}>
+                <p className="text-3xl font-semibold text-primary">{s.value}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
-      {/* Programs */}
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="max-w-2xl">
           <p className="text-sm font-medium uppercase tracking-wider text-primary">Our Programs</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Child Protection, Economic Empowerment, and Mental Health.
+            Care, education and opportunity, delivered with dignity.
           </h2>
-          <p className="mt-3 text-muted-foreground">
-            Uyisenga Ni Imanzi supports the whole person through protection, livelihoods and healing. Each program combines caring staff, community trust and strong impact.
-          </p>
         </div>
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {[
-            { title: "Child Protection", description: "Safe spaces, child-centered support and protection services for vulnerable children.", image: aboutImg },
-            { title: "Economic Empowerment", description: "Livelihood training, savings groups and income support that help families thrive.", image: programsImg },
-            { title: "Mental Health", description: "Psychosocial wellbeing, trauma-informed care and healing circles for youth and families.", image: heroImg },
-          ].map((program) => (
-            <article key={program.title} className="group overflow-hidden rounded-[2rem] border border-border bg-white shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
-              <div className="relative h-64 overflow-hidden">
-                <img src={program.image} alt={program.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              </div>
-              <div className="p-6">
-                <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Program</p>
-                <h3 className="mt-4 text-2xl font-semibold text-foreground">{program.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">{program.description}</p>
-                <div className="mt-6">
-                  <Button asChild size="sm" variant="secondary">
-                    <Link to="/programs">Learn more</Link>
-                  </Button>
+        {programs.length === 0 ? (
+          <p className="mt-10 text-muted-foreground">Programs will appear here once the admin adds them.</p>
+        ) : (
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {programs.map((program) => (
+              <article key={program.id} className="group overflow-hidden rounded-[2rem] border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+                <div className="relative h-64 overflow-hidden bg-gradient-to-br from-primary/15 to-primary/40">
+                  {program.image ? (
+                    <img src={program.image} alt={program.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  ) : null}
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="p-6">
+                  <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Program</p>
+                  <h3 className="mt-4 text-2xl font-semibold text-foreground">{program.title}</h3>
+                  <p className="mt-3 text-sm leading-6 text-muted-foreground line-clamp-3">{program.description}</p>
+                  <div className="mt-6">
+                    <Button asChild size="sm" variant="secondary">
+                      <Link to="/programs/$id" params={{ id: String(program.id) }}>Learn more</Link>
+                    </Button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
 
-      {/* CTA */}
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-        <div className="overflow-hidden rounded-3xl bg-[image:var(--gradient-hero)] p-10 text-primary-foreground sm:p-14">
+        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-glow to-accent p-10 text-primary-foreground sm:p-14">
           <h2 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
             Stand with Rwanda's next generation.
           </h2>
@@ -184,10 +183,10 @@ function Index() {
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button asChild size="lg" variant="secondary">
-              <Link to="/get-involved">Donate</Link>
+              <Link to="/donate">Donate</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-              <Link to="/get-involved">Volunteer</Link>
+              <Link to="/contact">Volunteer</Link>
             </Button>
           </div>
         </div>

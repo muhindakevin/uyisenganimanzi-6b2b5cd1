@@ -16,6 +16,7 @@ export type Program = {
   id: number;
   title: string;
   description: string;
+  long_description: string | null;
   image: string | null;
 };
 
@@ -32,8 +33,12 @@ export type PressRoomItem = {
   id: number;
   title: string;
   summary: string;
+  description: string | null;
   category: "News" | "Publications" | "Jobs";
   image: string | null;
+  document: string | null;
+  document_name: string | null;
+  link: string | null;
   created_at?: string;
 };
 
@@ -191,11 +196,11 @@ export async function deleteTeamMember(id: number) {
 export async function listPrograms() {
   try {
     return numberIds(await query(
-      "select id, title, description, image from programs order by id asc",
+      "select id, title, description, long_description, image from programs order by id asc",
     )) as Program[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
-    return (fallbackData.programs ?? []).map((program) => ({ ...program, id: Number(program.id) }));
+    return (fallbackData.programs ?? []).map((program) => ({ ...program, long_description: (program as any).long_description ?? null, id: Number(program.id) }));
   }
 }
 
@@ -203,21 +208,29 @@ export async function saveProgram(program: Partial<Program>) {
   if (program.id) {
     const rows = await query(
       `update programs
-       set title = $2, description = $3, image = $4, updated_at = now()
+       set title = $2, description = $3, long_description = $4, image = $5, updated_at = now()
        where id = $1
-       returning id, title, description, image`,
-      [program.id, program.title, program.description, program.image ?? null],
+       returning id, title, description, long_description, image`,
+      [program.id, program.title, program.description, program.long_description ?? null, program.image ?? null],
     );
     return rows[0] ? (numberId(rows[0]) as Program) : undefined;
   }
 
   const rows = await query(
-    `insert into programs (title, description, image)
-     values ($1, $2, $3)
-     returning id, title, description, image`,
-    [program.title, program.description, program.image ?? null],
+    `insert into programs (title, description, long_description, image)
+     values ($1, $2, $3, $4)
+     returning id, title, description, long_description, image`,
+    [program.title, program.description, program.long_description ?? null, program.image ?? null],
   );
   return numberId(rows[0]) as Program;
+}
+
+export async function getProgram(id: number) {
+  const rows = await query(
+    "select id, title, description, long_description, image from programs where id = $1",
+    [id],
+  );
+  return rows[0] ? (numberId(rows[0]) as Program) : undefined;
 }
 
 export async function deleteProgram(id: number) {
@@ -273,7 +286,7 @@ export async function listPressRoom(category?: string | null, limit?: number | n
 
   try {
     return numberIds(await query(
-      `select id, title, summary, category, image, created_at
+      `select id, title, summary, description, category, image, document, document_name, link, created_at
        from press_room_items
        ${where}
        order by created_at desc, id desc
@@ -284,7 +297,7 @@ export async function listPressRoom(category?: string | null, limit?: number | n
     if (!isMissingDatabaseError(error)) throw error;
     const items = (fallbackData.pressRoom ?? []).filter((item) => !category || item.category === category);
     const limited = limit ? items.slice(0, Math.max(1, Math.min(limit, 50))) : items;
-    return limited.map((item) => ({ ...item, id: Number(item.id) }));
+    return limited.map((item) => ({ ...item, id: Number(item.id), description: null, document: null, document_name: null, link: null }));
   }
 }
 
@@ -292,19 +305,19 @@ export async function savePressRoomItem(item: Partial<PressRoomItem>) {
   if (item.id) {
     const rows = await query(
       `update press_room_items
-       set title = $2, summary = $3, category = $4, image = $5, updated_at = now()
+       set title = $2, summary = $3, description = $4, category = $5, image = $6, document = $7, document_name = $8, link = $9, updated_at = now()
        where id = $1
-       returning id, title, summary, category, image, created_at`,
-      [item.id, item.title, item.summary, item.category, item.image ?? null],
+       returning id, title, summary, description, category, image, document, document_name, link, created_at`,
+      [item.id, item.title, item.summary, item.description ?? null, item.category, item.image ?? null, item.document ?? null, item.document_name ?? null, item.link ?? null],
     );
     return rows[0] ? (numberId(rows[0]) as PressRoomItem) : undefined;
   }
 
   const rows = await query(
-    `insert into press_room_items (title, summary, category, image)
-     values ($1, $2, $3, $4)
-     returning id, title, summary, category, image, created_at`,
-    [item.title, item.summary, item.category, item.image ?? null],
+    `insert into press_room_items (title, summary, description, category, image, document, document_name, link)
+     values ($1, $2, $3, $4, $5, $6, $7, $8)
+     returning id, title, summary, description, category, image, document, document_name, link, created_at`,
+    [item.title, item.summary, item.description ?? null, item.category, item.image ?? null, item.document ?? null, item.document_name ?? null, item.link ?? null],
   );
   return numberId(rows[0]) as PressRoomItem;
 }
@@ -349,4 +362,15 @@ export async function saveContactMessage(message: JsonRecord) {
     ],
   );
   return numberId(rows[0]) as { id: number; created_at: string };
+}
+
+export async function listContactMessages() {
+  const rows = await query(
+    "select id, name, email, phone, subject, message, created_at from contact_messages order by created_at desc limit 200",
+  );
+  return numberIds(rows);
+}
+
+export async function deleteContactMessage(id: number) {
+  await query("delete from contact_messages where id = $1", [id]);
 }

@@ -1,11 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import aboutImg from "@/assets/about.jpg";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/about/")({
   component: OurStory,
 });
 
 function OurStory() {
+  const [image, setImage] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/content")
+      .then((r) => r.json())
+      .then((data) => {
+        if (typeof data?.aboutStoryImage === "string") setImage(data.aboutStoryImage);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <>
       <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
@@ -38,14 +49,16 @@ function OurStory() {
           </p>
         </div>
       </section>
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <img
-          src={aboutImg}
-          alt="UNM peer support session"
-          loading="lazy"
-          className="w-full rounded-3xl object-cover aspect-[16/9] shadow-[var(--shadow-card)]"
-        />
-      </section>
+      {image ? (
+        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+          <img
+            src={image}
+            alt="UNM at work"
+            loading="lazy"
+            className="w-full rounded-3xl object-cover aspect-[16/9] shadow-[var(--shadow-card)]"
+          />
+        </section>
+      ) : null}
     </>
   );
 }

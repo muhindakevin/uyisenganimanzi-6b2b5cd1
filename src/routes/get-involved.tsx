@@ -25,56 +25,26 @@ type PressRoomItem = {
   image?: string;
 };
 
-type MomoAccount = { name: string; number: string };
-type BankAccount = { bank: string; accountName: string; accountNumber: string; swift?: string };
-type DonationContent = { intro?: string; momo: MomoAccount[]; banks: BankAccount[] };
-
 const ways = [
-  { Icon: Heart, t: "Donate", d: "Your gift funds counseling sessions, school fees and starter kits for families.", cta: "Make a gift" },
-  { Icon: Users, t: "Volunteer", d: "Share your skills—mentoring, training, communications—remotely or in Kigali.", cta: "Join the team" },
-  { Icon: Handshake, t: "Partner", d: "Schools, companies and foundations: let's design impact together.", cta: "Start a conversation" },
+  { Icon: Heart, t: "Donate", d: "Your gift funds counseling sessions, school fees and starter kits for families.", cta: "Make a gift", to: "/donate" as const },
+  { Icon: Users, t: "Volunteer", d: "Share your skills—mentoring, training, communications—remotely or in Kigali.", cta: "Join the team", to: "/contact" as const },
+  { Icon: Handshake, t: "Partner", d: "Schools, companies and foundations: let's design impact together.", cta: "Start a conversation", to: "/contact" as const },
 ];
 
 const categories = [
-  {
-    Icon: Newspaper,
-    title: "News Stories",
-    description: "Latest updates and stories from our work",
-    link: "/press-room/news",
-    color: "text-blue-600"
-  },
-  {
-    Icon: FileText,
-    title: "Publications & Reports",
-    description: "Research, reports, and documentation",
-    link: "/press-room/publications",
-    color: "text-green-600"
-  },
-  {
-    Icon: Briefcase,
-    title: "Jobs and Tenders",
-    description: "Career opportunities and tenders",
-    link: "/press-room/jobs",
-    color: "text-purple-600"
-  }
+  { Icon: Newspaper, title: "News Stories", description: "Latest updates and stories from our work", link: "/press-room/news" as const },
+  { Icon: FileText, title: "Publications & Reports", description: "Research, reports, and documentation", link: "/press-room/publications" as const },
+  { Icon: Briefcase, title: "Jobs and Tenders", description: "Career opportunities and tenders", link: "/press-room/jobs" as const },
 ];
 
 function PressRoom() {
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
-  const [donation, setDonation] = useState<DonationContent>({ momo: [], banks: [] });
 
   useEffect(() => {
     fetch('/api/press-room')
       .then((res) => res.json())
       .then((data) => setPressRoom(data))
       .catch(() => setPressRoom([]));
-    fetch('/api/content')
-      .then((res) => res.json())
-      .then((data) => {
-        const d = data?.donation as Partial<DonationContent> | undefined;
-        if (d) setDonation({ intro: d.intro, momo: d.momo || [], banks: d.banks || [] });
-      })
-      .catch(() => {});
   }, []);
 
   const newsItems = pressRoom.filter(item => item.category === 'News').slice(0, 3);
@@ -95,15 +65,15 @@ function PressRoom() {
 
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
         <div className="grid gap-5 md:grid-cols-3">
-          {ways.map(({ Icon, t, d, cta }) => (
+          {ways.map(({ Icon, t, d, cta, to }) => (
             <div key={t} className="flex flex-col rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-card)]">
-              <div className="grid h-12 w-12 place-items-center rounded-xl bg-secondary text-primary">
+              <div className="grid h-12 w-12 place-items-center rounded-xl bg-primary/10 text-primary">
                 <Icon className="h-5 w-5" />
               </div>
               <h2 className="mt-5 text-xl font-semibold text-foreground">{t}</h2>
               <p className="mt-2 flex-1 text-muted-foreground">{d}</p>
               <Button asChild className="mt-5 self-start">
-                <a href="/contact">{cta}</a>
+                <Link to={to}>{cta}</Link>
               </Button>
             </div>
           ))}
@@ -112,10 +82,10 @@ function PressRoom() {
 
       <section className="mx-auto max-w-6xl px-4 pb-12 sm:px-6">
         <div className="grid gap-6 md:grid-cols-3">
-          {categories.map(({ Icon, title, description, link, color }) => (
+          {categories.map(({ Icon, title, description, link }) => (
             <Card key={title} className="group hover:shadow-lg transition-shadow">
               <CardHeader className="text-center">
-                <div className={`mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-secondary ${color}`}>
+                <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary">
                   <Icon className="h-8 w-8" />
                 </div>
                 <CardTitle className="text-xl">{title}</CardTitle>
@@ -202,57 +172,6 @@ function PressRoom() {
         </div>
       </section>
 
-      <section id="donate" className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-        <div className="rounded-3xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-10">
-          <div className="flex items-center gap-3">
-            <Heart className="h-6 w-6 text-primary" />
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground">Donate to UNM</h2>
-          </div>
-          {donation.intro ? (
-            <p className="mt-3 max-w-3xl text-muted-foreground">{donation.intro}</p>
-          ) : (
-            <p className="mt-3 max-w-3xl text-muted-foreground">
-              Your gift directly funds counseling, school fees, and starter kits for the families we serve. Use Mobile Money or a bank transfer below.
-            </p>
-          )}
-
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            <div className="rounded-2xl border border-border bg-background p-6">
-              <h3 className="text-lg font-semibold text-foreground">Mobile Money (MoMo)</h3>
-              {donation.momo.length === 0 ? (
-                <p className="mt-3 text-sm text-muted-foreground">MoMo details will appear here soon.</p>
-              ) : (
-                <ul className="mt-4 space-y-3">
-                  {donation.momo.map((m, i) => (
-                    <li key={i} className="flex flex-col rounded-lg bg-secondary px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-                      <span className="font-medium text-foreground">{m.name}</span>
-                      <span className="font-mono text-sm text-primary">{m.number}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            <div className="rounded-2xl border border-border bg-background p-6">
-              <h3 className="text-lg font-semibold text-foreground">Bank Accounts</h3>
-              {donation.banks.length === 0 ? (
-                <p className="mt-3 text-sm text-muted-foreground">Bank account details will appear here soon.</p>
-              ) : (
-                <ul className="mt-4 space-y-4">
-                  {donation.banks.map((b, i) => (
-                    <li key={i} className="rounded-lg bg-secondary px-4 py-3 text-sm">
-                      <p className="font-semibold text-foreground">{b.bank}</p>
-                      <p className="mt-1 text-muted-foreground">Account name: <span className="text-foreground">{b.accountName}</span></p>
-                      <p className="text-muted-foreground">Account #: <span className="font-mono text-foreground">{b.accountNumber}</span></p>
-                      {b.swift ? <p className="text-muted-foreground">SWIFT: <span className="font-mono text-foreground">{b.swift}</span></p> : null}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
     </SiteLayout>
   );
 }

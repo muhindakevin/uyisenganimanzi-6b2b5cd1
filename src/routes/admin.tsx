@@ -27,6 +27,7 @@ type Program = {
   id: number;
   title: string;
   description: string;
+  long_description?: string | null;
   image?: string | null;
 };
 
@@ -43,8 +44,22 @@ type PressRoomItem = {
   id: number;
   title: string;
   summary: string;
+  description?: string | null;
   category: "News" | "Publications" | "Jobs";
   image?: string | null;
+  document?: string | null;
+  document_name?: string | null;
+  link?: string | null;
+};
+
+type ContactMessage = {
+  id: number;
+  name?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  subject?: string | null;
+  message?: string | null;
+  created_at?: string;
 };
 
 type ProgramsPageContent = {
@@ -53,6 +68,8 @@ type ProgramsPageContent = {
   description1: string;
   description2: string;
 };
+
+type HeroStat = { value: string; label: string };
 
 type HeroContent = {
   badge: string;
@@ -140,6 +157,8 @@ function AdminDashboard() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
+  const [messages, setMessages] = useState<ContactMessage[]>([]);
+  const [stats, setStats] = useState<HeroStat[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
@@ -154,18 +173,20 @@ function AdminDashboard() {
     setError("");
 
     try {
-      const [teamRows, programRows, galleryRows, pressRows, siteContent] = await Promise.all([
+      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows] = await Promise.all([
         apiRequest<Member[]>("/api/team"),
         apiRequest<Program[]>("/api/programs"),
         apiRequest<GalleryImage[]>("/api/gallery"),
         apiRequest<PressRoomItem[]>("/api/press-room"),
         apiRequest<Record<string, unknown>>("/api/content"),
+        apiRequest<ContactMessage[]>("/api/contact-messages").catch(() => []),
       ]);
 
       setTeam(teamRows);
       setPrograms(programRows);
       setGallery(galleryRows);
       setPressRoom(pressRows);
+      setMessages(Array.isArray(messageRows) ? messageRows : []);
       setProgramsPage((siteContent.programsPage as ProgramsPageContent) || DEFAULT_PROGRAMS_PAGE);
       const heroIn = (siteContent.hero as Partial<HeroContent>) || {};
       setHero({
@@ -173,6 +194,8 @@ function AdminDashboard() {
         ...heroIn,
         slides: Array.isArray(heroIn.slides) ? [...heroIn.slides, "", "", ""].slice(0, 3) : DEFAULT_HERO.slides,
       });
+      const statsIn = Array.isArray(siteContent.stats) ? (siteContent.stats as HeroStat[]) : [];
+      setStats(statsIn);
       const donIn = (siteContent.donation as Partial<DonationContent>) || {};
       setDonation({
         intro: donIn.intro || "",
@@ -193,6 +216,19 @@ function AdminDashboard() {
       setLoading(false);
     }
   }
+
+  async function deleteMessage(id: number) {
+    setSaving(true);
+    try {
+      await apiRequest("/api/contact-messages", { method: "DELETE", body: JSON.stringify({ id }) });
+      setMessages(messages.filter((m) => m.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to delete message.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
 
   useEffect(() => {
     const hasToken = !!getToken();
@@ -325,14 +361,16 @@ function AdminDashboard() {
       {error ? <p className="mb-6 rounded-lg border border-destructive p-4 text-destructive">{error}</p> : null}
 
       <Tabs defaultValue="hero" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 gap-2 md:grid-cols-8">
+        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-10">
           <TabsTrigger value="hero">Hero</TabsTrigger>
+          <TabsTrigger value="stats">Stats</TabsTrigger>
           <TabsTrigger value="donation">Donate</TabsTrigger>
           <TabsTrigger value="team">Team</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
           <TabsTrigger value="prog-page">Programs Page</TabsTrigger>
           <TabsTrigger value="gallery">Gallery</TabsTrigger>
           <TabsTrigger value="press">Press Room</TabsTrigger>
+          <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
         </TabsList>
 
@@ -345,14 +383,24 @@ function AdminDashboard() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="stats">
+          <Card>
+            <CardHeader><CardTitle>Home Page Stats (Numbers)</CardTitle></CardHeader>
+            <CardContent>
+              <StatsForm stats={stats} saving={saving} onSave={(value) => { saveContent({ stats: value }); setStats(value); }} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="donation">
           <Card>
-            <CardHeader><CardTitle>Donation Information</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Donation Information (Mobile Money & Bank Accounts)</CardTitle></CardHeader>
             <CardContent>
               <DonationForm donation={donation} saving={saving} onSave={(value) => saveContent({ donation: value })} />
             </CardContent>
           </Card>
         </TabsContent>
+
 
 
         <TabsContent value="team">
@@ -453,10 +501,40 @@ function AdminDashboard() {
           />
         </TabsContent>
 
+        <TabsContent value="messages">
+          <Card>
+            <CardHeader><CardTitle>Contact Messages ({messages.length})</CardTitle></CardHeader>
+            <CardContent>
+              {messages.length === 0 ? (
+                <p className="text-muted-foreground">No messages yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {messages.map((m) => (
+                    <div key={m.id} className="rounded-lg border border-border bg-card p-4">
+                      <div className="flex flex-wrap items-start justify-between gap-3">
+                        <div>
+                          <p className="font-semibold">{m.name || "(no name)"} {m.email ? <span className="font-normal text-muted-foreground">· {m.email}</span> : null}</p>
+                          {m.phone ? <p className="text-xs text-muted-foreground">{m.phone}</p> : null}
+                          {m.subject ? <p className="mt-1 text-sm font-medium">{m.subject}</p> : null}
+                          {m.created_at ? <p className="text-xs text-muted-foreground">{new Date(m.created_at).toLocaleString()}</p> : null}
+                        </div>
+                        <Button size="sm" variant="destructive" onClick={() => deleteMessage(m.id)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <p className="mt-3 whitespace-pre-wrap text-sm text-foreground">{m.message}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="content">
           <Card>
             <CardHeader>
-              <CardTitle>Content</CardTitle>
+              <CardTitle>Mission, Vision & Contact Info</CardTitle>
             </CardHeader>
             <CardContent>
               <ContentForm content={content} saving={saving} onSave={(value) => saveContent(value as unknown as Record<string, unknown>)} />
@@ -467,6 +545,31 @@ function AdminDashboard() {
     </div>
   );
 }
+
+function StatsForm({ stats, saving, onSave }: { stats: HeroStat[]; saving: boolean; onSave: (s: HeroStat[]) => void }) {
+  const [form, setForm] = useState<HeroStat[]>(stats);
+  useEffect(() => { setForm(stats); }, [stats]);
+
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <p className="text-sm text-muted-foreground">Add the numbers shown on your home page (e.g. "20+" with label "Years of service").</p>
+      {form.map((s, i) => (
+        <div key={i} className="grid gap-2 rounded-md border border-border p-3 sm:grid-cols-[1fr_2fr_auto]">
+          <Input placeholder="Value (e.g. 20+)" value={s.value} onChange={(e) => setForm(form.map((x, idx) => idx === i ? { ...x, value: e.target.value } : x))} />
+          <Input placeholder="Label (e.g. Years of service)" value={s.label} onChange={(e) => setForm(form.map((x, idx) => idx === i ? { ...x, label: e.target.value } : x))} />
+          <Button type="button" variant="destructive" size="sm" onClick={() => setForm(form.filter((_, idx) => idx !== i))}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={() => setForm([...form, { value: "", label: "" }])}>
+        <Plus className="mr-1 h-4 w-4" /> Add stat
+      </Button>
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
 
 function ManagedList<T extends { id: number }>({
   title,
@@ -583,10 +686,10 @@ function TeamForm({ member, saving, onSave }: { member?: Member | null; saving: 
 }
 
 function ProgramForm({ program, saving, onSave }: { program?: Program | null; saving: boolean; onSave: (p: Program) => void }) {
-  const [form, setForm] = useState<Program>(program || { id: 0, title: "", description: "", image: "" });
+  const [form, setForm] = useState<Program>(program || { id: 0, title: "", description: "", long_description: "", image: "" });
 
   useEffect(() => {
-    setForm(program || { id: 0, title: "", description: "", image: "" });
+    setForm(program || { id: 0, title: "", description: "", long_description: "", image: "" });
   }, [program]);
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -598,7 +701,8 @@ function ProgramForm({ program, saving, onSave }: { program?: Program | null; sa
   return (
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
-      <TextareaField label="Description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <TextareaField label="Short description (appears on card)" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <TextareaField label="Full description (shown on Learn More page)" value={form.long_description || ""} onChange={(long_description) => setForm({ ...form, long_description })} />
       <div>
         <Label htmlFor="program-image">Program Image</Label>
         <Input id="program-image" type="file" accept="image/*" onChange={handleFileChange} />
@@ -762,22 +866,33 @@ function PressRoomForm({
   saving: boolean;
   onSave: (item: PressRoomItem) => void;
 }) {
-  const [form, setForm] = useState<PressRoomItem>(item || { id: 0, title: "", summary: "", category: "News", image: "" });
+  const empty: PressRoomItem = { id: 0, title: "", summary: "", description: "", category: "News", image: "", document: "", document_name: "", link: "" };
+  const [form, setForm] = useState<PressRoomItem>(item || empty);
 
   useEffect(() => {
-    setForm(item || { id: 0, title: "", summary: "", category: "News", image: "" });
+    setForm(item || empty);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
     setForm({ ...form, image: await readFileAsDataUrl(file) });
   }
 
+  async function handleDocumentChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setForm({ ...form, document: await readFileAsDataUrl(file), document_name: file.name });
+  }
+
+  const isPublication = form.category === "Publications";
+
   return (
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
-      <TextareaField label="Summary" required value={form.summary} onChange={(summary) => setForm({ ...form, summary })} />
+      <TextareaField label="Summary (short)" required value={form.summary} onChange={(summary) => setForm({ ...form, summary })} />
+      <TextareaField label="Full description (optional, visitors read this)" value={form.description || ""} onChange={(description) => setForm({ ...form, description })} />
       <div>
         <Label htmlFor="category">Category</Label>
         <select
@@ -791,11 +906,23 @@ function PressRoomForm({
           <option value="Jobs">Jobs and Tenders</option>
         </select>
       </div>
-      <div>
-        <Label htmlFor="press-image">Upload image</Label>
-        <Input id="press-image" type="file" accept="image/*" onChange={handleFileChange} />
-        {form.image ? <img src={form.image} alt="Press preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
-      </div>
+
+      {isPublication ? (
+        <div>
+          <Label htmlFor="press-document">Upload document (PDF, Word, Excel, etc.)</Label>
+          <Input id="press-document" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleDocumentChange} />
+          {form.document_name ? <p className="mt-2 text-xs text-muted-foreground">Attached: {form.document_name}</p> : null}
+          <p className="mt-1 text-xs text-muted-foreground">Visitors will be able to open and download this document.</p>
+        </div>
+      ) : (
+        <div>
+          <Label htmlFor="press-image">Cover image (optional)</Label>
+          <Input id="press-image" type="file" accept="image/*" onChange={handleImageChange} />
+          {form.image ? <img src={form.image} alt="Press preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
+        </div>
+      )}
+
+      <Field label="External link (optional)" value={form.link || ""} onChange={(link) => setForm({ ...form, link })} />
       <SubmitButton saving={saving} />
     </form>
   );

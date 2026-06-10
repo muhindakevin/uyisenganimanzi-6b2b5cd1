@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { Check } from "lucide-react";
@@ -29,12 +29,7 @@ type ProgramsPageContent = {
   description2: string;
 };
 
-const DEFAULT_PROGRAMS: Program[] = [
-  { id: 1, title: "Child Protection Program", description: "Ensuring the safety and well-being of children through various initiatives.", image: "" },
-  { id: 2, title: "Mental Health Support", description: "Providing psychosocial support to youth and families.", image: "" },
-  { id: 3, title: "Economic Empowerment", description: "Empowering communities through economic opportunities.", image: "" },
-  { id: 4, title: "Community Resilience", description: "Building stronger communities through leadership, training and local partnerships.", image: "" },
-];
+const DEFAULT_PROGRAMS: Program[] = [];
 
 const DEFAULT_PAGE_CONTENT: ProgramsPageContent = {
   label: "Our Programs",
@@ -96,33 +91,39 @@ function Programs() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {programs.map((program) => (
-            <article
-              key={program.id}
-              className="group relative overflow-hidden rounded-[2rem] border border-border bg-slate-950 text-white shadow-[var(--shadow-card)] transition-transform duration-300 hover:-translate-y-1"
-            >
-              <div className="absolute inset-0 bg-slate-950/75 transition-opacity duration-300 group-hover:bg-slate-950/40" />
-              {program.image ? (
-                <img
-                  src={program.image}
-                  alt={program.title}
-                  className="h-[320px] w-full object-cover brightness-90 transition duration-300 group-hover:scale-105"
-                />
-              ) : (
-                <div className="h-[320px] w-full bg-gradient-to-br from-emerald-700 via-slate-900 to-slate-950" />
-              )}
-              <div className="absolute inset-x-0 bottom-0 p-6 text-left">
-                <p className="text-xs uppercase tracking-[0.24em] text-emerald-200">Program</p>
-                <h2 className="mt-3 text-2xl font-semibold leading-tight text-white">{program.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-emerald-100 line-clamp-4">{program.description}</p>
-                <div className="mt-6 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm">
-                  Learn More
+        {programs.length === 0 ? (
+          <p className="text-muted-foreground">No programs yet — the admin can add them in the dashboard.</p>
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {programs.map((program) => (
+              <Link
+                key={program.id}
+                to="/programs/$id"
+                params={{ id: String(program.id) }}
+                className="group relative overflow-hidden rounded-[2rem] border border-border bg-slate-950 text-white shadow-[var(--shadow-card)] transition-transform duration-300 hover:-translate-y-1"
+              >
+                <div className="absolute inset-0 bg-slate-950/75 transition-opacity duration-300 group-hover:bg-slate-950/40" />
+                {program.image ? (
+                  <img
+                    src={program.image}
+                    alt={program.title}
+                    className="h-[320px] w-full object-cover brightness-90 transition duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="h-[320px] w-full bg-gradient-to-br from-primary via-primary-glow to-slate-950" />
+                )}
+                <div className="absolute inset-x-0 bottom-0 p-6 text-left">
+                  <p className="text-xs uppercase tracking-[0.24em] text-primary-foreground/80">Program</p>
+                  <h2 className="mt-3 text-2xl font-semibold leading-tight text-white">{program.title}</h2>
+                  <p className="mt-3 text-sm leading-6 text-white/85 line-clamp-4">{program.description}</p>
+                  <div className="mt-6 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium text-white backdrop-blur-sm">
+                    Learn More
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
     </SiteLayout>
   );

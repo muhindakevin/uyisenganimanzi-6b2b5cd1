@@ -19,8 +19,10 @@ type PressRoomItem = {
   id: number;
   title: string;
   summary: string;
+  description?: string | null;
   category: "News" | "Publications" | "Jobs";
-  image?: string;
+  image?: string | null;
+  link?: string | null;
 };
 
 function NewsPage() {
@@ -35,17 +37,17 @@ function NewsPage() {
 
   return (
     <SiteLayout>
-      <section className="mx-auto max-w-4xl px-4 py-16 sm:px-6 md:py-24">
-        <p className="text-sm font-medium uppercase tracking-wider text-primary">Press Room</p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-          News Stories
-        </h1>
-        <p className="mt-5 text-lg text-muted-foreground">
-          Stay updated with our latest news stories and updates from our work across Rwanda.
-        </p>
+      <section className="bg-gradient-to-br from-primary to-primary-glow text-primary-foreground">
+        <div className="mx-auto max-w-4xl px-4 py-16 sm:px-6 md:py-24">
+          <p className="text-sm font-medium uppercase tracking-wider text-primary-foreground/80">Press Room</p>
+          <h1 className="mt-3 text-4xl font-semibold tracking-tight sm:text-5xl">News Stories</h1>
+          <p className="mt-5 text-lg text-primary-foreground/90">
+            Stay updated with our latest news stories and updates from our work across Rwanda.
+          </p>
+        </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+      <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {newsItems.length === 0 ? (
             <div className="col-span-full text-center py-12">
@@ -61,7 +63,15 @@ function NewsPage() {
                   <CardTitle className="text-xl">{item.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground">{item.summary}</p>
+                  <p className="font-medium text-foreground">{item.summary}</p>
+                  {item.description ? (
+                    <p className="mt-3 whitespace-pre-wrap text-sm text-muted-foreground">{item.description}</p>
+                  ) : null}
+                  {item.link ? (
+                    <a href={item.link} target="_blank" rel="noreferrer" className="mt-4 inline-block text-sm font-medium text-primary hover:underline">
+                      Read more →
+                    </a>
+                  ) : null}
                 </CardContent>
               </Card>
             ))
