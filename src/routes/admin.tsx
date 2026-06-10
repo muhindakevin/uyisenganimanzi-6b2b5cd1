@@ -866,22 +866,33 @@ function PressRoomForm({
   saving: boolean;
   onSave: (item: PressRoomItem) => void;
 }) {
-  const [form, setForm] = useState<PressRoomItem>(item || { id: 0, title: "", summary: "", category: "News", image: "" });
+  const empty: PressRoomItem = { id: 0, title: "", summary: "", description: "", category: "News", image: "", document: "", document_name: "", link: "" };
+  const [form, setForm] = useState<PressRoomItem>(item || empty);
 
   useEffect(() => {
-    setForm(item || { id: 0, title: "", summary: "", category: "News", image: "" });
+    setForm(item || empty);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
-  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
     setForm({ ...form, image: await readFileAsDataUrl(file) });
   }
 
+  async function handleDocumentChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    setForm({ ...form, document: await readFileAsDataUrl(file), document_name: file.name });
+  }
+
+  const isPublication = form.category === "Publications";
+
   return (
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
-      <TextareaField label="Summary" required value={form.summary} onChange={(summary) => setForm({ ...form, summary })} />
+      <TextareaField label="Summary (short)" required value={form.summary} onChange={(summary) => setForm({ ...form, summary })} />
+      <TextareaField label="Full description (optional, visitors read this)" value={form.description || ""} onChange={(description) => setForm({ ...form, description })} />
       <div>
         <Label htmlFor="category">Category</Label>
         <select
@@ -895,11 +906,23 @@ function PressRoomForm({
           <option value="Jobs">Jobs and Tenders</option>
         </select>
       </div>
-      <div>
-        <Label htmlFor="press-image">Upload image</Label>
-        <Input id="press-image" type="file" accept="image/*" onChange={handleFileChange} />
-        {form.image ? <img src={form.image} alt="Press preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
-      </div>
+
+      {isPublication ? (
+        <div>
+          <Label htmlFor="press-document">Upload document (PDF, Word, Excel, etc.)</Label>
+          <Input id="press-document" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.csv,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={handleDocumentChange} />
+          {form.document_name ? <p className="mt-2 text-xs text-muted-foreground">Attached: {form.document_name}</p> : null}
+          <p className="mt-1 text-xs text-muted-foreground">Visitors will be able to open and download this document.</p>
+        </div>
+      ) : (
+        <div>
+          <Label htmlFor="press-image">Cover image (optional)</Label>
+          <Input id="press-image" type="file" accept="image/*" onChange={handleImageChange} />
+          {form.image ? <img src={form.image} alt="Press preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
+        </div>
+      )}
+
+      <Field label="External link (optional)" value={form.link || ""} onChange={(link) => setForm({ ...form, link })} />
       <SubmitButton saving={saving} />
     </form>
   );
