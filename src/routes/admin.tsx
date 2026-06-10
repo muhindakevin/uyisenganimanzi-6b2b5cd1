@@ -686,10 +686,10 @@ function TeamForm({ member, saving, onSave }: { member?: Member | null; saving: 
 }
 
 function ProgramForm({ program, saving, onSave }: { program?: Program | null; saving: boolean; onSave: (p: Program) => void }) {
-  const [form, setForm] = useState<Program>(program || { id: 0, title: "", description: "", image: "" });
+  const [form, setForm] = useState<Program>(program || { id: 0, title: "", description: "", long_description: "", image: "" });
 
   useEffect(() => {
-    setForm(program || { id: 0, title: "", description: "", image: "" });
+    setForm(program || { id: 0, title: "", description: "", long_description: "", image: "" });
   }, [program]);
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -701,7 +701,8 @@ function ProgramForm({ program, saving, onSave }: { program?: Program | null; sa
   return (
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
-      <TextareaField label="Description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <TextareaField label="Short description (appears on card)" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <TextareaField label="Full description (shown on Learn More page)" value={form.long_description || ""} onChange={(long_description) => setForm({ ...form, long_description })} />
       <div>
         <Label htmlFor="program-image">Program Image</Label>
         <Input id="program-image" type="file" accept="image/*" onChange={handleFileChange} />
