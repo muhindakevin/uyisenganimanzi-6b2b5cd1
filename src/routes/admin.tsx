@@ -159,6 +159,7 @@ function AdminDashboard() {
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [stats, setStats] = useState<HeroStat[]>([]);
+  const [board, setBoard] = useState<Member[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
@@ -196,6 +197,8 @@ function AdminDashboard() {
       });
       const statsIn = Array.isArray(siteContent.stats) ? (siteContent.stats as HeroStat[]) : [];
       setStats(statsIn);
+      const boardIn = Array.isArray(siteContent.board) ? (siteContent.board as Member[]) : [];
+      setBoard(boardIn);
       const donIn = (siteContent.donation as Partial<DonationContent>) || {};
       setDonation({
         intro: donIn.intro || "",
@@ -361,11 +364,12 @@ function AdminDashboard() {
       {error ? <p className="mb-6 rounded-lg border border-destructive p-4 text-destructive">{error}</p> : null}
 
       <Tabs defaultValue="hero" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-10">
+        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-11">
           <TabsTrigger value="hero">Hero</TabsTrigger>
           <TabsTrigger value="stats">Stats</TabsTrigger>
           <TabsTrigger value="donation">Donate</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="team">Staff</TabsTrigger>
+          <TabsTrigger value="board">Board</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
           <TabsTrigger value="prog-page">Programs Page</TabsTrigger>
           <TabsTrigger value="gallery">Gallery</TabsTrigger>
@@ -428,6 +432,41 @@ function AdminDashboard() {
             onDelete={(id) => deleteEntity<Member>("/api/team", id, setTeam, team)}
           />
         </TabsContent>
+
+        <TabsContent value="board">
+          <ManagedList
+            title="Board Members"
+            empty="No board members yet."
+            items={board}
+            renderItem={(member) => (
+              <>
+                <p className="font-semibold">{member.name}</p>
+                <p className="text-sm text-muted-foreground">{member.title}</p>
+              </>
+            )}
+            formTitle={(member) => (member ? "Edit Board Member" : "Add Board Member")}
+            renderForm={(member, close) => (
+              <TeamForm
+                member={member}
+                saving={saving}
+                onSave={async (saved) => {
+                  const next = saved.id
+                    ? board.map((m) => (m.id === saved.id ? saved : m))
+                    : [...board, { ...saved, id: Date.now() }];
+                  setBoard(next);
+                  await saveContent({ board: next });
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => {
+              const next = board.filter((m) => m.id !== id);
+              setBoard(next);
+              saveContent({ board: next });
+            }}
+          />
+        </TabsContent>
+
 
         <TabsContent value="programs">
           <ManagedList

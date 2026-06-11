@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { ChevronDown, Menu, X, Heart } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 
@@ -76,7 +76,7 @@ export function SiteHeader() {
           <Link to="/contact" className={linkBase} activeProps={{ className: linkActive }}>Contact</Link>
 
           <Button asChild size="sm" variant="secondary" className="ml-2 font-semibold shadow-md">
-            <Link to="/donate"><Heart className="mr-1.5 h-4 w-4" /> Donate</Link>
+            <Link to="/donate">Donate</Link>
           </Button>
         </nav>
         <button
@@ -144,7 +144,7 @@ export function SiteHeader() {
               </div>
 
               <Button asChild size="sm" variant="secondary" className="w-full mt-2">
-                <Link to="/donate" onClick={() => setOpen(false)}><Heart className="mr-1.5 h-4 w-4" /> Donate</Link>
+                <Link to="/donate" onClick={() => setOpen(false)}>Donate</Link>
               </Button>
             </div>
           </nav>
