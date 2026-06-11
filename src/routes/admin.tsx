@@ -159,6 +159,7 @@ function AdminDashboard() {
   const [pressRoom, setPressRoom] = useState<PressRoomItem[]>([]);
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [stats, setStats] = useState<HeroStat[]>([]);
+  const [board, setBoard] = useState<Member[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
@@ -196,6 +197,8 @@ function AdminDashboard() {
       });
       const statsIn = Array.isArray(siteContent.stats) ? (siteContent.stats as HeroStat[]) : [];
       setStats(statsIn);
+      const boardIn = Array.isArray(siteContent.board) ? (siteContent.board as Member[]) : [];
+      setBoard(boardIn);
       const donIn = (siteContent.donation as Partial<DonationContent>) || {};
       setDonation({
         intro: donIn.intro || "",
