@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, Phone, MapPin, Instagram, Facebook, Twitter, Linkedin, Heart } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function SiteFooter() {
@@ -19,7 +19,7 @@ export function SiteFooter() {
             <a href="https://www.linkedin.com/in/uyisenga-ni-imanzi-b8820a97/" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="rounded-full bg-white/10 p-2 hover:bg-white/20"><Linkedin className="h-4 w-4" /></a>
           </div>
           <Button asChild size="sm" variant="secondary" className="mt-5 font-semibold">
-            <Link to="/donate"><Heart className="mr-1.5 h-4 w-4" /> Donate now</Link>
+            <Link to="/donate">Donate now</Link>
           </Button>
         </div>
         <div>
