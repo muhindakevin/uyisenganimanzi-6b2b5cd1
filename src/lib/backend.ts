@@ -193,11 +193,24 @@ export async function deleteTeamMember(id: number) {
   await query("delete from team_members where id = $1", [id]);
 }
 
+function isMissingColumnError(error: unknown, column?: string) {
+  if (!(error instanceof Error)) return false;
+  const msg = error.message.toLowerCase();
+  if (!msg.includes("does not exist")) return false;
+  return column ? msg.includes(`"${column.toLowerCase()}"`) : true;
+}
+
 export async function listPrograms() {
   try {
-    return numberIds(await query(
-      "select id, title, description, long_description, image from programs order by id asc",
-    )) as Program[];
+    try {
+      return numberIds(await query(
+        "select id, title, description, long_description, image from programs order by id asc",
+      )) as Program[];
+    } catch (error) {
+      if (!isMissingColumnError(error, "long_description")) throw error;
+      const rows = await query("select id, title, description, image from programs order by id asc");
+      return numberIds(rows.map((r) => ({ ...r, long_description: null }))) as Program[];
+    }
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.programs ?? []).map((program) => ({ ...program, long_description: (program as any).long_description ?? null, id: Number(program.id) }));
@@ -206,31 +219,55 @@ export async function listPrograms() {
 
 export async function saveProgram(program: Partial<Program>) {
   if (program.id) {
-    const rows = await query(
-      `update programs
-       set title = $2, description = $3, long_description = $4, image = $5, updated_at = now()
-       where id = $1
-       returning id, title, description, long_description, image`,
-      [program.id, program.title, program.description, program.long_description ?? null, program.image ?? null],
-    );
-    return rows[0] ? (numberId(rows[0]) as Program) : undefined;
+    try {
+      const rows = await query(
+        `update programs
+         set title = $2, description = $3, long_description = $4, image = $5, updated_at = now()
+         where id = $1
+         returning id, title, description, long_description, image`,
+        [program.id, program.title, program.description, program.long_description ?? null, program.image ?? null],
+      );
+      return rows[0] ? (numberId(rows[0]) as Program) : undefined;
+    } catch (error) {
+      if (!isMissingColumnError(error, "long_description")) throw error;
+      const rows = await query(
+        `update programs set title = $2, description = $3, image = $4, updated_at = now() where id = $1 returning id, title, description, image`,
+        [program.id, program.title, program.description, program.image ?? null],
+      );
+      return rows[0] ? (numberId({ ...rows[0], long_description: null }) as Program) : undefined;
+    }
   }
 
-  const rows = await query(
-    `insert into programs (title, description, long_description, image)
-     values ($1, $2, $3, $4)
-     returning id, title, description, long_description, image`,
-    [program.title, program.description, program.long_description ?? null, program.image ?? null],
-  );
-  return numberId(rows[0]) as Program;
+  try {
+    const rows = await query(
+      `insert into programs (title, description, long_description, image)
+       values ($1, $2, $3, $4)
+       returning id, title, description, long_description, image`,
+      [program.title, program.description, program.long_description ?? null, program.image ?? null],
+    );
+    return numberId(rows[0]) as Program;
+  } catch (error) {
+    if (!isMissingColumnError(error, "long_description")) throw error;
+    const rows = await query(
+      `insert into programs (title, description, image) values ($1, $2, $3) returning id, title, description, image`,
+      [program.title, program.description, program.image ?? null],
+    );
+    return numberId({ ...rows[0], long_description: null }) as Program;
+  }
 }
 
 export async function getProgram(id: number) {
-  const rows = await query(
-    "select id, title, description, long_description, image from programs where id = $1",
-    [id],
-  );
-  return rows[0] ? (numberId(rows[0]) as Program) : undefined;
+  try {
+    const rows = await query(
+      "select id, title, description, long_description, image from programs where id = $1",
+      [id],
+    );
+    return rows[0] ? (numberId(rows[0]) as Program) : undefined;
+  } catch (error) {
+    if (!isMissingColumnError(error, "long_description")) throw error;
+    const rows = await query("select id, title, description, image from programs where id = $1", [id]);
+    return rows[0] ? (numberId({ ...rows[0], long_description: null }) as Program) : undefined;
+  }
 }
 
 export async function deleteProgram(id: number) {
