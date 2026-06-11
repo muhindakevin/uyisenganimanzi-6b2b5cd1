@@ -50,7 +50,7 @@ function Index() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    fetch("/api/content")
+    fetch("/api/content", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         const h = data?.hero as Partial<HeroContent> | undefined;
@@ -61,7 +61,7 @@ function Index() {
         if (Array.isArray(data?.stats)) setStats(data.stats);
       })
       .catch(() => {});
-    fetch("/api/programs")
+    fetch("/api/programs", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setPrograms(data.slice(0, 3));
@@ -89,18 +89,18 @@ function Index() {
             loading={i === 0 ? "eager" : "lazy"}
           />
         ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
-        <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-center px-4 text-center text-white sm:px-6">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/80" />
+        <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-end px-4 pb-14 text-center text-white sm:px-6 sm:pb-20">
           <span className="inline-flex items-center rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
             {hero.badge}
           </span>
-          <h1 className="mt-5 text-3xl font-semibold tracking-tight sm:text-5xl md:text-6xl drop-shadow">
+          <h1 className="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl md:text-5xl drop-shadow">
             {hero.title}
           </h1>
-          <p className="mt-5 max-w-2xl text-base text-white/90 sm:text-lg">
+          <p className="mt-3 max-w-2xl text-sm text-white/90 sm:text-base">
             {hero.description}
           </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
               <Link to={hero.ctaPrimaryLink}>
                 {hero.ctaPrimaryLabel} <ArrowRight className="ml-1 h-4 w-4" />
