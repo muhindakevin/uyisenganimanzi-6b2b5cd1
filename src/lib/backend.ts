@@ -117,7 +117,7 @@ async function hmac(message: string) {
 }
 
 export async function createAdminToken(email: string) {
-  const payload = base64Url(JSON.stringify({ email, exp: Date.now() + 1000 * 60 * 60 * 8 }));
+  const payload = base64Url(JSON.stringify({ email, exp: Date.now() + 1000 * 60 * 60 * 24 * 30 }));
   return `${payload}.${await hmac(payload)}`;
 }
 
