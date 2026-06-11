@@ -146,8 +146,14 @@ async function apiRequest<T>(url: string, options: RequestInit = {}) {
   });
 
   const data = await response.json().catch(() => null);
+  if (response.status === 401) {
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("auth_email");
+    window.location.href = "/login";
+    throw new Error("Your session expired. Redirecting you to the login page...");
+  }
   if (!response.ok) {
-    throw new Error(data?.message || "The backend request failed.");
+    throw new Error(data?.message || "Something went wrong while saving. Please try again.");
   }
   return data as T;
 }
