@@ -364,11 +364,12 @@ function AdminDashboard() {
       {error ? <p className="mb-6 rounded-lg border border-destructive p-4 text-destructive">{error}</p> : null}
 
       <Tabs defaultValue="hero" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-10">
+        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-11">
           <TabsTrigger value="hero">Hero</TabsTrigger>
           <TabsTrigger value="stats">Stats</TabsTrigger>
           <TabsTrigger value="donation">Donate</TabsTrigger>
-          <TabsTrigger value="team">Team</TabsTrigger>
+          <TabsTrigger value="team">Staff</TabsTrigger>
+          <TabsTrigger value="board">Board</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
           <TabsTrigger value="prog-page">Programs Page</TabsTrigger>
           <TabsTrigger value="gallery">Gallery</TabsTrigger>
