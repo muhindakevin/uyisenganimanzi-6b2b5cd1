@@ -433,6 +433,41 @@ function AdminDashboard() {
           />
         </TabsContent>
 
+        <TabsContent value="board">
+          <ManagedList
+            title="Board Members"
+            empty="No board members yet."
+            items={board}
+            renderItem={(member) => (
+              <>
+                <p className="font-semibold">{member.name}</p>
+                <p className="text-sm text-muted-foreground">{member.title}</p>
+              </>
+            )}
+            formTitle={(member) => (member ? "Edit Board Member" : "Add Board Member")}
+            renderForm={(member, close) => (
+              <TeamForm
+                member={member}
+                saving={saving}
+                onSave={async (saved) => {
+                  const next = saved.id
+                    ? board.map((m) => (m.id === saved.id ? saved : m))
+                    : [...board, { ...saved, id: Date.now() }];
+                  setBoard(next);
+                  await saveContent({ board: next });
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => {
+              const next = board.filter((m) => m.id !== id);
+              setBoard(next);
+              saveContent({ board: next });
+            }}
+          />
+        </TabsContent>
+
+
         <TabsContent value="programs">
           <ManagedList
             title="Programs"
