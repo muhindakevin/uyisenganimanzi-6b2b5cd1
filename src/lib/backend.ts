@@ -1,4 +1,4 @@
-import { neon } from "@neondatabase/serverless";
+import { createClient } from "@supabase/supabase-js";
 import seedData from "@/data.json";
 
 type JsonRecord = Record<string, unknown>;
@@ -42,7 +42,7 @@ export type PressRoomItem = {
   created_at?: string;
 };
 
-let sqlClient: ReturnType<typeof neon> | undefined;
+let supabaseClient: ReturnType<typeof createClient> | undefined;
 
 const fallbackData = seedData as unknown as {
   team?: Array<Omit<TeamMember, "id"> & { id: number }>;
@@ -54,32 +54,37 @@ const fallbackData = seedData as unknown as {
 
 function getRuntimeEnv(name: string) {
   const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
-  return process.env[name] || runtimeEnv?.[name];
+  const value = process.env[name] || runtimeEnv?.[name];
+  return typeof value === "string" ? value.trim() : value;
 }
 
-function getDatabaseUrl() {
-  const databaseUrl = getRuntimeEnv("DATABASE_URL");
-  if (!databaseUrl) {
-    throw new Error("DATABASE_URL is missing. Add your Neon connection string to .env or your hosting secrets.");
+function getSupabaseUrl() {
+  const url = getRuntimeEnv("SUPABASE_URL");
+  if (!url) {
+    throw new Error("SUPABASE_URL is missing. Add your Supabase URL to .env or hosting secrets.");
   }
-  return databaseUrl;
+  return url;
+}
+
+function getSupabaseKey() {
+  const serviceRoleKey = getRuntimeEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const anonKey = getRuntimeEnv("SUPABASE_ANON_KEY");
+  const key = (serviceRoleKey || anonKey)?.toString().trim();
+  if (!key) {
+    throw new Error("SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY is missing. Add your Supabase service role key or anon key to .env or hosting secrets.");
+  }
+  return key;
 }
 
 function isMissingDatabaseError(error: unknown) {
-  return error instanceof Error && error.message.includes("DATABASE_URL is missing");
+  return error instanceof Error && (error.message.includes("SUPABASE_URL") || error.message.includes("SUPABASE_SERVICE_ROLE_KEY") || error.message.includes("SUPABASE_ANON_KEY"));
 }
 
 export function sql() {
-  if (!sqlClient) {
-    sqlClient = neon(getDatabaseUrl());
+  if (!supabaseClient) {
+    supabaseClient = createClient(getSupabaseUrl(), getSupabaseKey());
   }
-  return sqlClient;
-}
-
-async function query<T = Record<string, any>>(text: string, params: unknown[] = []): Promise<T[]> {
-  const client = sql() as unknown as { query: (text: string, params?: unknown[]) => Promise<T[]> };
-  const result = await client.query(text, params);
-  return result as unknown as T[];
+  return supabaseClient;
 }
 
 export function jsonError(message: string, status = 400) {
@@ -143,10 +148,19 @@ export async function requireAdminOr401(request: Request) {
 }
 
 export async function getAdminByEmail(email: string) {
-  const rows = await query("select email, password_hash from admin_users where lower(email) = lower($1) limit 1", [
-    email,
-  ]);
-  return rows[0] as { email: string; password_hash: string } | undefined;
+  try {
+    const { data, error } = await sql()
+      .from("admin_users")
+      .select("email, password_hash")
+      .eq("email", email)
+      .limit(1)
+      .single();
+    if (error) throw error;
+    return data as { email: string; password_hash: string } | undefined;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("no rows")) return undefined;
+    throw error;
+  }
 }
 
 function numberId<T extends Record<string, any>>(row: T) {
@@ -159,9 +173,12 @@ function numberIds<T extends Record<string, any>>(rows: T[]) {
 
 export async function listTeam() {
   try {
-    return numberIds(await query(
-      "select id, name, title, email, phone, photo from team_members order by id asc",
-    )) as TeamMember[];
+    const { data, error } = await sql()
+      .from("team_members")
+      .select("id, name, title, email, phone, photo")
+      .order("id", { ascending: true });
+    if (error) throw error;
+    return numberIds(data ?? []) as TeamMember[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.team ?? []).map((member) => ({ ...member, id: Number(member.id) }));
@@ -169,116 +186,138 @@ export async function listTeam() {
 }
 
 export async function saveTeamMember(member: Partial<TeamMember>) {
-  if (member.id) {
-    const rows = await query(
-      `update team_members
-       set name = $2, title = $3, email = $4, phone = $5, photo = $6, updated_at = now()
-       where id = $1
-       returning id, name, title, email, phone, photo`,
-      [member.id, member.name, member.title, member.email ?? null, member.phone ?? null, member.photo ?? null],
-    );
-    return rows[0] ? (numberId(rows[0]) as TeamMember) : undefined;
-  }
+  try {
+    if (member.id) {
+      const { data, error } = await sql()
+        .from("team_members")
+        .update({
+          name: member.name,
+          title: member.title,
+          email: member.email ?? null,
+          phone: member.phone ?? null,
+          photo: member.photo ?? null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", member.id)
+        .select("id, name, title, email, phone, photo")
+        .single();
+      if (error) throw error;
+      return data ? (numberId(data) as TeamMember) : undefined;
+    }
 
-  const rows = await query(
-    `insert into team_members (name, title, email, phone, photo)
-     values ($1, $2, $3, $4, $5)
-     returning id, name, title, email, phone, photo`,
-    [member.name, member.title, member.email ?? null, member.phone ?? null, member.photo ?? null],
-  );
-  return numberId(rows[0]) as TeamMember;
+    const { data, error } = await sql()
+      .from("team_members")
+      .insert({
+        name: member.name,
+        title: member.title,
+        email: member.email ?? null,
+        phone: member.phone ?? null,
+        photo: member.photo ?? null,
+      })
+      .select("id, name, title, email, phone, photo")
+      .single();
+    if (error) throw error;
+    return numberId(data) as TeamMember;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("missing")) throw error;
+    throw error;
+  }
 }
 
 export async function deleteTeamMember(id: number) {
-  await query("delete from team_members where id = $1", [id]);
-}
-
-function isMissingColumnError(error: unknown, column?: string) {
-  if (!(error instanceof Error)) return false;
-  const msg = error.message.toLowerCase();
-  if (!msg.includes("does not exist")) return false;
-  return column ? msg.includes(`"${column.toLowerCase()}"`) : true;
+  const { error } = await sql()
+    .from("team_members")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
 }
 
 export async function listPrograms() {
   try {
-    try {
-      return numberIds(await query(
-        "select id, title, description, long_description, image from programs order by id asc",
-      )) as Program[];
-    } catch (error) {
-      if (!isMissingColumnError(error, "long_description")) throw error;
-      const rows = await query("select id, title, description, image from programs order by id asc");
-      return numberIds(rows.map((r) => ({ ...r, long_description: null }))) as Program[];
-    }
+    const { data, error } = await sql()
+      .from("programs")
+      .select("id, title, description, long_description, image")
+      .order("id", { ascending: true });
+    if (error) throw error;
+    return numberIds(data ?? []) as Program[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
-    return (fallbackData.programs ?? []).map((program) => ({ ...program, long_description: (program as any).long_description ?? null, id: Number(program.id) }));
+    return (fallbackData.programs ?? []).map((program) => ({
+      ...program,
+      long_description: (program as any).long_description ?? null,
+      id: Number(program.id),
+    }));
   }
 }
 
 export async function saveProgram(program: Partial<Program>) {
-  if (program.id) {
-    try {
-      const rows = await query(
-        `update programs
-         set title = $2, description = $3, long_description = $4, image = $5, updated_at = now()
-         where id = $1
-         returning id, title, description, long_description, image`,
-        [program.id, program.title, program.description, program.long_description ?? null, program.image ?? null],
-      );
-      return rows[0] ? (numberId(rows[0]) as Program) : undefined;
-    } catch (error) {
-      if (!isMissingColumnError(error, "long_description")) throw error;
-      const rows = await query(
-        `update programs set title = $2, description = $3, image = $4, updated_at = now() where id = $1 returning id, title, description, image`,
-        [program.id, program.title, program.description, program.image ?? null],
-      );
-      return rows[0] ? (numberId({ ...rows[0], long_description: null }) as Program) : undefined;
-    }
-  }
-
   try {
-    const rows = await query(
-      `insert into programs (title, description, long_description, image)
-       values ($1, $2, $3, $4)
-       returning id, title, description, long_description, image`,
-      [program.title, program.description, program.long_description ?? null, program.image ?? null],
-    );
-    return numberId(rows[0]) as Program;
+    if (program.id) {
+      const { data, error } = await sql()
+        .from("programs")
+        .update({
+          title: program.title,
+          description: program.description,
+          long_description: program.long_description ?? null,
+          image: program.image ?? null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", program.id)
+        .select("id, title, description, long_description, image")
+        .single();
+      if (error) throw error;
+      return data ? (numberId(data) as Program) : undefined;
+    }
+
+    const { data, error } = await sql()
+      .from("programs")
+      .insert({
+        title: program.title,
+        description: program.description,
+        long_description: program.long_description ?? null,
+        image: program.image ?? null,
+      })
+      .select("id, title, description, long_description, image")
+      .single();
+    if (error) throw error;
+    return numberId(data) as Program;
   } catch (error) {
-    if (!isMissingColumnError(error, "long_description")) throw error;
-    const rows = await query(
-      `insert into programs (title, description, image) values ($1, $2, $3) returning id, title, description, image`,
-      [program.title, program.description, program.image ?? null],
-    );
-    return numberId({ ...rows[0], long_description: null }) as Program;
+    if (error instanceof Error && error.message.includes("missing")) throw error;
+    throw error;
   }
 }
 
 export async function getProgram(id: number) {
   try {
-    const rows = await query(
-      "select id, title, description, long_description, image from programs where id = $1",
-      [id],
-    );
-    return rows[0] ? (numberId(rows[0]) as Program) : undefined;
+    const { data, error } = await sql()
+      .from("programs")
+      .select("id, title, description, long_description, image")
+      .eq("id", id)
+      .single();
+    if (error) throw error;
+    return data ? (numberId(data) as Program) : undefined;
   } catch (error) {
-    if (!isMissingColumnError(error, "long_description")) throw error;
-    const rows = await query("select id, title, description, image from programs where id = $1", [id]);
-    return rows[0] ? (numberId({ ...rows[0], long_description: null }) as Program) : undefined;
+    if (error instanceof Error && error.message.includes("no rows")) return undefined;
+    throw error;
   }
 }
 
 export async function deleteProgram(id: number) {
-  await query("delete from programs where id = $1", [id]);
+  const { error } = await sql()
+    .from("programs")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
 }
 
 export async function listGallery() {
   try {
-    return numberIds(await query(
-      "select id, title, image, description, category, link from gallery_items order by id asc",
-    )) as GalleryImage[];
+    const { data, error } = await sql()
+      .from("gallery_items")
+      .select("id, title, image, description, category, link")
+      .order("id", { ascending: true });
+    if (error) throw error;
+    return numberIds(data ?? []) as GalleryImage[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.gallery ?? []).map((item) => ({
@@ -291,82 +330,142 @@ export async function listGallery() {
 }
 
 export async function saveGalleryImage(image: Partial<GalleryImage>) {
-  if (image.id) {
-    const rows = await query(
-      `update gallery_items
-       set title = $2, image = $3, description = $4, category = $5, link = $6, updated_at = now()
-       where id = $1
-       returning id, title, image, description, category, link`,
-      [image.id, image.title, image.image, image.description ?? null, image.category ?? "Event", image.link ?? null],
-    );
-    return rows[0] ? (numberId(rows[0]) as GalleryImage) : undefined;
-  }
+  try {
+    if (image.id) {
+      const { data, error } = await sql()
+        .from("gallery_items")
+        .update({
+          title: image.title,
+          image: image.image,
+          description: image.description ?? null,
+          category: image.category ?? "Event",
+          link: image.link ?? null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", image.id)
+        .select("id, title, image, description, category, link")
+        .single();
+      if (error) throw error;
+      return data ? (numberId(data) as GalleryImage) : undefined;
+    }
 
-  const rows = await query(
-    `insert into gallery_items (title, image, description, category, link)
-     values ($1, $2, $3, $4, $5)
-     returning id, title, image, description, category, link`,
-    [image.title, image.image, image.description ?? null, image.category ?? "Event", image.link ?? null],
-  );
-  return numberId(rows[0]) as GalleryImage;
+    const { data, error } = await sql()
+      .from("gallery_items")
+      .insert({
+        title: image.title,
+        image: image.image,
+        description: image.description ?? null,
+        category: image.category ?? "Event",
+        link: image.link ?? null,
+      })
+      .select("id, title, image, description, category, link")
+      .single();
+    if (error) throw error;
+    return numberId(data) as GalleryImage;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("missing")) throw error;
+    throw error;
+  }
 }
 
 export async function deleteGalleryImage(id: number) {
-  await query("delete from gallery_items where id = $1", [id]);
+  const { error } = await sql()
+    .from("gallery_items")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
 }
 
 export async function listPressRoom(category?: string | null, limit?: number | null) {
-  const params: unknown[] = [];
-  const where = category ? "where category = $1" : "";
-  if (category) params.push(category);
-  const limitSql = limit ? `limit ${Math.max(1, Math.min(limit, 50))}` : "";
-
   try {
-    return numberIds(await query(
-      `select id, title, summary, description, category, image, document, document_name, link, created_at
-       from press_room_items
-       ${where}
-       order by created_at desc, id desc
-       ${limitSql}`,
-      params,
-    )) as PressRoomItem[];
+    const limitValue = limit ? Math.max(1, Math.min(limit, 50)) : 200;
+    let query = sql()
+      .from("press_room_items")
+      .select("id, title, summary, description, category, image, document, document_name, link, created_at")
+      .order("created_at", { ascending: false });
+
+    if (category) {
+      query = query.eq("category", category);
+    }
+
+    const { data, error } = await query.limit(limitValue);
+    if (error) throw error;
+    return numberIds(data ?? []) as PressRoomItem[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     const items = (fallbackData.pressRoom ?? []).filter((item) => !category || item.category === category);
     const limited = limit ? items.slice(0, Math.max(1, Math.min(limit, 50))) : items;
-    return limited.map((item) => ({ ...item, id: Number(item.id), description: null, document: null, document_name: null, link: null }));
+    return limited.map((item) => ({
+      ...item,
+      id: Number(item.id),
+      description: null,
+      document: null,
+      document_name: null,
+      link: null,
+    }));
   }
 }
 
 export async function savePressRoomItem(item: Partial<PressRoomItem>) {
-  if (item.id) {
-    const rows = await query(
-      `update press_room_items
-       set title = $2, summary = $3, description = $4, category = $5, image = $6, document = $7, document_name = $8, link = $9, updated_at = now()
-       where id = $1
-       returning id, title, summary, description, category, image, document, document_name, link, created_at`,
-      [item.id, item.title, item.summary, item.description ?? null, item.category, item.image ?? null, item.document ?? null, item.document_name ?? null, item.link ?? null],
-    );
-    return rows[0] ? (numberId(rows[0]) as PressRoomItem) : undefined;
-  }
+  try {
+    if (item.id) {
+      const { data, error } = await sql()
+        .from("press_room_items")
+        .update({
+          title: item.title,
+          summary: item.summary,
+          description: item.description ?? null,
+          category: item.category,
+          image: item.image ?? null,
+          document: item.document ?? null,
+          document_name: item.document_name ?? null,
+          link: item.link ?? null,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", item.id)
+        .select("id, title, summary, description, category, image, document, document_name, link, created_at")
+        .single();
+      if (error) throw error;
+      return data ? (numberId(data) as PressRoomItem) : undefined;
+    }
 
-  const rows = await query(
-    `insert into press_room_items (title, summary, description, category, image, document, document_name, link)
-     values ($1, $2, $3, $4, $5, $6, $7, $8)
-     returning id, title, summary, description, category, image, document, document_name, link, created_at`,
-    [item.title, item.summary, item.description ?? null, item.category, item.image ?? null, item.document ?? null, item.document_name ?? null, item.link ?? null],
-  );
-  return numberId(rows[0]) as PressRoomItem;
+    const { data, error } = await sql()
+      .from("press_room_items")
+      .insert({
+        title: item.title,
+        summary: item.summary,
+        description: item.description ?? null,
+        category: item.category,
+        image: item.image ?? null,
+        document: item.document ?? null,
+        document_name: item.document_name ?? null,
+        link: item.link ?? null,
+      })
+      .select("id, title, summary, description, category, image, document, document_name, link, created_at")
+      .single();
+    if (error) throw error;
+    return numberId(data) as PressRoomItem;
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("missing")) throw error;
+    throw error;
+  }
 }
 
 export async function deletePressRoomItem(id: number) {
-  await query("delete from press_room_items where id = $1", [id]);
+  const { error } = await sql()
+    .from("press_room_items")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
 }
 
 export async function getSiteContent() {
   try {
-    const rows = await query("select key, value from site_content");
-    return Object.fromEntries(rows.map((row) => [row.key, row.value])) as JsonRecord;
+    const { data, error } = await sql()
+      .from("site_content")
+      .select("key, value");
+    if (error) throw error;
+    return Object.fromEntries((data ?? []).map((row: any) => [row.key, row.value])) as JsonRecord;
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.content ?? {}) as JsonRecord;
@@ -374,40 +473,67 @@ export async function getSiteContent() {
 }
 
 export async function updateSiteContent(updates: JsonRecord) {
-  for (const [key, value] of Object.entries(updates)) {
-    await query(
-      `insert into site_content (key, value, updated_at)
-       values ($1, $2::jsonb, now())
-       on conflict (key) do update set value = excluded.value, updated_at = now()`,
-      [key, JSON.stringify(value)],
-    );
+  try {
+    for (const [key, value] of Object.entries(updates)) {
+      const { error } = await sql()
+        .from("site_content")
+        .upsert(
+          {
+            key,
+            value: value,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: "key" }
+        );
+      if (error) throw error;
+    }
+    return getSiteContent();
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("missing")) throw error;
+    throw error;
   }
-  return getSiteContent();
 }
 
 export async function saveContactMessage(message: JsonRecord) {
-  const rows = await query(
-    `insert into contact_messages (name, email, phone, subject, message)
-     values ($1, $2, $3, $4, $5)
-     returning id, created_at`,
-    [
-      message.name ?? null,
-      message.email ?? null,
-      message.phone ?? null,
-      message.subject ?? null,
-      message.message ?? null,
-    ],
-  );
-  return numberId(rows[0]) as { id: number; created_at: string };
+  try {
+    const { data, error } = await sql()
+      .from("contact_messages")
+      .insert({
+        name: message.name ?? null,
+        email: message.email ?? null,
+        phone: message.phone ?? null,
+        subject: message.subject ?? null,
+        message: message.message ?? null,
+      })
+      .select("id, created_at")
+      .single();
+    if (error) throw error;
+    return numberId(data) as { id: number; created_at: string };
+  } catch (error) {
+    if (error instanceof Error && error.message.includes("missing")) throw error;
+    throw error;
+  }
 }
 
 export async function listContactMessages() {
-  const rows = await query(
-    "select id, name, email, phone, subject, message, created_at from contact_messages order by created_at desc limit 200",
-  );
-  return numberIds(rows);
+  try {
+    const { data, error } = await sql()
+      .from("contact_messages")
+      .select("id, name, email, phone, subject, message, created_at")
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw error;
+    return numberIds(data ?? []);
+  } catch (error) {
+    if (!isMissingDatabaseError(error)) throw error;
+    return [];
+  }
 }
 
 export async function deleteContactMessage(id: number) {
-  await query("delete from contact_messages where id = $1", [id]);
+  const { error } = await sql()
+    .from("contact_messages")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
 }
