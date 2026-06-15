@@ -54,8 +54,8 @@ const fallbackData = seedData as unknown as {
 
 function getRuntimeEnv(name: string) {
   const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
-  const value = process.env[name] || runtimeEnv?.[name];
-  return typeof value === "string" ? value.trim() : value;
+  const value = typeof process !== "undefined" ? process.env[name] : undefined;
+  return typeof value === "string" ? value.trim() : runtimeEnv?.[name];
 }
 
 function getSupabaseUrl() {

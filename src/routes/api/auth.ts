@@ -18,9 +18,9 @@ export const Route = createFileRoute("/api/auth")({
 
         const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
         const passwordHash = await hashPassword(password);
-        const envEmail = process.env.ADMIN_EMAIL || runtimeEnv?.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
-        const envPassword = process.env.ADMIN_PASSWORD || runtimeEnv?.ADMIN_PASSWORD;
-        const envPasswordHash = process.env.ADMIN_PASSWORD_HASH || runtimeEnv?.ADMIN_PASSWORD_HASH || DEFAULT_ADMIN_PASSWORD_HASH;
+        const envEmail = typeof process !== "undefined" ? process.env.ADMIN_EMAIL : undefined || runtimeEnv?.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
+        const envPassword = typeof process !== "undefined" ? process.env.ADMIN_PASSWORD : undefined || runtimeEnv?.ADMIN_PASSWORD;
+        const envPasswordHash = typeof process !== "undefined" ? process.env.ADMIN_PASSWORD_HASH : undefined || runtimeEnv?.ADMIN_PASSWORD_HASH || DEFAULT_ADMIN_PASSWORD_HASH;
         const validEnvLogin =
           !!envEmail &&
           email.toLowerCase() === envEmail.toLowerCase() &&
