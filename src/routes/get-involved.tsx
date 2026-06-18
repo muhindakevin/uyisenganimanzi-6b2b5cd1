@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { SiteLayout } from "@/components/SiteLayout";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
+import { Button } from "@/frontend/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/ui/card";
 import { Heart, Users, Handshake, Newspaper, FileText, Briefcase } from "lucide-react";
 import { useState, useEffect } from "react";
 

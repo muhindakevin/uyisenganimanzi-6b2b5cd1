@@ -2,13 +2,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useState } from "react";
 import { Edit, Plus, RefreshCw, Save, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/frontend/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/ui/card";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/frontend/components/ui/dialog";
+import { Input } from "@/frontend/components/ui/input";
+import { Label } from "@/frontend/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/frontend/components/ui/tabs";
+import { Textarea } from "@/frontend/components/ui/textarea";
 
 export const Route = createFileRoute("/admin")({
   component: AdminDashboard,

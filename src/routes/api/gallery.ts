@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { deleteGalleryImage, jsonError, listGallery, requireAdminOr401, saveGalleryImage } from "@/lib/backend";
+import { deleteGalleryImage, jsonError, listGallery, requireAdminOr401, saveGalleryImage } from "@/backend";
 
 export const Route = createFileRoute("/api/gallery")({
   server: {

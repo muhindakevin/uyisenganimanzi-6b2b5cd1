@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SiteLayout } from "@/components/SiteLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/ui/card";
+import { Button } from "@/frontend/components/ui/button";
 import { Download, FileText, ExternalLink } from "lucide-react";
 import { useState, useEffect } from "react";
 

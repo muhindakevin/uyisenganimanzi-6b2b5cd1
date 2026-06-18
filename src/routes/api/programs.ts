@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { deleteProgram, jsonError, listPrograms, requireAdminOr401, saveProgram } from "@/lib/backend";
+import { deleteProgram, jsonError, listPrograms, requireAdminOr401, saveProgram } from "@/backend";
 
 export const Route = createFileRoute("/api/programs")({
   server: {

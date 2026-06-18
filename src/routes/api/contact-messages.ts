@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { deleteContactMessage, jsonError, listContactMessages, requireAdminOr401 } from "@/lib/backend";
+import { deleteContactMessage, jsonError, listContactMessages, requireAdminOr401 } from "@/backend";
 
 export const Route = createFileRoute("/api/contact-messages")({
   server: {

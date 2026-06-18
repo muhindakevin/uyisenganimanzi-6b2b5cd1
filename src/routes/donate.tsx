@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Heart, Smartphone, Landmark } from "lucide-react";
-import { SiteLayout } from "@/components/SiteLayout";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
 
 export const Route = createFileRoute("/donate")({
   head: () => ({

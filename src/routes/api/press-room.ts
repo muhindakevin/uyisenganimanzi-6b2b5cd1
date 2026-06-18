@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { deletePressRoomItem, jsonError, listPressRoom, requireAdminOr401, savePressRoomItem } from "@/lib/backend";
+import { deletePressRoomItem, jsonError, listPressRoom, requireAdminOr401, savePressRoomItem } from "@/backend";
 
 export const Route = createFileRoute("/api/press-room")({
   server: {

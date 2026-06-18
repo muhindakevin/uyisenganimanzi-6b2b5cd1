@@ -4,7 +4,7 @@ This project is a Node.js app, not a plain static HTML upload.
 
 ## Upload
 
-1. Upload `uyisenganimanzi-cpanel.zip` to your hosting account.
+1. Upload `uyisenganimanzi-cpanel-production.zip` to your hosting account.
 2. Extract it into a folder outside `public_html`, for example `uyisenganimanzi`.
 3. In cPanel, open **Setup Node.js App**.
 4. Create an app with:
@@ -12,11 +12,13 @@ This project is a Node.js app, not a plain static HTML upload.
    - Application root: the extracted folder
    - Application URL: your domain
    - Application startup file: `server.prod.js`
+   - Application startup command, if cPanel asks: `npm start`
 5. Run **NPM Install** from cPanel.
 6. Add environment variables from your `.env` or hosting settings:
    - `SUPABASE_URL`
    - `SUPABASE_ANON_KEY`
    - `SUPABASE_SERVICE_ROLE_KEY`
+   - `DATABASE_URL`
    - `ADMIN_EMAIL`
    - `ADMIN_PASSWORD` or `ADMIN_PASSWORD_HASH`
    - `ADMIN_SESSION_SECRET`
@@ -25,4 +27,6 @@ This project is a Node.js app, not a plain static HTML upload.
 ## Notes
 
 - Do not upload only `dist/client` to `public_html`; API routes and admin features need the Node server.
+- Do not run `npm run dev`, `vite dev`, or `vite preview` on cPanel. Those are development/preview commands and can cause errors such as `The service is no longer running` from Vite/esbuild.
+- The correct production command is `npm start`, which runs `node server.prod.js`.
 - If your cPanel does not support Node.js apps, use a host such as Render, Railway, Vercel, or Cloudflare Workers/Pages instead.

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { SiteLayout } from "@/components/SiteLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
+import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/ui/card";
 import { useState, useEffect } from "react";
 
 export const Route = createFileRoute("/press-room/news")({

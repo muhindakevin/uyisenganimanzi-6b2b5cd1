@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { getSiteContent, requireAdminOr401, updateSiteContent } from "@/lib/backend";
+import { getSiteContent, requireAdminOr401, updateSiteContent } from "@/backend";
 
 export const Route = createFileRoute("/api/content")({
   server: {

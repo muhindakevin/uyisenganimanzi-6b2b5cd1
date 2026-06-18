@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
-import { SiteLayout } from "@/components/SiteLayout";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({

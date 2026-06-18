@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type React from "react";
-import { SiteLayout } from "@/components/SiteLayout";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/frontend/components/ui/button";
+import { Input } from "@/frontend/components/ui/input";
+import { Label } from "@/frontend/components/ui/label";
+import { Textarea } from "@/frontend/components/ui/textarea";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({

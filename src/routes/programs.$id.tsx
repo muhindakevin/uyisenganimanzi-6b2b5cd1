@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import { SiteLayout } from "@/components/SiteLayout";
-import { Button } from "@/components/ui/button";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
+import { Button } from "@/frontend/components/ui/button";
 
 export const Route = createFileRoute("/programs/$id")({
   component: ProgramDetail,

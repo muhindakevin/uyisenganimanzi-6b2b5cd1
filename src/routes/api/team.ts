@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { deleteTeamMember, jsonError, listTeam, requireAdminOr401, saveTeamMember } from "@/lib/backend";
+import { deleteTeamMember, jsonError, listTeam, requireAdminOr401, saveTeamMember } from "@/backend";
 
 export const Route = createFileRoute("/api/team")({
   server: {

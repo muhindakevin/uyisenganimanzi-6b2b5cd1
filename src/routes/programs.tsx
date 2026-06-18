@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { SiteLayout } from "@/components/SiteLayout";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { Check } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({

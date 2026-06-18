@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
-import { SiteLayout } from "@/components/SiteLayout";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
 
 export const Route = createFileRoute("/about")({
   head: () => ({

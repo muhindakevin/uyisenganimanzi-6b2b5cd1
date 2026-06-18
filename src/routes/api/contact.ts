@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { jsonError, saveContactMessage } from "@/lib/backend";
+import { jsonError, saveContactMessage } from "@/backend";
 
 export const Route = createFileRoute("/api/contact")({
   server: {

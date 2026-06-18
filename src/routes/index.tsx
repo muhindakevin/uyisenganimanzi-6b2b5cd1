@@ -1,9 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { SiteLayout } from "@/components/SiteLayout";
-import { PartnersMarquee } from "@/components/PartnersMarquee";
-import { Button } from "@/components/ui/button";
+import { SiteLayout } from "@/frontend/components/SiteLayout";
+import { PartnersMarquee } from "@/frontend/components/PartnersMarquee";
+import { Button } from "@/frontend/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
