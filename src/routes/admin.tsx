@@ -131,6 +131,48 @@ const DEFAULT_CONTENT: Content = {
   },
 };
 
+type AboutContent = {
+  storyTitle: string;
+  storyText: string;
+  storyImage: string;
+  impactStats: Array<{ value: string; label: string }>;
+  impactRecognition: string[];
+  beneficiaries: Array<{ title: string; description: string }>;
+  approachSteps: Array<{ title: string; description: string }>;
+};
+
+const DEFAULT_ABOUT_CONTENT: AboutContent = {
+  storyTitle: "Our story since 2002",
+  storyText:
+    "Uyisenga Ni Imanzi (UNM) was founded in 2002, with a mission to provide orphans from the genocide and HIV/AIDS with social services, education and income-generating opportunities. UNM was established to implement child- and youth-focused programs that address their special needs.\n\nAfter two years of concerted efforts, it became clear that these children were too traumatized to fully participate in or benefit from the programs offered. With the addition of psychosocial and health services in 2004, UNM expanded and strengthened its activities greatly—especially in Kigali City and the Southern and Eastern Provinces.\n\nIn recognition of the needs of orphans in Rwanda, the Ministerial Decree granting legal entity to the Association Uyisenga Ni Imanzi is N° 70/11 of 10th August 2005, published in October 2005. Several awards have crowned UNM's activities, mainly in the fight against HIV/AIDS among youth, the care of children, and the promotion of children's rights.\n\nUNM is an active member of local and international umbrellas: Ibuka, Rwanda NGO Forum on AIDS and Health Promotion, the International Rehabilitation Council for Torture Victims, and Family for Every Child.",
+  storyImage: "",
+  impactStats: [
+    { value: "20,000+", label: "Children & youth supported" },
+    { value: "20+", label: "Years of service" },
+    { value: "3", label: "Provinces served" },
+    { value: "Multiple", label: "Awards & recognition" },
+  ],
+  impactRecognition: [
+    "Ministerial Decree N° 70/11 of 10th August 2005 granting legal entity to UNM.",
+    "Awards in HIV/AIDS prevention among youth, child care, and children's rights.",
+    "Active member of Ibuka, Rwanda NGO Forum on AIDS and Health Promotion.",
+    "Member of the International Rehabilitation Council for Torture Victims (IRCT).",
+    "Member of Family for Every Child.",
+  ],
+  beneficiaries: [
+    { title: "Orphans & vulnerable children", description: "Children orphaned by the 1994 Genocide against the Tutsi and by HIV/AIDS." },
+    { title: "Youth (12–24)", description: "Adolescents and young adults navigating education, identity and economic life." },
+    { title: "Survivors of trauma & torture", description: "People living with the lasting effects of violence, loss and gender-based harm." },
+    { title: "Families & caregivers", description: "Households raising vulnerable children, including child- and grandparent-headed homes." },
+  ],
+  approachSteps: [
+    { title: "Listen first", description: "We start by listening to children, youth and families—their needs, their words and their pace." },
+    { title: "Heal the trauma", description: "Psychosocial and mental health care unlock the ability to learn, work and relate." },
+    { title: "Build the skills", description: "Education, vocational training and life skills give young people real choices." },
+    { title: "Strengthen the community", description: "Families, peer groups and partners sustain change long after a program ends." },
+  ],
+};
+
 function getToken() {
   return localStorage.getItem("auth_token") || "";
 }
@@ -170,6 +212,7 @@ function AdminDashboard() {
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
   const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
+  const [aboutContent, setAboutContent] = useState<AboutContent>(DEFAULT_ABOUT_CONTENT);
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -219,6 +262,32 @@ function AdminDashboard() {
           ...((siteContent.contact as Content["contact"]) || {}),
         },
       } as Content);
+      const aboutIn = (siteContent.about as Partial<AboutContent>) || {};
+      setAboutContent({
+        ...DEFAULT_ABOUT_CONTENT,
+        ...aboutIn,
+        impactStats: Array.isArray(aboutIn.impactStats)
+          ? aboutIn.impactStats.map((item) => ({
+              value: String(item?.value ?? ""),
+              label: String(item?.label ?? ""),
+            }))
+          : DEFAULT_ABOUT_CONTENT.impactStats,
+        impactRecognition: Array.isArray(aboutIn.impactRecognition)
+          ? aboutIn.impactRecognition.map((item) => String(item ?? ""))
+          : DEFAULT_ABOUT_CONTENT.impactRecognition,
+        beneficiaries: Array.isArray(aboutIn.beneficiaries)
+          ? aboutIn.beneficiaries.map((item) => ({
+              title: String(item?.title ?? ""),
+              description: String(item?.description ?? ""),
+            }))
+          : DEFAULT_ABOUT_CONTENT.beneficiaries,
+        approachSteps: Array.isArray(aboutIn.approachSteps)
+          ? aboutIn.approachSteps.map((item) => ({
+              title: String(item?.title ?? ""),
+              description: String(item?.description ?? ""),
+            }))
+          : DEFAULT_ABOUT_CONTENT.approachSteps,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to load dashboard data.");
     } finally {
@@ -328,6 +397,34 @@ function AdminDashboard() {
           ...((data.content.contact as Content["contact"]) || {}),
         },
       } as Content);
+      if (data.content.about) {
+        const aboutIn = data.content.about as Partial<AboutContent>;
+        setAboutContent({
+          ...DEFAULT_ABOUT_CONTENT,
+          ...aboutIn,
+          impactStats: Array.isArray(aboutIn.impactStats)
+            ? aboutIn.impactStats.map((item) => ({
+                value: String(item?.value ?? ""),
+                label: String(item?.label ?? ""),
+              }))
+            : aboutContent.impactStats,
+          impactRecognition: Array.isArray(aboutIn.impactRecognition)
+            ? aboutIn.impactRecognition.map((item) => String(item ?? ""))
+            : aboutContent.impactRecognition,
+          beneficiaries: Array.isArray(aboutIn.beneficiaries)
+            ? aboutIn.beneficiaries.map((item) => ({
+                title: String(item?.title ?? ""),
+                description: String(item?.description ?? ""),
+              }))
+            : aboutContent.beneficiaries,
+          approachSteps: Array.isArray(aboutIn.approachSteps)
+            ? aboutIn.approachSteps.map((item) => ({
+                title: String(item?.title ?? ""),
+                description: String(item?.description ?? ""),
+              }))
+            : aboutContent.approachSteps,
+        });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unable to save content.");
       throw err;
@@ -382,6 +479,7 @@ function AdminDashboard() {
           <TabsTrigger value="press">Press Room</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
+          <TabsTrigger value="about">About Pages</TabsTrigger>
         </TabsList>
 
         <TabsContent value="hero">
@@ -583,6 +681,17 @@ function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <ContentForm content={content} saving={saving} onSave={(value) => saveContent(value as unknown as Record<string, unknown>)} />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="about">
+          <Card>
+            <CardHeader>
+              <CardTitle>About Page Content</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AboutPageForm content={aboutContent} saving={saving} onSave={(value) => saveContent({ about: value })} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -952,6 +1061,15 @@ function PressRoomForm({
         </select>
       </div>
 
+      <div>
+        <Label htmlFor="press-image">Story image (optional)</Label>
+        <Input id="press-image" type="file" accept="image/*" onChange={handleImageChange} />
+        <p className="mt-1 text-xs text-muted-foreground">
+          Upload a photo for the story. It will be used inside the story detail and can also appear on the homepage hero.
+        </p>
+        {form.image ? <img src={form.image} alt="Press preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
+      </div>
+
       {isPublication ? (
         <div>
           <Label htmlFor="press-document">Upload document (PDF, Word, Excel, etc.)</Label>
@@ -959,15 +1077,20 @@ function PressRoomForm({
           {form.document_name ? <p className="mt-2 text-xs text-muted-foreground">Attached: {form.document_name}</p> : null}
           <p className="mt-1 text-xs text-muted-foreground">Visitors will be able to open and download this document.</p>
         </div>
-      ) : (
-        <div>
-          <Label htmlFor="press-image">Cover image (optional)</Label>
-          <Input id="press-image" type="file" accept="image/*" onChange={handleImageChange} />
-          {form.image ? <img src={form.image} alt="Press preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
-        </div>
-      )}
+      ) : null}
 
-      <Field label="External link (optional)" value={form.link || ""} onChange={(link) => setForm({ ...form, link })} />
+      <Field label="Story link (optional)" value={form.link || ""} onChange={(link) => setForm({ ...form, link })} />
+      <p className="mt-1 text-xs text-muted-foreground">
+        When present, the title on the homepage hero points directly to this story link.
+      </p>
+      <TextareaField
+        label="Description / body"
+        value={form.description || ""}
+        onChange={(description) => setForm({ ...form, description })}
+      />
+      <p className="mt-1 text-xs text-muted-foreground">
+        You can include additional text and links inside the description as needed.
+      </p>
       <SubmitButton saving={saving} />
     </form>
   );
@@ -988,6 +1111,77 @@ function ContentForm({ content, saving, onSave }: { content: Content; saving: bo
       <Field label="Contact Email" value={form.contact.email} onChange={(email) => setForm({ ...form, contact: { ...form.contact, email } })} />
       <Field label="Contact Phone" value={form.contact.phone} onChange={(phone) => setForm({ ...form, contact: { ...form.contact, phone } })} />
       <Field label="Contact Address" value={form.contact.address} onChange={(address) => setForm({ ...form, contact: { ...form.contact, address } })} />
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
+function AboutPageForm({ content, saving, onSave }: { content: AboutContent; saving: boolean; onSave: (content: AboutContent) => void }) {
+  const [form, setForm] = useState<AboutContent>(content);
+
+  useEffect(() => {
+    setForm(content);
+  }, [content]);
+
+  const updateArrayItem = <T extends Record<string, string>>(array: T[], index: number, key: keyof T, value: string) =>
+    array.map((item, i) => (i === index ? { ...item, [key]: value } : item));
+
+  return (
+    <form className="space-y-6" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
+      <Field label="Story title" value={form.storyTitle} onChange={(value) => setForm({ ...form, storyTitle: value })} />
+      <TextareaField label="Story text" rows={8} value={form.storyText} onChange={(value) => setForm({ ...form, storyText: value })} />
+      <Field label="Story image URL" value={form.storyImage} onChange={(value) => setForm({ ...form, storyImage: value })} />
+      <p className="text-sm text-muted-foreground">Enter a public image URL to display on the about story section.</p>
+
+      <div className="rounded-2xl border border-border bg-muted p-4">
+        <h3 className="text-lg font-semibold">Impact stats</h3>
+        <p className="text-sm text-muted-foreground">These values show on the impact page.</p>
+        <div className="space-y-3 mt-4">
+          {form.impactStats.map((stat, index) => (
+            <div key={index} className="grid gap-2 sm:grid-cols-[1fr_2fr]">
+              <Field label="Value" value={stat.value} onChange={(value) => setForm({ ...form, impactStats: updateArrayItem(form.impactStats, index, "value", value) })} />
+              <Field label="Label" value={stat.label} onChange={(value) => setForm({ ...form, impactStats: updateArrayItem(form.impactStats, index, "label", value) })} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-muted p-4">
+        <h3 className="text-lg font-semibold">Impact recognition</h3>
+        <p className="text-sm text-muted-foreground">One sentence per line for the recognition list.</p>
+        <TextareaField
+          label="Recognition items"
+          value={form.impactRecognition.join("\n")}
+          onChange={(value) => setForm({ ...form, impactRecognition: value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean) })}
+        />
+      </div>
+
+      <div className="rounded-2xl border border-border bg-muted p-4">
+        <h3 className="text-lg font-semibold">Beneficiaries</h3>
+        <p className="text-sm text-muted-foreground">Update the beneficiaries shown on the about beneficiaries page.</p>
+        <div className="space-y-3 mt-4">
+          {form.beneficiaries.map((item, index) => (
+            <div key={index} className="space-y-2 rounded-lg border border-border bg-background p-3">
+              <Field label="Title" value={item.title} onChange={(value) => setForm({ ...form, beneficiaries: updateArrayItem(form.beneficiaries, index, "title", value) })} />
+              <TextareaField label="Description" value={item.description} onChange={(value) => setForm({ ...form, beneficiaries: updateArrayItem(form.beneficiaries, index, "description", value) })} />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-border bg-muted p-4">
+        <h3 className="text-lg font-semibold">Approach steps</h3>
+        <p className="text-sm text-muted-foreground">Update the four approach steps on the about approach page.</p>
+        <div className="space-y-3 mt-4">
+          {form.approachSteps.map((item, index) => (
+            <div key={index} className="space-y-2 rounded-lg border border-border bg-background p-3">
+              <Field label="Step title" value={item.title} onChange={(value) => setForm({ ...form, approachSteps: updateArrayItem(form.approachSteps, index, "title", value) })} />
+              <TextareaField label="Step description" value={item.description} onChange={(value) => setForm({ ...form, approachSteps: updateArrayItem(form.approachSteps, index, "description", value) })} />
+            </div>
+          ))}
+        </div>
+      </div>
+
       <SubmitButton saving={saving} />
     </form>
   );

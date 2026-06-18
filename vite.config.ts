@@ -10,6 +10,9 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 // @cloudflare/vite-plugin builds from this — wrangler.jsonc main alone is insufficient.
 export default defineConfig({
   vite: {
+    build: {
+      minify: false,
+    },
     server: {
       allowedHosts: ["uyisenganimanzi-6b2b5cd1.onrender.com"],
     },

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SiteLayout } from "@/components/SiteLayout";
 import { PartnersMarquee } from "@/components/PartnersMarquee";
 import { Button } from "@/components/ui/button";
@@ -16,6 +16,8 @@ export const Route = createFileRoute("/")({
   }),
   component: Index,
 });
+
+type Story = { id: number; title: string; summary: string; description: string | null; category: string; image?: string | null; link?: string | null; created_at?: string | null };
 
 type HeroContent = {
   badge: string;
@@ -36,10 +38,10 @@ const DEFAULT_HERO: HeroContent = {
   title: "Hope, healing and opportunity for every young Rwandan.",
   description:
     "Uyisenga Ni Imanzi walks alongside children, youth and families—providing psychosocial care, education and the tools to build resilient livelihoods.",
-  ctaPrimaryLabel: "Support our work",
+  ctaPrimaryLabel: "Donate",
   ctaPrimaryLink: "/donate",
-  ctaSecondaryLabel: "Our programs",
-  ctaSecondaryLink: "/programs",
+  ctaSecondaryLabel: "Get Involved",
+  ctaSecondaryLink: "/get-involved",
   slides: [],
 };
 
@@ -47,6 +49,7 @@ function Index() {
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [stats, setStats] = useState<Stat[]>([]);
   const [programs, setPrograms] = useState<Program[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -67,67 +70,82 @@ function Index() {
         if (Array.isArray(data)) setPrograms(data.slice(0, 3));
       })
       .catch(() => {});
+    const refreshStories = () => {
+      fetch("/api/press-room?category=News&limit=5", { cache: "no-store" })
+        .then((r) => r.json())
+        .then((data) => {
+          if (Array.isArray(data)) setStories(data as Story[]);
+        })
+        .catch(() => {});
+    };
+
+    refreshStories();
+    const refreshInterval = setInterval(refreshStories, 10000);
+    return () => clearInterval(refreshInterval);
   }, []);
 
   useEffect(() => {
-    if (hero.slides.length < 2) return;
-    const id = setInterval(() => setActive((i) => (i + 1) % hero.slides.length), 5000);
+    if (stories.length < 2) return;
+    const id = setInterval(() => setActive((i) => (i + 1) % stories.length), 5000);
     return () => clearInterval(id);
-  }, [hero.slides.length]);
+  }, [stories.length]);
 
   return (
     <SiteLayout>
-      <section className="relative h-[78vh] min-h-[520px] w-full overflow-hidden bg-gradient-to-br from-primary via-primary-glow to-accent">
-        {hero.slides.map((src, i) => (
-          <img
-            key={i}
-            src={src}
-            alt=""
-            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1200ms] ease-in-out ${
-              i === active ? "opacity-100" : "opacity-0"
-            }`}
-            loading={i === 0 ? "eager" : "lazy"}
-          />
-        ))}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/80" />
-        <div className="relative z-10 mx-auto flex h-full max-w-5xl flex-col items-center justify-end px-4 pb-14 text-center text-white sm:px-6 sm:pb-20">
-          <span className="inline-flex items-center rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium backdrop-blur">
-            {hero.badge}
-          </span>
-          <h1 className="mt-4 text-2xl font-semibold tracking-tight sm:text-4xl md:text-5xl drop-shadow">
-            {hero.title}
-          </h1>
-          <p className="mt-3 max-w-2xl text-sm text-white/90 sm:text-base">
-            {hero.description}
-          </p>
-          <div className="mt-5 flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg">
-              <Link to={hero.ctaPrimaryLink}>
-                {hero.ctaPrimaryLabel} <ArrowRight className="ml-1 h-4 w-4" />
-              </Link>
+      <section className="relative h-[calc(78vh-4rem)] min-h-[430px] max-h-[620px] w-full overflow-hidden text-white">
+        <div className="absolute inset-0 bg-slate-950" />
+        {stories[active]?.image ? (
+          <img src={stories[active].image} alt={stories[active].title} className="absolute inset-0 h-full w-full object-cover opacity-95" />
+        ) : (
+          <div className="absolute inset-0 bg-slate-900" />
+        )}
+        <div className="absolute inset-0 bg-black/25" />
+        <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
+
+        {stories.length > 1 && (
+          <>
+            <Button
+              type="button"
+              variant="ghost"
+              className="absolute left-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:left-8"
+              onClick={() => setActive((i) => (i - 1 + stories.length) % stories.length)}
+              aria-label="Previous story"
+            >
+              <ChevronLeft className="h-12 w-12 stroke-[3]" />
             </Button>
-            <Button asChild size="lg" variant="outline" className="border-white/60 bg-transparent text-white hover:bg-white/15 hover:text-white">
+            <Button
+              type="button"
+              variant="ghost"
+              className="absolute right-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:right-8"
+              onClick={() => setActive((i) => (i + 1) % stories.length)}
+              aria-label="Next story"
+            >
+              <ChevronRight className="h-12 w-12 stroke-[3]" />
+            </Button>
+          </>
+        )}
+
+        <div className="relative z-20 mx-auto flex h-full max-w-6xl flex-col items-center justify-end px-4 pb-10 text-center sm:px-6 sm:pb-14">
+          <Link to={stories[active]?.link || "/press-room/news"} className="block max-w-5xl">
+            <h1 className="text-2xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)] sm:text-3xl md:text-4xl">
+              {stories[active]?.title ?? hero.title}
+            </h1>
+          </Link>
+
+          <div className="mt-6 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row sm:gap-6">
+            <Button asChild size="lg" variant="outline" className="h-14 w-full max-w-[13rem] rounded-none border-white/80 bg-transparent px-8 text-base font-bold text-white hover:bg-white/15 hover:text-white sm:w-48">
               <Link to={hero.ctaSecondaryLink}>{hero.ctaSecondaryLabel}</Link>
+            </Button>
+            <Button asChild size="lg" className="h-14 w-full max-w-[13rem] rounded-none bg-primary px-8 text-base font-bold text-primary-foreground hover:bg-primary/90 sm:w-48">
+              <Link to={hero.ctaPrimaryLink}>{hero.ctaPrimaryLabel}</Link>
             </Button>
           </div>
         </div>
-        {hero.slides.length > 1 && (
-          <div className="absolute bottom-5 left-1/2 z-10 flex -translate-x-1/2 gap-2">
-            {hero.slides.map((_, i) => (
-              <button
-                key={i}
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => setActive(i)}
-                className={`h-2 rounded-full transition-all ${i === active ? "w-8 bg-white" : "w-2 bg-white/50"}`}
-              />
-            ))}
-          </div>
-        )}
       </section>
 
       {stats.length > 0 && (
         <section className="border-y border-border bg-card">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 md:grid-cols-4">
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-5 px-4 py-6 sm:px-6 md:grid-cols-4">
             {stats.map((s, i) => (
               <div key={i}>
                 <p className="text-3xl font-semibold text-primary">{s.value}</p>
