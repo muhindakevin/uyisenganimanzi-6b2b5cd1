@@ -67,11 +67,9 @@ function getSupabaseUrl() {
 }
 
 function getSupabaseKey() {
-  const serviceRoleKey = getRuntimeEnv("SUPABASE_SERVICE_ROLE_KEY");
-  const anonKey = getRuntimeEnv("SUPABASE_ANON_KEY");
-  const key = (serviceRoleKey || anonKey)?.toString().trim();
+  const key = (getRuntimeEnv("SUPABASE_SERVICE_ROLE_KEY") || getRuntimeEnv("SUPABASE_PUBLISHABLE_KEY") || getRuntimeEnv("SUPABASE_ANON_KEY"))?.toString().trim();
   if (!key) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY is missing. Add your Supabase service role key or anon key to .env or hosting secrets.");
+    throw new Error("SUPABASE_PUBLISHABLE_KEY is missing. Enable Lovable Cloud.");
   }
   return key;
 }
