@@ -1,8 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createAdminToken, getAdminByEmail, hashPassword, jsonError } from "@/backend";
 
-const DEFAULT_ADMIN_EMAIL = "admin@gmail.com";
-const DEFAULT_ADMIN_PASSWORD_HASH = "3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2";
+const DEFAULT_ADMIN_EMAIL = "uyisenga@gmail.com";
+const DEFAULT_ADMIN_PASSWORD_HASH = "d44f65130d376e81159d6fb9aa764c198ac7449cd55d86878f0e97078d55a90d";
+
+function readEnv(name: string): string | undefined {
+  const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
+  const fromProcess = typeof process !== "undefined" ? process.env[name] : undefined;
+  return fromProcess ?? runtimeEnv?.[name];
+}
 
 export const Route = createFileRoute("/api/auth")({
   server: {
@@ -16,15 +22,13 @@ export const Route = createFileRoute("/api/auth")({
           return jsonError("Email and password are required.");
         }
 
-        const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
         const passwordHash = await hashPassword(password);
-        const envEmail = typeof process !== "undefined" ? process.env.ADMIN_EMAIL : undefined || runtimeEnv?.ADMIN_EMAIL || DEFAULT_ADMIN_EMAIL;
-        const envPassword = typeof process !== "undefined" ? process.env.ADMIN_PASSWORD : undefined || runtimeEnv?.ADMIN_PASSWORD;
-        const envPasswordHash = typeof process !== "undefined" ? process.env.ADMIN_PASSWORD_HASH : undefined || runtimeEnv?.ADMIN_PASSWORD_HASH || DEFAULT_ADMIN_PASSWORD_HASH;
+        const envEmail = readEnv("ADMIN_EMAIL") ?? DEFAULT_ADMIN_EMAIL;
+        const envPassword = readEnv("ADMIN_PASSWORD");
+        const envPasswordHash = readEnv("ADMIN_PASSWORD_HASH") ?? DEFAULT_ADMIN_PASSWORD_HASH;
         const validEnvLogin =
-          !!envEmail &&
           email.toLowerCase() === envEmail.toLowerCase() &&
-          ((!!envPassword && password === envPassword) || (!!envPasswordHash && passwordHash === envPasswordHash));
+          ((!!envPassword && password === envPassword) || passwordHash === envPasswordHash);
 
         let admin: { email: string; password_hash: string } | undefined;
 
@@ -32,9 +36,7 @@ export const Route = createFileRoute("/api/auth")({
           try {
             admin = await getAdminByEmail(email);
           } catch (error) {
-            if (!(error instanceof Error) || !error.message.includes("DATABASE_URL is missing")) {
-              console.error("Admin lookup failed", error);
-            }
+            console.error("Admin lookup failed", error);
           }
         }
 

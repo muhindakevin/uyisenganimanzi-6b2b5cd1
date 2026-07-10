@@ -1129,7 +1129,7 @@ function AboutPageForm({ content, saving, onSave }: { content: AboutContent; sav
   return (
     <form className="space-y-6" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Story title" value={form.storyTitle} onChange={(value) => setForm({ ...form, storyTitle: value })} />
-      <TextareaField label="Story text" rows={8} value={form.storyText} onChange={(value) => setForm({ ...form, storyText: value })} />
+      <TextareaField label="Story text" value={form.storyText} onChange={(value) => setForm({ ...form, storyText: value })} />
       <Field label="Story image URL" value={form.storyImage} onChange={(value) => setForm({ ...form, storyImage: value })} />
       <p className="text-sm text-muted-foreground">Enter a public image URL to display on the about story section.</p>
 

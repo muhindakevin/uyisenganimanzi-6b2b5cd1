@@ -67,11 +67,9 @@ function getSupabaseUrl() {
 }
 
 function getSupabaseKey() {
-  const serviceRoleKey = getRuntimeEnv("SUPABASE_SERVICE_ROLE_KEY");
-  const anonKey = getRuntimeEnv("SUPABASE_ANON_KEY");
-  const key = (serviceRoleKey || anonKey)?.toString().trim();
+  const key = (getRuntimeEnv("SUPABASE_SERVICE_ROLE_KEY") || getRuntimeEnv("SUPABASE_PUBLISHABLE_KEY") || getRuntimeEnv("SUPABASE_ANON_KEY"))?.toString().trim();
   if (!key) {
-    throw new Error("SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY is missing. Add your Supabase service role key or anon key to .env or hosting secrets.");
+    throw new Error("SUPABASE_PUBLISHABLE_KEY is missing. Enable Lovable Cloud.");
   }
   return key;
 }
@@ -80,11 +78,11 @@ function isMissingDatabaseError(error: unknown) {
   return error instanceof Error && (error.message.includes("SUPABASE_URL") || error.message.includes("SUPABASE_SERVICE_ROLE_KEY") || error.message.includes("SUPABASE_ANON_KEY"));
 }
 
-export function sql() {
+export function sql(): any {
   if (!supabaseClient) {
     supabaseClient = createClient(getSupabaseUrl(), getSupabaseKey());
   }
-  return supabaseClient;
+  return supabaseClient as any;
 }
 
 export function jsonError(message: string, status = 400) {
