@@ -80,11 +80,11 @@ function isMissingDatabaseError(error: unknown) {
   return error instanceof Error && (error.message.includes("SUPABASE_URL") || error.message.includes("SUPABASE_SERVICE_ROLE_KEY") || error.message.includes("SUPABASE_ANON_KEY"));
 }
 
-export function sql() {
+export function sql(): any {
   if (!supabaseClient) {
     supabaseClient = createClient(getSupabaseUrl(), getSupabaseKey());
   }
-  return supabaseClient;
+  return supabaseClient as any;
 }
 
 export function jsonError(message: string, status = 400) {
