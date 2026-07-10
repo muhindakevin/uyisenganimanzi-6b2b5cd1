@@ -14,7 +14,213 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          password_hash: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: never
+          password_hash: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: never
+          password_hash?: string
+        }
+        Relationships: []
+      }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: number
+          message: string | null
+          name: string | null
+          phone: string | null
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: never
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: never
+          message?: string | null
+          name?: string | null
+          phone?: string | null
+          subject?: string | null
+        }
+        Relationships: []
+      }
+      gallery_items: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: number
+          image: string
+          link: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: never
+          image: string
+          link?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: never
+          image?: string
+          link?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      press_room_items: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          document: string | null
+          document_name: string | null
+          id: number
+          image: string | null
+          link: string | null
+          summary: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          document?: string | null
+          document_name?: string | null
+          id?: never
+          image?: string | null
+          link?: string | null
+          summary: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          document?: string | null
+          document_name?: string | null
+          id?: never
+          image?: string | null
+          link?: string | null
+          summary?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      programs: {
+        Row: {
+          created_at: string
+          description: string
+          id: number
+          image: string | null
+          long_description: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: never
+          image?: string | null
+          long_description?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: never
+          image?: string | null
+          long_description?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: number
+          name: string
+          phone: string | null
+          photo: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: never
+          name: string
+          phone?: string | null
+          photo?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: never
+          name?: string
+          phone?: string | null
+          photo?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
