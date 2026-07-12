@@ -18,7 +18,7 @@ export const Route = createFileRoute('/login')({
 
 function LoginPage() {
   const router = useRouter()
-  const [email, setEmail] = useState('uyisenga@gmail.com')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)

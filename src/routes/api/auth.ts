@@ -1,9 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createAdminToken, getAdminByEmail, hashPassword, jsonError } from "@/backend";
 
-const DEFAULT_ADMIN_EMAIL = "uyisenga@gmail.com";
-const DEFAULT_ADMIN_PASSWORD_HASH = "d44f65130d376e81159d6fb9aa764c198ac7449cd55d86878f0e97078d55a90d";
-
 function readEnv(name: string): string | undefined {
   const runtimeEnv = (globalThis as typeof globalThis & { __APP_ENV__?: Record<string, string> }).__APP_ENV__;
   const fromProcess = typeof process !== "undefined" ? process.env[name] : undefined;
@@ -23,12 +20,14 @@ export const Route = createFileRoute("/api/auth")({
         }
 
         const passwordHash = await hashPassword(password);
-        const envEmail = readEnv("ADMIN_EMAIL") ?? DEFAULT_ADMIN_EMAIL;
+        const envEmail = readEnv("ADMIN_EMAIL");
         const envPassword = readEnv("ADMIN_PASSWORD");
-        const envPasswordHash = readEnv("ADMIN_PASSWORD_HASH") ?? DEFAULT_ADMIN_PASSWORD_HASH;
+        const envPasswordHash = readEnv("ADMIN_PASSWORD_HASH");
         const validEnvLogin =
+          !!envEmail &&
           email.toLowerCase() === envEmail.toLowerCase() &&
-          ((!!envPassword && password === envPassword) || passwordHash === envPasswordHash);
+          ((!!envPassword && password === envPassword) ||
+            (!!envPasswordHash && passwordHash === envPasswordHash));
 
         let admin: { email: string; password_hash: string } | undefined;
 
@@ -46,7 +45,7 @@ export const Route = createFileRoute("/api/auth")({
           return jsonError("Email or password is incorrect.", 401);
         }
 
-        const adminEmail = admin?.email ?? envEmail;
+        const adminEmail = admin?.email ?? envEmail ?? email;
         return Response.json({
           success: true,
           token: await createAdminToken(adminEmail),
