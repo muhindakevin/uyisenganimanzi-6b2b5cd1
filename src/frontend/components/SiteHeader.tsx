@@ -35,9 +35,9 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-gradient-to-r from-[oklch(0.28_0.12_260)] via-primary to-primary-glow shadow-[0_8px_24px_-12px_oklch(0.13_0.02_260/0.5)] backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
-        <Link to="/" className="flex items-center gap-3 font-semibold tracking-tight text-white">
-          <img src={logo} alt="Uyisenga Ni Imanzi logo" className="h-11 w-auto rounded-md bg-white/95 p-1" />
-          <span className="hidden text-sm font-semibold uppercase tracking-wide sm:inline">Uyisenga Ni Imanzi</span>
+        <Link to="/" className="flex min-w-0 items-center gap-2 font-semibold tracking-tight text-white sm:gap-3">
+          <img src={logo} alt="Uyisenga Ni Imanzi logo" className="h-10 w-auto shrink-0 rounded-md bg-white/95 p-1 sm:h-11" />
+          <span className="truncate text-[11px] font-semibold uppercase tracking-wide sm:text-sm">Uyisenga Ni Imanzi</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex">
           <Link to="/" className={linkBase} activeProps={{ className: linkActive }} activeOptions={{ exact: true }}>
