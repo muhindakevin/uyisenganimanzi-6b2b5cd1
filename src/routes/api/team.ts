@@ -1,10 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { deleteTeamMember, jsonError, listTeam, requireAdminOr401, saveTeamMember } from "@/backend";
+import { deleteTeamMember, jsonError, listTeam, requireAdmin, requireAdminOr401, saveTeamMember } from "@/backend";
 
 export const Route = createFileRoute("/api/team")({
   server: {
     handlers: {
-      GET: async () => Response.json(await listTeam()),
+      GET: async ({ request }) => {
+        const members = await listTeam();
+        if (await requireAdmin(request)) return Response.json(members);
+        // Public callers get only non-sensitive fields (no email/phone).
+        return Response.json(members.map(({ email: _e, phone: _p, ...rest }) => rest));
+      },
       POST: async ({ request }) => {
         const unauthorized = await requireAdminOr401(request);
         if (unauthorized) return unauthorized;

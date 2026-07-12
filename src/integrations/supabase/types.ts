@@ -223,7 +223,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      team_members_public: {
+        Row: {
+          id: number | null
+          name: string | null
+          photo: string | null
+          title: string | null
+        }
+        Insert: {
+          id?: number | null
+          name?: string | null
+          photo?: string | null
+          title?: string | null
+        }
+        Update: {
+          id?: number | null
+          name?: string | null
+          photo?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
