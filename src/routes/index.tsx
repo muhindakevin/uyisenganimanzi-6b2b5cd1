@@ -132,11 +132,11 @@ function Index() {
             </h1>
           </Link>
 
-          <div className="mt-6 flex w-full flex-col items-center justify-center gap-3 sm:w-auto sm:flex-row sm:gap-6">
-            <Button asChild size="lg" variant="outline" className="h-14 w-full max-w-[13rem] rounded-none border-white/80 bg-transparent px-8 text-base font-bold text-white hover:bg-white/15 hover:text-white sm:w-48">
+          <div className="mt-6 flex w-full flex-row items-center justify-center gap-3 sm:w-auto sm:gap-6">
+            <Button asChild size="lg" variant="outline" className="h-12 flex-1 rounded-none border-white/80 bg-transparent px-4 text-sm font-bold text-white hover:bg-white/15 hover:text-white sm:h-14 sm:w-48 sm:flex-none sm:px-8 sm:text-base">
               <Link to={hero.ctaSecondaryLink}>{hero.ctaSecondaryLabel}</Link>
             </Button>
-            <Button asChild size="lg" className="h-14 w-full max-w-[13rem] rounded-none bg-primary px-8 text-base font-bold text-primary-foreground hover:bg-primary/90 sm:w-48">
+            <Button asChild size="lg" className="h-12 flex-1 rounded-none bg-primary px-4 text-sm font-bold text-primary-foreground hover:bg-primary/90 sm:h-14 sm:w-48 sm:flex-none sm:px-8 sm:text-base">
               <Link to={hero.ctaPrimaryLink}>{hero.ctaPrimaryLabel}</Link>
             </Button>
           </div>
