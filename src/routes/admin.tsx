@@ -11,8 +11,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/frontend/components/
 import { Textarea } from "@/frontend/components/ui/textarea";
 
 export const Route = createFileRoute("/admin")({
-  component: AdminDashboard,
+  component: AdminGate,
 });
+
+function AdminGate() {
+  const [ready, setReady] = useState(false);
+  const [allowed, setAllowed] = useState(false);
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("auth_token") : null;
+    if (!token) {
+      window.location.replace("/login");
+      return;
+    }
+    setAllowed(true);
+    setReady(true);
+  }, []);
+  if (!ready || !allowed) {
+    return (
+      <div className="flex min-h-screen items-center justify-center text-sm text-muted-foreground">
+        Checking admin access…
+      </div>
+    );
+  }
+  return <AdminDashboard />;
+}
 
 type Member = {
   id: number;
