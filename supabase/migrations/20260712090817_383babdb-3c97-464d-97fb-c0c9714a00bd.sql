@@ -1,0 +1,1 @@
+ALTER VIEW public.team_members_public SET (security_invoker = true);
