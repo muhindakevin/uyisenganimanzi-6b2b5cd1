@@ -45,7 +45,7 @@ export const Route = createFileRoute("/api/auth")({
           return jsonError("Email or password is incorrect.", 401);
         }
 
-        const adminEmail = admin?.email ?? envEmail;
+        const adminEmail = admin?.email ?? envEmail ?? email;
         return Response.json({
           success: true,
           token: await createAdminToken(adminEmail),
