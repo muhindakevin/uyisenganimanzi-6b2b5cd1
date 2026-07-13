@@ -126,14 +126,22 @@ function Index() {
             </>
           )}
 
-          <Link to="/press-room/news" className="absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-10 text-center sm:px-6 sm:pb-14">
-            <h1 className="max-w-5xl text-2xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)] sm:text-3xl md:text-4xl">
-              {stories[active]?.title}
-            </h1>
-            <span className="mt-4 inline-block rounded-full border border-white/40 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-              Read news stories →
-            </span>
-          </Link>
+          <div className="absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-10 text-center sm:px-6 sm:pb-14">
+            <Link to="/press-room/news" className="max-w-5xl">
+              <h1 className="text-2xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)] hover:underline sm:text-3xl md:text-4xl">
+                {stories[active]?.title}
+              </h1>
+            </Link>
+            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+              <Button asChild size="lg" variant="secondary">
+                <Link to="/programs">Our Programs</Link>
+              </Button>
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <Link to="/donate">Support our work</Link>
+              </Button>
+            </div>
+          </div>
+
         </section>
       )}
 
