@@ -92,56 +92,50 @@ function Index() {
 
   return (
     <SiteLayout>
-      <section className="relative h-[calc(78vh-4rem)] min-h-[430px] max-h-[620px] w-full overflow-hidden text-white">
-        <div className="absolute inset-0 bg-slate-950" />
-        {stories[active]?.image ? (
-          <img src={stories[active].image} alt={stories[active].title} className="absolute inset-0 h-full w-full object-cover opacity-95" />
-        ) : (
-          <div className="absolute inset-0 bg-slate-900" />
-        )}
-        <div className="absolute inset-0 bg-black/25" />
-        <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
+      {stories.length > 0 && (
+        <section className="relative h-[calc(78vh-4rem)] min-h-[430px] max-h-[620px] w-full overflow-hidden text-white">
+          <div className="absolute inset-0 bg-slate-950" />
+          {stories[active]?.image ? (
+            <img src={stories[active].image} alt={stories[active].title} className="absolute inset-0 h-full w-full object-cover opacity-95" />
+          ) : (
+            <div className="absolute inset-0 bg-slate-900" />
+          )}
+          <div className="absolute inset-0 bg-black/25" />
+          <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
 
-        {stories.length > 1 && (
-          <>
-            <Button
-              type="button"
-              variant="ghost"
-              className="absolute left-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:left-8"
-              onClick={() => setActive((i) => (i - 1 + stories.length) % stories.length)}
-              aria-label="Previous story"
-            >
-              <ChevronLeft className="h-12 w-12 stroke-[3]" />
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              className="absolute right-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:right-8"
-              onClick={() => setActive((i) => (i + 1) % stories.length)}
-              aria-label="Next story"
-            >
-              <ChevronRight className="h-12 w-12 stroke-[3]" />
-            </Button>
-          </>
-        )}
+          {stories.length > 1 && (
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                className="absolute left-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:left-8"
+                onClick={() => setActive((i) => (i - 1 + stories.length) % stories.length)}
+                aria-label="Previous story"
+              >
+                <ChevronLeft className="h-12 w-12 stroke-[3]" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="absolute right-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:right-8"
+                onClick={() => setActive((i) => (i + 1) % stories.length)}
+                aria-label="Next story"
+              >
+                <ChevronRight className="h-12 w-12 stroke-[3]" />
+              </Button>
+            </>
+          )}
 
-        <div className="relative z-20 mx-auto flex h-full max-w-6xl flex-col items-center justify-end px-4 pb-10 text-center sm:px-6 sm:pb-14">
-          <Link to={stories[active]?.link || "/press-room/news"} className="block max-w-5xl">
-            <h1 className="text-2xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)] sm:text-3xl md:text-4xl">
-              {stories[active]?.title ?? hero.title}
+          <Link to="/press-room/news" className="absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-10 text-center sm:px-6 sm:pb-14">
+            <h1 className="max-w-5xl text-2xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)] sm:text-3xl md:text-4xl">
+              {stories[active]?.title}
             </h1>
+            <span className="mt-4 inline-block rounded-full border border-white/40 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
+              Read news stories →
+            </span>
           </Link>
-
-          <div className="mt-6 flex w-full flex-row items-center justify-center gap-3 sm:w-auto sm:gap-6">
-            <Button asChild size="lg" variant="outline" className="h-12 flex-1 rounded-none border-white/80 bg-transparent px-4 text-sm font-bold text-white hover:bg-white/15 hover:text-white sm:h-14 sm:w-48 sm:flex-none sm:px-8 sm:text-base">
-              <Link to={hero.ctaSecondaryLink}>{hero.ctaSecondaryLabel}</Link>
-            </Button>
-            <Button asChild size="lg" className="h-12 flex-1 rounded-none bg-primary px-4 text-sm font-bold text-primary-foreground hover:bg-primary/90 sm:h-14 sm:w-48 sm:flex-none sm:px-8 sm:text-base">
-              <Link to={hero.ctaPrimaryLink}>{hero.ctaPrimaryLabel}</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {stats.length > 0 && (
         <section className="border-y border-border bg-card">
