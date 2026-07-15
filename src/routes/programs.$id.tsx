@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Download } from "lucide-react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { Button } from "@/frontend/components/ui/button";
 
@@ -14,19 +14,39 @@ type Program = {
   description: string;
   long_description?: string | null;
   image?: string | null;
+  cover_image?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
+};
+
+type SubProgram = {
+  id: number;
+  program_id: number;
+  title: string;
+  description: string;
+  long_description?: string | null;
+  image?: string | null;
+  cover_image?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
 };
 
 function ProgramDetail() {
   const { id } = Route.useParams();
   const [program, setProgram] = useState<Program | null>(null);
+  const [subs, setSubs] = useState<SubProgram[]>([]);
+  const [openSub, setOpenSub] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/programs")
-      .then((r) => r.json())
-      .then((data: Program[]) => {
-        const found = Array.isArray(data) ? data.find((p) => String(p.id) === String(id)) : null;
+    Promise.all([
+      fetch("/api/programs", { cache: "no-store" }).then((r) => r.json()),
+      fetch(`/api/sub-programs?program_id=${id}`, { cache: "no-store" }).then((r) => r.json()),
+    ])
+      .then(([progRows, subRows]) => {
+        const found = Array.isArray(progRows) ? progRows.find((p: Program) => String(p.id) === String(id)) : null;
         setProgram(found || null);
+        setSubs(Array.isArray(subRows) ? subRows : []);
       })
       .finally(() => setLoading(false));
   }, [id]);
@@ -41,11 +61,13 @@ function ProgramDetail() {
     </SiteLayout>
   );
 
+  const cover = program.cover_image || program.image;
+
   return (
     <SiteLayout>
-      {program.image ? (
+      {cover ? (
         <div className="relative h-[42vh] min-h-[300px] w-full overflow-hidden">
-          <img src={program.image} alt={program.title} className="absolute inset-0 h-full w-full object-cover" />
+          <img src={cover} alt={program.title} className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/70" />
           <div className="relative z-10 mx-auto flex h-full max-w-4xl flex-col justify-end px-4 pb-10 text-white sm:px-6">
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-primary-foreground/80">Program</p>
@@ -71,7 +93,55 @@ function ProgramDetail() {
             {program.long_description}
           </div>
         ) : null}
+        {program.attachment_url ? (
+          <a href={program.attachment_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10">
+            <Download className="h-4 w-4" />
+            {program.attachment_name || "Download attached file"}
+          </a>
+        ) : null}
       </section>
+
+      {subs.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+          <h2 className="text-2xl font-semibold text-foreground">Sub-programs &amp; Projects</h2>
+          <p className="mt-2 text-sm text-muted-foreground">Explore the initiatives running under this program.</p>
+          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {subs.map((sub) => {
+              const isOpen = openSub === sub.id;
+              const subCover = sub.cover_image || sub.image;
+              return (
+                <div key={sub.id} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
+                  {subCover ? <img src={subCover} alt={sub.title} className="h-44 w-full object-cover" /> : null}
+                  <div className="p-5">
+                    <h3 className="text-lg font-semibold text-foreground">{sub.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{sub.description}</p>
+                    {isOpen && (
+                      <div className="mt-4 space-y-3 border-t border-border pt-4">
+                        {sub.long_description ? (
+                          <p className="whitespace-pre-wrap text-sm leading-6 text-foreground/80">{sub.long_description}</p>
+                        ) : null}
+                        {sub.attachment_url ? (
+                          <a href={sub.attachment_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                            <Download className="h-4 w-4" />
+                            {sub.attachment_name || "Download file"}
+                          </a>
+                        ) : null}
+                      </div>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => setOpenSub(isOpen ? null : sub.id)}
+                      className="mt-4 inline-flex items-center rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10"
+                    >
+                      {isOpen ? "Show less" : "Learn more"}
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </SiteLayout>
   );
 }

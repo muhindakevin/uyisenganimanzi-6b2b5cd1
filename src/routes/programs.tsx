@@ -63,7 +63,7 @@ function Programs() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_380px] lg:items-start">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-emerald-700">{pageContent.label}</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.28em] text-primary">{pageContent.label}</p>
             <h1 className="mt-4 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
               {pageContent.heading}
             </h1>
@@ -74,12 +74,12 @@ function Programs() {
               {pageContent.description2}
             </p>
           </div>
-          <div className="rounded-3xl border border-emerald-100 bg-emerald-50/80 p-8 shadow-[var(--shadow-card)]">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-800">Program areas</p>
+          <div className="rounded-3xl border border-primary/20 bg-primary/5 p-8 shadow-[var(--shadow-card)]">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Program areas</p>
             <div className="mt-6 space-y-4">
               {programs.map((program) => (
                 <div key={program.id} className="flex items-start gap-3">
-                  <span className="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-900 text-white">
+                  <span className="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white">
                     <Check className="h-4 w-4" />
                   </span>
                   <p className="text-sm leading-7 text-foreground">{program.title}</p>

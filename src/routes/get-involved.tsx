@@ -128,7 +128,7 @@ function PressRoom() {
 
           <div className="space-y-4">
             <h3 className="text-xl font-semibold flex items-center gap-2">
-              <FileText className="h-5 w-5 text-green-600" />
+              <FileText className="h-5 w-5 text-primary" />
               Publications
             </h3>
             {pubItems.length === 0 ? (

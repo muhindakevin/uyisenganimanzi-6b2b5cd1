@@ -31,6 +31,7 @@ import { Route as ApiGalleryRouteImport } from './routes/api/gallery'
 import { Route as ApiContentRouteImport } from './routes/api/content'
 import { Route as ApiContactMessagesRouteImport } from './routes/api/contact-messages'
 import { Route as ApiContactRouteImport } from './routes/api/contact'
+import { Route as ApiBeneficiariesRouteImport } from './routes/api/beneficiaries'
 import { Route as ApiAuthRouteImport } from './routes/api/auth'
 import { Route as AboutTeamRouteImport } from './routes/about.team'
 import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-vision'
@@ -148,6 +149,11 @@ const ApiContactRoute = ApiContactRouteImport.update({
   path: '/api/contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiBeneficiariesRoute = ApiBeneficiariesRouteImport.update({
+  id: '/api/beneficiaries',
+  path: '/api/beneficiaries',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthRoute = ApiAuthRouteImport.update({
   id: '/api/auth',
   path: '/api/auth',
@@ -195,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/about/mission-vision': typeof AboutMissionVisionRoute
   '/about/team': typeof AboutTeamRoute
   '/api/auth': typeof ApiAuthRoute
+  '/api/beneficiaries': typeof ApiBeneficiariesRoute
   '/api/contact': typeof ApiContactRoute
   '/api/contact-messages': typeof ApiContactMessagesRoute
   '/api/content': typeof ApiContentRoute
@@ -224,6 +231,7 @@ export interface FileRoutesByTo {
   '/about/mission-vision': typeof AboutMissionVisionRoute
   '/about/team': typeof AboutTeamRoute
   '/api/auth': typeof ApiAuthRoute
+  '/api/beneficiaries': typeof ApiBeneficiariesRoute
   '/api/contact': typeof ApiContactRoute
   '/api/contact-messages': typeof ApiContactMessagesRoute
   '/api/content': typeof ApiContentRoute
@@ -255,6 +263,7 @@ export interface FileRoutesById {
   '/about/mission-vision': typeof AboutMissionVisionRoute
   '/about/team': typeof AboutTeamRoute
   '/api/auth': typeof ApiAuthRoute
+  '/api/beneficiaries': typeof ApiBeneficiariesRoute
   '/api/contact': typeof ApiContactRoute
   '/api/contact-messages': typeof ApiContactMessagesRoute
   '/api/content': typeof ApiContentRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/about/mission-vision'
     | '/about/team'
     | '/api/auth'
+    | '/api/beneficiaries'
     | '/api/contact'
     | '/api/contact-messages'
     | '/api/content'
@@ -316,6 +326,7 @@ export interface FileRouteTypes {
     | '/about/mission-vision'
     | '/about/team'
     | '/api/auth'
+    | '/api/beneficiaries'
     | '/api/contact'
     | '/api/contact-messages'
     | '/api/content'
@@ -346,6 +357,7 @@ export interface FileRouteTypes {
     | '/about/mission-vision'
     | '/about/team'
     | '/api/auth'
+    | '/api/beneficiaries'
     | '/api/contact'
     | '/api/contact-messages'
     | '/api/content'
@@ -372,6 +384,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProgramsRoute: typeof ProgramsRouteWithChildren
   ApiAuthRoute: typeof ApiAuthRoute
+  ApiBeneficiariesRoute: typeof ApiBeneficiariesRoute
   ApiContactRoute: typeof ApiContactRoute
   ApiContactMessagesRoute: typeof ApiContactMessagesRoute
   ApiContentRoute: typeof ApiContentRoute
@@ -541,6 +554,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/beneficiaries': {
+      id: '/api/beneficiaries'
+      path: '/api/beneficiaries'
+      fullPath: '/api/beneficiaries'
+      preLoaderRoute: typeof ApiBeneficiariesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth': {
       id: '/api/auth'
       path: '/api/auth'
@@ -629,6 +649,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProgramsRoute: ProgramsRouteWithChildren,
   ApiAuthRoute: ApiAuthRoute,
+  ApiBeneficiariesRoute: ApiBeneficiariesRoute,
   ApiContactRoute: ApiContactRoute,
   ApiContactMessagesRoute: ApiContactMessagesRoute,
   ApiContentRoute: ApiContentRoute,
