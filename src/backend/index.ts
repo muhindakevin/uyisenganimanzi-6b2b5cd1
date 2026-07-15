@@ -280,40 +280,26 @@ export async function listPrograms() {
 }
 
 export async function saveProgram(program: Partial<Program>) {
-  try {
-    if (program.id) {
-      const { data, error } = await sql()
-        .from("programs")
-        .update({
-          title: program.title,
-          description: program.description,
-          long_description: program.long_description ?? null,
-          image: program.image ?? null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", program.id)
-        .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
-        .single();
-      if (error) throw error;
-      return data ? (numberId(data) as Program) : undefined;
-    }
-
-    const { data, error } = await sql()
-      .from("programs")
-      .insert({
-        title: program.title,
-        description: program.description,
-        long_description: program.long_description ?? null,
-        image: program.image ?? null,
-      })
-      .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
-      .single();
+  const payload = {
+    title: program.title,
+    description: program.description,
+    long_description: program.long_description ?? null,
+    image: program.image ?? null,
+    cover_image: program.cover_image ?? null,
+    attachment_url: program.attachment_url ?? null,
+    attachment_name: program.attachment_name ?? null,
+  };
+  const cols = "id, title, description, long_description, image, cover_image, attachment_url, attachment_name";
+  if (program.id) {
+    const { data, error } = await sql().from("programs")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", program.id).select(cols).single();
     if (error) throw error;
-    return numberId(data) as Program;
-  } catch (error) {
-    if (error instanceof Error && error.message.includes("missing")) throw error;
-    throw error;
+    return data ? (numberId(data) as Program) : undefined;
   }
+  const { data, error } = await sql().from("programs").insert(payload).select(cols).single();
+  if (error) throw error;
+  return numberId(data) as Program;
 }
 
 export async function getProgram(id: number) {
