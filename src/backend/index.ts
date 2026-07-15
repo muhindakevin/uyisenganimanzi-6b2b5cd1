@@ -552,3 +552,94 @@ export async function deleteContactMessage(id: number) {
     .eq("id", id);
   if (error) throw error;
 }
+
+// ---------- Sub-programs ----------
+const SUB_COLS = "id, program_id, title, description, long_description, image, cover_image, attachment_url, attachment_name, sort_order";
+
+export async function listSubPrograms(programId?: number | null) {
+  let q = sql().from("sub_programs").select(SUB_COLS).order("sort_order", { ascending: true }).order("id", { ascending: true });
+  if (programId) q = q.eq("program_id", programId);
+  const { data, error } = await q;
+  if (error) throw error;
+  return numberIds(data ?? []) as SubProgram[];
+}
+export async function saveSubProgram(item: Partial<SubProgram>) {
+  const payload = {
+    program_id: item.program_id,
+    title: item.title,
+    description: item.description,
+    long_description: item.long_description ?? null,
+    image: item.image ?? null,
+    cover_image: item.cover_image ?? null,
+    attachment_url: item.attachment_url ?? null,
+    attachment_name: item.attachment_name ?? null,
+    sort_order: item.sort_order ?? 0,
+  };
+  if (item.id) {
+    const { data, error } = await sql().from("sub_programs")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", item.id).select(SUB_COLS).single();
+    if (error) throw error;
+    return data ? (numberId(data) as SubProgram) : undefined;
+  }
+  const { data, error } = await sql().from("sub_programs").insert(payload).select(SUB_COLS).single();
+  if (error) throw error;
+  return numberId(data) as SubProgram;
+}
+export async function deleteSubProgram(id: number) {
+  const { error } = await sql().from("sub_programs").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ---------- Beneficiaries ----------
+const BEN_COLS = "id, title, description, filled, sort_order";
+export async function listBeneficiaries() {
+  const { data, error } = await sql().from("beneficiaries").select(BEN_COLS).order("sort_order", { ascending: true }).order("id", { ascending: true });
+  if (error) throw error;
+  return numberIds(data ?? []) as Beneficiary[];
+}
+export async function saveBeneficiary(item: Partial<Beneficiary>) {
+  const payload = { title: item.title, description: item.description, filled: item.filled ?? true, sort_order: item.sort_order ?? 0 };
+  if (item.id) {
+    const { data, error } = await sql().from("beneficiaries")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", item.id).select(BEN_COLS).single();
+    if (error) throw error;
+    return data ? (numberId(data) as Beneficiary) : undefined;
+  }
+  const { data, error } = await sql().from("beneficiaries").insert(payload).select(BEN_COLS).single();
+  if (error) throw error;
+  return numberId(data) as Beneficiary;
+}
+export async function deleteBeneficiary(id: number) {
+  const { error } = await sql().from("beneficiaries").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ---------- Core values ----------
+const CV_COLS = "id, title, description, sort_order";
+export async function listCoreValues() {
+  const { data, error } = await sql().from("core_values").select(CV_COLS).order("sort_order", { ascending: true }).order("id", { ascending: true });
+  if (error) throw error;
+  return numberIds(data ?? []) as CoreValue[];
+}
+export async function saveCoreValue(item: Partial<CoreValue>) {
+  const payload = { title: item.title, description: item.description, sort_order: item.sort_order ?? 0 };
+  if (item.id) {
+    const { data, error } = await sql().from("core_values")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", item.id).select(CV_COLS).single();
+    if (error) throw error;
+    return data ? (numberId(data) as CoreValue) : undefined;
+  }
+  // Enforce max 10
+  const existing = await listCoreValues();
+  if (existing.length >= 10) throw new Error("You can have at most 10 core values. Delete one before adding another.");
+  const { data, error } = await sql().from("core_values").insert(payload).select(CV_COLS).single();
+  if (error) throw error;
+  return numberId(data) as CoreValue;
+}
+export async function deleteCoreValue(id: number) {
+  const { error } = await sql().from("core_values").delete().eq("id", id);
+  if (error) throw error;
+}
