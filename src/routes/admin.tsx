@@ -1007,6 +1007,22 @@ function ProgramForm({ program, saving, onSave }: { program?: Program | null; sa
         <Input id="program-image" type="file" accept="image/*" onChange={handleFileChange} />
         {form.image ? <img src={form.image} alt="Program preview" className="mt-3 h-24 w-full rounded-md object-cover" /> : null}
       </div>
+      <div>
+        <Label htmlFor="program-cover">Cover Photo (hero banner)</Label>
+        <Input id="program-cover" type="file" accept="image/*" onChange={async (e) => {
+          const f = e.target.files?.[0]; if (!f) return;
+          setForm({ ...form, cover_image: await readFileAsDataUrl(f) });
+        }} />
+        {form.cover_image ? <img src={form.cover_image} alt="Cover preview" className="mt-3 h-24 w-full rounded-md object-cover" /> : null}
+      </div>
+      <div>
+        <Label htmlFor="program-attach">Attachment (PDF or file)</Label>
+        <Input id="program-attach" type="file" onChange={async (e) => {
+          const f = e.target.files?.[0]; if (!f) return;
+          setForm({ ...form, attachment_url: await readFileAsDataUrl(f), attachment_name: f.name });
+        }} />
+        {form.attachment_name ? <p className="mt-2 text-xs text-muted-foreground">Attached: {form.attachment_name}</p> : null}
+      </div>
       <SubmitButton saving={saving} />
     </form>
   );
