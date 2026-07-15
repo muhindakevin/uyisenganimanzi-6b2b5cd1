@@ -35,6 +35,36 @@ export type Database = {
         }
         Relationships: []
       }
+      beneficiaries: {
+        Row: {
+          created_at: string
+          description: string
+          filled: boolean
+          id: number
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          filled?: boolean
+          id?: never
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          filled?: boolean
+          id?: never
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -65,9 +95,39 @@ export type Database = {
         }
         Relationships: []
       }
+      core_values: {
+        Row: {
+          created_at: string
+          description: string
+          id: number
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: never
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: never
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery_items: {
         Row: {
+          attachment_name: string | null
+          attachment_url: string | null
           category: string | null
+          cover_image: string | null
           created_at: string
           description: string | null
           id: number
@@ -77,7 +137,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attachment_name?: string | null
+          attachment_url?: string | null
           category?: string | null
+          cover_image?: string | null
           created_at?: string
           description?: string | null
           id?: never
@@ -87,7 +150,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attachment_name?: string | null
+          attachment_url?: string | null
           category?: string | null
+          cover_image?: string | null
           created_at?: string
           description?: string | null
           id?: never
@@ -101,6 +167,7 @@ export type Database = {
       press_room_items: {
         Row: {
           category: string
+          cover_image: string | null
           created_at: string
           description: string | null
           document: string | null
@@ -114,6 +181,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          cover_image?: string | null
           created_at?: string
           description?: string | null
           document?: string | null
@@ -127,6 +195,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          cover_image?: string | null
           created_at?: string
           description?: string | null
           document?: string | null
@@ -142,6 +211,9 @@ export type Database = {
       }
       programs: {
         Row: {
+          attachment_name: string | null
+          attachment_url: string | null
+          cover_image: string | null
           created_at: string
           description: string
           id: number
@@ -151,6 +223,9 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          cover_image?: string | null
           created_at?: string
           description: string
           id?: never
@@ -160,6 +235,9 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          cover_image?: string | null
           created_at?: string
           description?: string
           id?: never
@@ -187,6 +265,59 @@ export type Database = {
           value?: Json
         }
         Relationships: []
+      }
+      sub_programs: {
+        Row: {
+          attachment_name: string | null
+          attachment_url: string | null
+          cover_image: string | null
+          created_at: string
+          description: string
+          id: number
+          image: string | null
+          long_description: string | null
+          program_id: number
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          cover_image?: string | null
+          created_at?: string
+          description: string
+          id?: never
+          image?: string | null
+          long_description?: string | null
+          program_id: number
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          attachment_name?: string | null
+          attachment_url?: string | null
+          cover_image?: string | null
+          created_at?: string
+          description?: string
+          id?: never
+          image?: string | null
+          long_description?: string | null
+          program_id?: number
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sub_programs_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       team_members: {
         Row: {
