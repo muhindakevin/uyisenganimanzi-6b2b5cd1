@@ -268,13 +268,16 @@ function AdminDashboard() {
     setError("");
 
     try {
-      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows] = await Promise.all([
+      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows, subRows, benRows, cvRows] = await Promise.all([
         apiRequest<Member[]>("/api/team"),
         apiRequest<Program[]>("/api/programs"),
         apiRequest<GalleryImage[]>("/api/gallery"),
         apiRequest<PressRoomItem[]>("/api/press-room"),
         apiRequest<Record<string, unknown>>("/api/content"),
         apiRequest<ContactMessage[]>("/api/contact-messages").catch(() => []),
+        apiRequest<SubProgram[]>("/api/sub-programs").catch(() => []),
+        apiRequest<Beneficiary[]>("/api/beneficiaries").catch(() => []),
+        apiRequest<CoreValue[]>("/api/core-values").catch(() => []),
       ]);
 
       setTeam(teamRows);
@@ -282,6 +285,9 @@ function AdminDashboard() {
       setGallery(galleryRows);
       setPressRoom(pressRows);
       setMessages(Array.isArray(messageRows) ? messageRows : []);
+      setSubPrograms(Array.isArray(subRows) ? subRows : []);
+      setBeneficiaries(Array.isArray(benRows) ? benRows : []);
+      setCoreValues(Array.isArray(cvRows) ? cvRows : []);
       setProgramsPage((siteContent.programsPage as ProgramsPageContent) || DEFAULT_PROGRAMS_PAGE);
       const heroIn = (siteContent.hero as Partial<HeroContent>) || {};
       setHero({
