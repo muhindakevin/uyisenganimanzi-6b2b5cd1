@@ -28,6 +28,7 @@ import { Route as ApiSubProgramsRouteImport } from './routes/api/sub-programs'
 import { Route as ApiProgramsRouteImport } from './routes/api/programs'
 import { Route as ApiPressRoomRouteImport } from './routes/api/press-room'
 import { Route as ApiGalleryRouteImport } from './routes/api/gallery'
+import { Route as ApiCoreValuesRouteImport } from './routes/api/core-values'
 import { Route as ApiContentRouteImport } from './routes/api/content'
 import { Route as ApiContactMessagesRouteImport } from './routes/api/contact-messages'
 import { Route as ApiContactRouteImport } from './routes/api/contact'
@@ -134,6 +135,11 @@ const ApiGalleryRoute = ApiGalleryRouteImport.update({
   path: '/api/gallery',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCoreValuesRoute = ApiCoreValuesRouteImport.update({
+  id: '/api/core-values',
+  path: '/api/core-values',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiContentRoute = ApiContentRouteImport.update({
   id: '/api/content',
   path: '/api/content',
@@ -205,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/api/contact': typeof ApiContactRoute
   '/api/contact-messages': typeof ApiContactMessagesRoute
   '/api/content': typeof ApiContentRoute
+  '/api/core-values': typeof ApiCoreValuesRoute
   '/api/gallery': typeof ApiGalleryRoute
   '/api/press-room': typeof ApiPressRoomRoute
   '/api/programs': typeof ApiProgramsRoute
@@ -235,6 +242,7 @@ export interface FileRoutesByTo {
   '/api/contact': typeof ApiContactRoute
   '/api/contact-messages': typeof ApiContactMessagesRoute
   '/api/content': typeof ApiContentRoute
+  '/api/core-values': typeof ApiCoreValuesRoute
   '/api/gallery': typeof ApiGalleryRoute
   '/api/press-room': typeof ApiPressRoomRoute
   '/api/programs': typeof ApiProgramsRoute
@@ -267,6 +275,7 @@ export interface FileRoutesById {
   '/api/contact': typeof ApiContactRoute
   '/api/contact-messages': typeof ApiContactMessagesRoute
   '/api/content': typeof ApiContentRoute
+  '/api/core-values': typeof ApiCoreValuesRoute
   '/api/gallery': typeof ApiGalleryRoute
   '/api/press-room': typeof ApiPressRoomRoute
   '/api/programs': typeof ApiProgramsRoute
@@ -300,6 +309,7 @@ export interface FileRouteTypes {
     | '/api/contact'
     | '/api/contact-messages'
     | '/api/content'
+    | '/api/core-values'
     | '/api/gallery'
     | '/api/press-room'
     | '/api/programs'
@@ -330,6 +340,7 @@ export interface FileRouteTypes {
     | '/api/contact'
     | '/api/contact-messages'
     | '/api/content'
+    | '/api/core-values'
     | '/api/gallery'
     | '/api/press-room'
     | '/api/programs'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/api/contact'
     | '/api/contact-messages'
     | '/api/content'
+    | '/api/core-values'
     | '/api/gallery'
     | '/api/press-room'
     | '/api/programs'
@@ -388,6 +400,7 @@ export interface RootRouteChildren {
   ApiContactRoute: typeof ApiContactRoute
   ApiContactMessagesRoute: typeof ApiContactMessagesRoute
   ApiContentRoute: typeof ApiContentRoute
+  ApiCoreValuesRoute: typeof ApiCoreValuesRoute
   ApiGalleryRoute: typeof ApiGalleryRoute
   ApiPressRoomRoute: typeof ApiPressRoomRoute
   ApiProgramsRoute: typeof ApiProgramsRoute
@@ -533,6 +546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiGalleryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/core-values': {
+      id: '/api/core-values'
+      path: '/api/core-values'
+      fullPath: '/api/core-values'
+      preLoaderRoute: typeof ApiCoreValuesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/content': {
       id: '/api/content'
       path: '/api/content'
@@ -653,6 +673,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiContactRoute: ApiContactRoute,
   ApiContactMessagesRoute: ApiContactMessagesRoute,
   ApiContentRoute: ApiContentRoute,
+  ApiCoreValuesRoute: ApiCoreValuesRoute,
   ApiGalleryRoute: ApiGalleryRoute,
   ApiPressRoomRoute: ApiPressRoomRoute,
   ApiProgramsRoute: ApiProgramsRoute,
