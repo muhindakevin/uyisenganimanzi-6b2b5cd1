@@ -1,65 +1,53 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Baby, GraduationCap, HeartHandshake, Users } from "lucide-react";
 
 export const Route = createFileRoute("/about/beneficiaries")({
   component: OurBeneficiaries,
 });
 
-type Beneficiary = { title: string; description: string };
+type Beneficiary = { id: number; title: string; description: string; filled: boolean };
 
-type Content = { beneficiaries: Beneficiary[] };
-
-const DEFAULT_CONTENT: Content = {
-  beneficiaries: [
-    { title: "Orphans & vulnerable children", description: "Children orphaned by the 1994 Genocide against the Tutsi and by HIV/AIDS." },
-    { title: "Youth (12–24)", description: "Adolescents and young adults navigating education, identity and economic life." },
-    { title: "Survivors of trauma & torture", description: "People living with the lasting effects of violence, loss and gender-based harm." },
-    { title: "Families & caregivers", description: "Households raising vulnerable children, including child- and grandparent-headed homes." },
-  ],
-};
+const DEFAULTS: Beneficiary[] = [
+  { id: 1, title: "Genocide Widows", description: "Our primary focus, providing comprehensive support for their physical, emotional, and economic well-being.", filled: true },
+  { id: 2, title: "Orphans and Vulnerable Children", description: "Offering educational support, psychosocial care, and pathways to a brighter future.", filled: false },
+  { id: 3, title: "Youth with Transgenerational Trauma", description: "Addressing the unique needs of the post-genocide generation through specialized mental health and social programs.", filled: true },
+  { id: 4, title: "Children Born of Rape", description: "Providing targeted support to address their complex psychosocial needs and promote social integration.", filled: false },
+  { id: 5, title: "General Public", description: "Through our health outreach, we extend our services to the broader community.", filled: true },
+];
 
 function OurBeneficiaries() {
-  const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
+  const [items, setItems] = useState<Beneficiary[]>(DEFAULTS);
 
   useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
+    fetch("/api/beneficiaries", { cache: "no-store" })
       .then((r) => r.json())
-      .then((data) => {
-        const about = data?.about || {};
-        setContent({
-          beneficiaries: Array.isArray(about?.beneficiaries)
-            ? about.beneficiaries.map((item: any) => ({
-                title: String(item?.title ?? ""),
-                description: String(item?.description ?? ""),
-              }))
-            : DEFAULT_CONTENT.beneficiaries,
-        });
-      })
+      .then((data) => { if (Array.isArray(data) && data.length > 0) setItems(data); })
       .catch(() => {});
   }, []);
 
-  const groups = content.beneficiaries;
-  const icons = [Baby, Users, HeartHandshake, GraduationCap];
-
   return (
     <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
-      <h2 className="text-3xl font-semibold tracking-tight text-foreground">Our beneficiaries</h2>
-      <p className="mt-3 max-w-2xl text-muted-foreground">
-        Across Kigali City and the Southern and Eastern Provinces, UNM walks alongside:
-      </p>
+      <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">Our Beneficiaries &amp; Members</p>
+      <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        Our work touches the lives of diverse groups across Rwanda
+      </h2>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2">
-        {groups.map((item, index) => {
-          const Icon = icons[index % icons.length];
-          return (
-            <div key={item.title || index} className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
-              <Icon className="h-7 w-7 text-primary" />
-              <h3 className="mt-3 text-lg font-semibold text-foreground">{item.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
-            </div>
-          );
-        })}
+      <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
+          <div
+            key={item.id}
+            className={
+              item.filled
+                ? "rounded-2xl bg-primary p-6 shadow-[var(--shadow-card)] text-primary-foreground"
+                : "rounded-2xl border border-primary/20 bg-primary/5 p-6 shadow-[var(--shadow-card)]"
+            }
+          >
+            <h3 className={item.filled ? "text-xl font-semibold" : "text-xl font-semibold text-primary"}>{item.title}</h3>
+            <p className={item.filled ? "mt-3 text-sm leading-6 text-primary-foreground/90" : "mt-3 text-sm leading-6 text-foreground/80"}>
+              {item.description}
+            </p>
+          </div>
+        ))}
       </div>
     </section>
   );

@@ -52,7 +52,26 @@ type Program = {
   description: string;
   long_description?: string | null;
   image?: string | null;
+  cover_image?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
 };
+
+type SubProgram = {
+  id: number;
+  program_id: number;
+  title: string;
+  description: string;
+  long_description?: string | null;
+  image?: string | null;
+  cover_image?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
+  sort_order?: number;
+};
+
+type Beneficiary = { id: number; title: string; description: string; filled: boolean; sort_order?: number };
+type CoreValue = { id: number; title: string; description: string; sort_order?: number };
 
 type GalleryImage = {
   id: number;
@@ -231,6 +250,9 @@ function AdminDashboard() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [stats, setStats] = useState<HeroStat[]>([]);
   const [board, setBoard] = useState<Member[]>([]);
+  const [subPrograms, setSubPrograms] = useState<SubProgram[]>([]);
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+  const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
@@ -246,13 +268,16 @@ function AdminDashboard() {
     setError("");
 
     try {
-      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows] = await Promise.all([
+      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows, subRows, benRows, cvRows] = await Promise.all([
         apiRequest<Member[]>("/api/team"),
         apiRequest<Program[]>("/api/programs"),
         apiRequest<GalleryImage[]>("/api/gallery"),
         apiRequest<PressRoomItem[]>("/api/press-room"),
         apiRequest<Record<string, unknown>>("/api/content"),
         apiRequest<ContactMessage[]>("/api/contact-messages").catch(() => []),
+        apiRequest<SubProgram[]>("/api/sub-programs").catch(() => []),
+        apiRequest<Beneficiary[]>("/api/beneficiaries").catch(() => []),
+        apiRequest<CoreValue[]>("/api/core-values").catch(() => []),
       ]);
 
       setTeam(teamRows);
@@ -260,6 +285,9 @@ function AdminDashboard() {
       setGallery(galleryRows);
       setPressRoom(pressRows);
       setMessages(Array.isArray(messageRows) ? messageRows : []);
+      setSubPrograms(Array.isArray(subRows) ? subRows : []);
+      setBeneficiaries(Array.isArray(benRows) ? benRows : []);
+      setCoreValues(Array.isArray(cvRows) ? cvRows : []);
       setProgramsPage((siteContent.programsPage as ProgramsPageContent) || DEFAULT_PROGRAMS_PAGE);
       const heroIn = (siteContent.hero as Partial<HeroContent>) || {};
       setHero({
@@ -499,16 +527,19 @@ function AdminDashboard() {
       {error ? <p className="mb-6 rounded-lg border border-destructive p-4 text-destructive">{error}</p> : null}
 
       <Tabs defaultValue="hero" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-11">
+        <TabsList className="flex w-full flex-wrap gap-2">
           <TabsTrigger value="hero">Hero</TabsTrigger>
           <TabsTrigger value="stats">Stats</TabsTrigger>
           <TabsTrigger value="donation">Donate</TabsTrigger>
           <TabsTrigger value="team">Staff</TabsTrigger>
           <TabsTrigger value="board">Board</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
+          <TabsTrigger value="sub-programs">Sub-programs</TabsTrigger>
           <TabsTrigger value="prog-page">Programs Page</TabsTrigger>
           <TabsTrigger value="gallery">Gallery</TabsTrigger>
           <TabsTrigger value="press">Press Room</TabsTrigger>
+          <TabsTrigger value="beneficiaries">Beneficiaries</TabsTrigger>
+          <TabsTrigger value="values">Core Values</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="about">About Pages</TabsTrigger>
@@ -629,6 +660,88 @@ function AdminDashboard() {
             onDelete={(id) => deleteEntity<Program>("/api/programs", id, setPrograms, programs)}
           />
         </TabsContent>
+
+        <TabsContent value="sub-programs">
+          <ManagedList
+            title="Sub-programs & Projects"
+            empty="No sub-programs yet. Add one under an existing program."
+            items={subPrograms}
+            renderItem={(sub) => (
+              <>
+                <p className="font-semibold">{sub.title}</p>
+                <p className="text-sm text-muted-foreground">
+                  Program: {programs.find((p) => p.id === sub.program_id)?.title || `#${sub.program_id}`}
+                </p>
+              </>
+            )}
+            formTitle={(sub) => (sub ? "Edit Sub-program" : "Add Sub-program")}
+            renderForm={(sub, close) => (
+              <SubProgramForm
+                sub={sub}
+                programs={programs}
+                saving={saving}
+                onSave={async (saved) => {
+                  await saveEntity("/api/sub-programs", saved, setSubPrograms, subPrograms, "item");
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => deleteEntity<SubProgram>("/api/sub-programs", id, setSubPrograms, subPrograms)}
+          />
+        </TabsContent>
+
+        <TabsContent value="beneficiaries">
+          <ManagedList
+            title="Beneficiaries"
+            empty="No beneficiaries yet."
+            items={beneficiaries}
+            renderItem={(b) => (
+              <>
+                <p className="font-semibold">{b.title}</p>
+                <p className="text-sm text-muted-foreground">{b.description}</p>
+              </>
+            )}
+            formTitle={(b) => (b ? "Edit Beneficiary" : "Add Beneficiary")}
+            renderForm={(b, close) => (
+              <BeneficiaryForm
+                item={b}
+                saving={saving}
+                onSave={async (saved) => {
+                  await saveEntity("/api/beneficiaries", saved, setBeneficiaries, beneficiaries, "item");
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => deleteEntity<Beneficiary>("/api/beneficiaries", id, setBeneficiaries, beneficiaries)}
+          />
+        </TabsContent>
+
+        <TabsContent value="values">
+          <ManagedList
+            title={`Core Values (${coreValues.length}/10)`}
+            empty="No core values yet. Add up to 10."
+            items={coreValues}
+            renderItem={(v) => (
+              <>
+                <p className="font-semibold">{v.title}</p>
+                <p className="text-sm text-muted-foreground">{v.description}</p>
+              </>
+            )}
+            formTitle={(v) => (v ? "Edit Core Value" : "Add Core Value")}
+            renderForm={(v, close) => (
+              <CoreValueForm
+                item={v}
+                saving={saving}
+                onSave={async (saved) => {
+                  await saveEntity("/api/core-values", saved, setCoreValues, coreValues, "item");
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => deleteEntity<CoreValue>("/api/core-values", id, setCoreValues, coreValues)}
+          />
+        </TabsContent>
+
 
         <TabsContent value="prog-page">
           <Card>
@@ -893,6 +1006,22 @@ function ProgramForm({ program, saving, onSave }: { program?: Program | null; sa
         <Label htmlFor="program-image">Program Image</Label>
         <Input id="program-image" type="file" accept="image/*" onChange={handleFileChange} />
         {form.image ? <img src={form.image} alt="Program preview" className="mt-3 h-24 w-full rounded-md object-cover" /> : null}
+      </div>
+      <div>
+        <Label htmlFor="program-cover">Cover Photo (hero banner)</Label>
+        <Input id="program-cover" type="file" accept="image/*" onChange={async (e) => {
+          const f = e.target.files?.[0]; if (!f) return;
+          setForm({ ...form, cover_image: await readFileAsDataUrl(f) });
+        }} />
+        {form.cover_image ? <img src={form.cover_image} alt="Cover preview" className="mt-3 h-24 w-full rounded-md object-cover" /> : null}
+      </div>
+      <div>
+        <Label htmlFor="program-attach">Attachment (PDF or file)</Label>
+        <Input id="program-attach" type="file" onChange={async (e) => {
+          const f = e.target.files?.[0]; if (!f) return;
+          setForm({ ...form, attachment_url: await readFileAsDataUrl(f), attachment_name: f.name });
+        }} />
+        {form.attachment_name ? <p className="mt-2 text-xs text-muted-foreground">Attached: {form.attachment_name}</p> : null}
       </div>
       <SubmitButton saving={saving} />
     </form>
@@ -1389,3 +1518,82 @@ function DonationForm({ donation, saving, onSave }: { donation: DonationContent;
   );
 }
 
+
+function SubProgramForm({ sub, programs, saving, onSave }: { sub?: SubProgram | null; programs: Program[]; saving: boolean; onSave: (s: SubProgram) => void }) {
+  const [form, setForm] = useState<SubProgram>(sub || { id: 0, program_id: programs[0]?.id || 0, title: "", description: "", long_description: "", image: "", cover_image: "", attachment_url: "", attachment_name: "", sort_order: 0 });
+  useEffect(() => {
+    setForm(sub || { id: 0, program_id: programs[0]?.id || 0, title: "", description: "", long_description: "", image: "", cover_image: "", attachment_url: "", attachment_name: "", sort_order: 0 });
+  }, [sub, programs]);
+
+  async function setFile(key: "image" | "cover_image", file?: File) {
+    if (!file) return;
+    setForm({ ...form, [key]: await readFileAsDataUrl(file) });
+  }
+  async function setAttach(file?: File) {
+    if (!file) return;
+    setForm({ ...form, attachment_url: await readFileAsDataUrl(file), attachment_name: file.name });
+  }
+
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <div>
+        <Label>Parent program</Label>
+        <select
+          className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+          value={form.program_id}
+          onChange={(e) => setForm({ ...form, program_id: Number(e.target.value) })}
+        >
+          {programs.length === 0 ? <option value="">— No programs yet —</option> : null}
+          {programs.map((p) => (<option key={p.id} value={p.id}>{p.title}</option>))}
+        </select>
+      </div>
+      <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
+      <TextareaField label="Short description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <TextareaField label="Full description (Learn more)" value={form.long_description || ""} onChange={(long_description) => setForm({ ...form, long_description })} />
+      <div>
+        <Label>Image</Label>
+        <Input type="file" accept="image/*" onChange={(e) => setFile("image", e.target.files?.[0])} />
+        {form.image ? <img src={form.image} alt="" className="mt-2 h-20 w-full rounded object-cover" /> : null}
+      </div>
+      <div>
+        <Label>Cover photo</Label>
+        <Input type="file" accept="image/*" onChange={(e) => setFile("cover_image", e.target.files?.[0])} />
+        {form.cover_image ? <img src={form.cover_image} alt="" className="mt-2 h-20 w-full rounded object-cover" /> : null}
+      </div>
+      <div>
+        <Label>Attachment (PDF / file)</Label>
+        <Input type="file" onChange={(e) => setAttach(e.target.files?.[0])} />
+        {form.attachment_name ? <p className="mt-1 text-xs text-muted-foreground">Attached: {form.attachment_name}</p> : null}
+      </div>
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
+function BeneficiaryForm({ item, saving, onSave }: { item?: Beneficiary | null; saving: boolean; onSave: (b: Beneficiary) => void }) {
+  const [form, setForm] = useState<Beneficiary>(item || { id: 0, title: "", description: "", filled: true, sort_order: 0 });
+  useEffect(() => { setForm(item || { id: 0, title: "", description: "", filled: true, sort_order: 0 }); }, [item]);
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
+      <TextareaField label="Description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" checked={form.filled} onChange={(e) => setForm({ ...form, filled: e.target.checked })} />
+        Highlighted card (filled blue background)
+      </label>
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
+function CoreValueForm({ item, saving, onSave }: { item?: CoreValue | null; saving: boolean; onSave: (v: CoreValue) => void }) {
+  const [form, setForm] = useState<CoreValue>(item || { id: 0, title: "", description: "", sort_order: 0 });
+  useEffect(() => { setForm(item || { id: 0, title: "", description: "", sort_order: 0 }); }, [item]);
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
+      <TextareaField label="Description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
