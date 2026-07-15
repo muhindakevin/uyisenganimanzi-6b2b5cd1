@@ -527,16 +527,19 @@ function AdminDashboard() {
       {error ? <p className="mb-6 rounded-lg border border-destructive p-4 text-destructive">{error}</p> : null}
 
       <Tabs defaultValue="hero" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 gap-2 md:grid-cols-5 lg:grid-cols-11">
+        <TabsList className="flex w-full flex-wrap gap-2">
           <TabsTrigger value="hero">Hero</TabsTrigger>
           <TabsTrigger value="stats">Stats</TabsTrigger>
           <TabsTrigger value="donation">Donate</TabsTrigger>
           <TabsTrigger value="team">Staff</TabsTrigger>
           <TabsTrigger value="board">Board</TabsTrigger>
           <TabsTrigger value="programs">Programs</TabsTrigger>
+          <TabsTrigger value="sub-programs">Sub-programs</TabsTrigger>
           <TabsTrigger value="prog-page">Programs Page</TabsTrigger>
           <TabsTrigger value="gallery">Gallery</TabsTrigger>
           <TabsTrigger value="press">Press Room</TabsTrigger>
+          <TabsTrigger value="beneficiaries">Beneficiaries</TabsTrigger>
+          <TabsTrigger value="values">Core Values</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="about">About Pages</TabsTrigger>
