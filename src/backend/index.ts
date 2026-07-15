@@ -265,7 +265,7 @@ export async function listPrograms() {
   try {
     const { data, error } = await sql()
       .from("programs")
-      .select("id, title, description, long_description, image")
+      .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
       .order("id", { ascending: true });
     if (error) throw error;
     return numberIds(data ?? []) as Program[];
@@ -292,7 +292,7 @@ export async function saveProgram(program: Partial<Program>) {
           updated_at: new Date().toISOString(),
         })
         .eq("id", program.id)
-        .select("id, title, description, long_description, image")
+        .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
         .single();
       if (error) throw error;
       return data ? (numberId(data) as Program) : undefined;
@@ -306,7 +306,7 @@ export async function saveProgram(program: Partial<Program>) {
         long_description: program.long_description ?? null,
         image: program.image ?? null,
       })
-      .select("id, title, description, long_description, image")
+      .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
       .single();
     if (error) throw error;
     return numberId(data) as Program;
@@ -320,7 +320,7 @@ export async function getProgram(id: number) {
   try {
     const { data, error } = await sql()
       .from("programs")
-      .select("id, title, description, long_description, image")
+      .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
       .eq("id", id)
       .single();
     if (error) throw error;
