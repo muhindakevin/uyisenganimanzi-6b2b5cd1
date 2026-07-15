@@ -661,6 +661,88 @@ function AdminDashboard() {
           />
         </TabsContent>
 
+        <TabsContent value="sub-programs">
+          <ManagedList
+            title="Sub-programs & Projects"
+            empty="No sub-programs yet. Add one under an existing program."
+            items={subPrograms}
+            renderItem={(sub) => (
+              <>
+                <p className="font-semibold">{sub.title}</p>
+                <p className="text-sm text-muted-foreground">
+                  Program: {programs.find((p) => p.id === sub.program_id)?.title || `#${sub.program_id}`}
+                </p>
+              </>
+            )}
+            formTitle={(sub) => (sub ? "Edit Sub-program" : "Add Sub-program")}
+            renderForm={(sub, close) => (
+              <SubProgramForm
+                sub={sub}
+                programs={programs}
+                saving={saving}
+                onSave={async (saved) => {
+                  await saveEntity("/api/sub-programs", saved, setSubPrograms, subPrograms, "item");
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => deleteEntity<SubProgram>("/api/sub-programs", id, setSubPrograms, subPrograms)}
+          />
+        </TabsContent>
+
+        <TabsContent value="beneficiaries">
+          <ManagedList
+            title="Beneficiaries"
+            empty="No beneficiaries yet."
+            items={beneficiaries}
+            renderItem={(b) => (
+              <>
+                <p className="font-semibold">{b.title}</p>
+                <p className="text-sm text-muted-foreground">{b.description}</p>
+              </>
+            )}
+            formTitle={(b) => (b ? "Edit Beneficiary" : "Add Beneficiary")}
+            renderForm={(b, close) => (
+              <BeneficiaryForm
+                item={b}
+                saving={saving}
+                onSave={async (saved) => {
+                  await saveEntity("/api/beneficiaries", saved, setBeneficiaries, beneficiaries, "item");
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => deleteEntity<Beneficiary>("/api/beneficiaries", id, setBeneficiaries, beneficiaries)}
+          />
+        </TabsContent>
+
+        <TabsContent value="values">
+          <ManagedList
+            title={`Core Values (${coreValues.length}/10)`}
+            empty="No core values yet. Add up to 10."
+            items={coreValues}
+            renderItem={(v) => (
+              <>
+                <p className="font-semibold">{v.title}</p>
+                <p className="text-sm text-muted-foreground">{v.description}</p>
+              </>
+            )}
+            formTitle={(v) => (v ? "Edit Core Value" : "Add Core Value")}
+            renderForm={(v, close) => (
+              <CoreValueForm
+                item={v}
+                saving={saving}
+                onSave={async (saved) => {
+                  await saveEntity("/api/core-values", saved, setCoreValues, coreValues, "item");
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => deleteEntity<CoreValue>("/api/core-values", id, setCoreValues, coreValues)}
+          />
+        </TabsContent>
+
+
         <TabsContent value="prog-page">
           <Card>
             <CardHeader>
