@@ -250,6 +250,9 @@ function AdminDashboard() {
   const [messages, setMessages] = useState<ContactMessage[]>([]);
   const [stats, setStats] = useState<HeroStat[]>([]);
   const [board, setBoard] = useState<Member[]>([]);
+  const [subPrograms, setSubPrograms] = useState<SubProgram[]>([]);
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+  const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
