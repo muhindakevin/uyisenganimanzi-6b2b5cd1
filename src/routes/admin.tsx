@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { Edit, Plus, RefreshCw, Save, Trash2 } from "lucide-react";
 import { Button } from "@/frontend/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/frontend/components/ui/card";
@@ -357,8 +358,11 @@ function AdminDashboard() {
       });
       const saved = data[responseKey];
       setter(item.id ? current.map((row) => (row.id === saved.id ? saved : row)) : [...current, saved]);
+      toast.success(item.id ? "Changes saved" : "Added successfully");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to save this item.");
+      const msg = err instanceof Error ? err.message : "Unable to save this item.";
+      setError(msg);
+      toast.error(msg);
       throw err;
     } finally {
       setSaving(false);
@@ -379,8 +383,11 @@ function AdminDashboard() {
         body: JSON.stringify({ id }),
       });
       setter(current.filter((item) => item.id !== id));
+      toast.success("Deleted");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to delete this item.");
+      const msg = err instanceof Error ? err.message : "Unable to delete this item.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
@@ -447,8 +454,11 @@ function AdminDashboard() {
             : aboutContent.approachSteps,
         });
       }
+      toast.success("Content saved");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to save content.");
+      const msg = err instanceof Error ? err.message : "Unable to save content.";
+      setError(msg);
+      toast.error(msg);
       throw err;
     } finally {
       setSaving(false);
