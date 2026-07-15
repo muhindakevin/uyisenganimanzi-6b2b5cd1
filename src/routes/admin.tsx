@@ -358,8 +358,11 @@ function AdminDashboard() {
       });
       const saved = data[responseKey];
       setter(item.id ? current.map((row) => (row.id === saved.id ? saved : row)) : [...current, saved]);
+      toast.success(item.id ? "Changes saved" : "Added successfully");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to save this item.");
+      const msg = err instanceof Error ? err.message : "Unable to save this item.";
+      setError(msg);
+      toast.error(msg);
       throw err;
     } finally {
       setSaving(false);
@@ -380,8 +383,11 @@ function AdminDashboard() {
         body: JSON.stringify({ id }),
       });
       setter(current.filter((item) => item.id !== id));
+      toast.success("Deleted");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to delete this item.");
+      const msg = err instanceof Error ? err.message : "Unable to delete this item.";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setSaving(false);
     }
