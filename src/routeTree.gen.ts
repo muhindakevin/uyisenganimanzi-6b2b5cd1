@@ -24,6 +24,7 @@ import { Route as PressRoomPublicationsRouteImport } from './routes/press-room/p
 import { Route as PressRoomNewsRouteImport } from './routes/press-room/news'
 import { Route as PressRoomJobsRouteImport } from './routes/press-room/jobs'
 import { Route as ApiTeamRouteImport } from './routes/api/team'
+import { Route as ApiSubProgramsRouteImport } from './routes/api/sub-programs'
 import { Route as ApiProgramsRouteImport } from './routes/api/programs'
 import { Route as ApiPressRoomRouteImport } from './routes/api/press-room'
 import { Route as ApiGalleryRouteImport } from './routes/api/gallery'
@@ -112,6 +113,11 @@ const ApiTeamRoute = ApiTeamRouteImport.update({
   path: '/api/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSubProgramsRoute = ApiSubProgramsRouteImport.update({
+  id: '/api/sub-programs',
+  path: '/api/sub-programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiProgramsRoute = ApiProgramsRouteImport.update({
   id: '/api/programs',
   path: '/api/programs',
@@ -195,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/api/gallery': typeof ApiGalleryRoute
   '/api/press-room': typeof ApiPressRoomRoute
   '/api/programs': typeof ApiProgramsRoute
+  '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRoute
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRoute
@@ -223,6 +230,7 @@ export interface FileRoutesByTo {
   '/api/gallery': typeof ApiGalleryRoute
   '/api/press-room': typeof ApiPressRoomRoute
   '/api/programs': typeof ApiProgramsRoute
+  '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRoute
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRoute
@@ -253,6 +261,7 @@ export interface FileRoutesById {
   '/api/gallery': typeof ApiGalleryRoute
   '/api/press-room': typeof ApiPressRoomRoute
   '/api/programs': typeof ApiProgramsRoute
+  '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRoute
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRoute
@@ -284,6 +293,7 @@ export interface FileRouteTypes {
     | '/api/gallery'
     | '/api/press-room'
     | '/api/programs'
+    | '/api/sub-programs'
     | '/api/team'
     | '/press-room/jobs'
     | '/press-room/news'
@@ -312,6 +322,7 @@ export interface FileRouteTypes {
     | '/api/gallery'
     | '/api/press-room'
     | '/api/programs'
+    | '/api/sub-programs'
     | '/api/team'
     | '/press-room/jobs'
     | '/press-room/news'
@@ -341,6 +352,7 @@ export interface FileRouteTypes {
     | '/api/gallery'
     | '/api/press-room'
     | '/api/programs'
+    | '/api/sub-programs'
     | '/api/team'
     | '/press-room/jobs'
     | '/press-room/news'
@@ -366,6 +378,7 @@ export interface RootRouteChildren {
   ApiGalleryRoute: typeof ApiGalleryRoute
   ApiPressRoomRoute: typeof ApiPressRoomRoute
   ApiProgramsRoute: typeof ApiProgramsRoute
+  ApiSubProgramsRoute: typeof ApiSubProgramsRoute
   ApiTeamRoute: typeof ApiTeamRoute
   PressRoomJobsRoute: typeof PressRoomJobsRoute
   PressRoomNewsRoute: typeof PressRoomNewsRoute
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       path: '/api/team'
       fullPath: '/api/team'
       preLoaderRoute: typeof ApiTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sub-programs': {
+      id: '/api/sub-programs'
+      path: '/api/sub-programs'
+      fullPath: '/api/sub-programs'
+      preLoaderRoute: typeof ApiSubProgramsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/programs': {
@@ -615,6 +635,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiGalleryRoute: ApiGalleryRoute,
   ApiPressRoomRoute: ApiPressRoomRoute,
   ApiProgramsRoute: ApiProgramsRoute,
+  ApiSubProgramsRoute: ApiSubProgramsRoute,
   ApiTeamRoute: ApiTeamRoute,
   PressRoomJobsRoute: PressRoomJobsRoute,
   PressRoomNewsRoute: PressRoomNewsRoute,
