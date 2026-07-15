@@ -18,6 +18,37 @@ export type Program = {
   description: string;
   long_description: string | null;
   image: string | null;
+  cover_image?: string | null;
+  attachment_url?: string | null;
+  attachment_name?: string | null;
+};
+
+export type SubProgram = {
+  id: number;
+  program_id: number;
+  title: string;
+  description: string;
+  long_description: string | null;
+  image: string | null;
+  cover_image: string | null;
+  attachment_url: string | null;
+  attachment_name: string | null;
+  sort_order: number;
+};
+
+export type Beneficiary = {
+  id: number;
+  title: string;
+  description: string;
+  filled: boolean;
+  sort_order: number;
+};
+
+export type CoreValue = {
+  id: number;
+  title: string;
+  description: string;
+  sort_order: number;
 };
 
 export type GalleryImage = {
