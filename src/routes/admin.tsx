@@ -1518,3 +1518,82 @@ function DonationForm({ donation, saving, onSave }: { donation: DonationContent;
   );
 }
 
+
+function SubProgramForm({ sub, programs, saving, onSave }: { sub?: SubProgram | null; programs: Program[]; saving: boolean; onSave: (s: SubProgram) => void }) {
+  const [form, setForm] = useState<SubProgram>(sub || { id: 0, program_id: programs[0]?.id || 0, title: "", description: "", long_description: "", image: "", cover_image: "", attachment_url: "", attachment_name: "", sort_order: 0 });
+  useEffect(() => {
+    setForm(sub || { id: 0, program_id: programs[0]?.id || 0, title: "", description: "", long_description: "", image: "", cover_image: "", attachment_url: "", attachment_name: "", sort_order: 0 });
+  }, [sub, programs]);
+
+  async function setFile(key: "image" | "cover_image", file?: File) {
+    if (!file) return;
+    setForm({ ...form, [key]: await readFileAsDataUrl(file) });
+  }
+  async function setAttach(file?: File) {
+    if (!file) return;
+    setForm({ ...form, attachment_url: await readFileAsDataUrl(file), attachment_name: file.name });
+  }
+
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <div>
+        <Label>Parent program</Label>
+        <select
+          className="mt-1 flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm"
+          value={form.program_id}
+          onChange={(e) => setForm({ ...form, program_id: Number(e.target.value) })}
+        >
+          {programs.length === 0 ? <option value="">— No programs yet —</option> : null}
+          {programs.map((p) => (<option key={p.id} value={p.id}>{p.title}</option>))}
+        </select>
+      </div>
+      <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
+      <TextareaField label="Short description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <TextareaField label="Full description (Learn more)" value={form.long_description || ""} onChange={(long_description) => setForm({ ...form, long_description })} />
+      <div>
+        <Label>Image</Label>
+        <Input type="file" accept="image/*" onChange={(e) => setFile("image", e.target.files?.[0])} />
+        {form.image ? <img src={form.image} alt="" className="mt-2 h-20 w-full rounded object-cover" /> : null}
+      </div>
+      <div>
+        <Label>Cover photo</Label>
+        <Input type="file" accept="image/*" onChange={(e) => setFile("cover_image", e.target.files?.[0])} />
+        {form.cover_image ? <img src={form.cover_image} alt="" className="mt-2 h-20 w-full rounded object-cover" /> : null}
+      </div>
+      <div>
+        <Label>Attachment (PDF / file)</Label>
+        <Input type="file" onChange={(e) => setAttach(e.target.files?.[0])} />
+        {form.attachment_name ? <p className="mt-1 text-xs text-muted-foreground">Attached: {form.attachment_name}</p> : null}
+      </div>
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
+function BeneficiaryForm({ item, saving, onSave }: { item?: Beneficiary | null; saving: boolean; onSave: (b: Beneficiary) => void }) {
+  const [form, setForm] = useState<Beneficiary>(item || { id: 0, title: "", description: "", filled: true, sort_order: 0 });
+  useEffect(() => { setForm(item || { id: 0, title: "", description: "", filled: true, sort_order: 0 }); }, [item]);
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
+      <TextareaField label="Description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" checked={form.filled} onChange={(e) => setForm({ ...form, filled: e.target.checked })} />
+        Highlighted card (filled blue background)
+      </label>
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
+function CoreValueForm({ item, saving, onSave }: { item?: CoreValue | null; saving: boolean; onSave: (v: CoreValue) => void }) {
+  const [form, setForm] = useState<CoreValue>(item || { id: 0, title: "", description: "", sort_order: 0 });
+  useEffect(() => { setForm(item || { id: 0, title: "", description: "", sort_order: 0 }); }, [item]);
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onSave(form); }}>
+      <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
+      <TextareaField label="Description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
+      <SubmitButton saving={saving} />
+    </form>
+  );
+}
