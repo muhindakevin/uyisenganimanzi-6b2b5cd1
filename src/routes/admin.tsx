@@ -454,8 +454,11 @@ function AdminDashboard() {
             : aboutContent.approachSteps,
         });
       }
+      toast.success("Content saved");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to save content.");
+      const msg = err instanceof Error ? err.message : "Unable to save content.";
+      setError(msg);
+      toast.error(msg);
       throw err;
     } finally {
       setSaving(false);
