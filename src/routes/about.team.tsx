@@ -18,8 +18,8 @@ type Member = {
 
 function MemberCard({ m }: { m: Member }) {
   return (
-    <article className="group overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1">
-      <div className="relative aspect-[3/4] w-full overflow-hidden bg-secondary">
+    <article className="flex flex-col items-center rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center shadow-[var(--shadow-card)] transition-transform hover:-translate-y-1">
+      <div className="relative h-48 w-48 overflow-hidden rounded-full border-4 border-background bg-secondary shadow-md">
         {m.photo ? (
           <img src={m.photo} alt={m.name} className="h-full w-full object-cover object-top" loading="lazy" />
         ) : (
@@ -28,25 +28,26 @@ function MemberCard({ m }: { m: Member }) {
           </div>
         )}
       </div>
-      <div className="p-5">
-        <h3 className="text-lg font-semibold text-foreground">{m.name}</h3>
-        <p className="mt-0.5 text-sm font-medium text-primary">{m.title}</p>
-        <div className="mt-4 space-y-2 text-sm text-muted-foreground">
+      <h3 className="mt-5 text-lg font-bold text-foreground">{m.name}</h3>
+      <p className="mt-1 text-sm font-medium text-foreground/80">{m.title}</p>
+      {(m.email || m.phone) && (
+        <div className="mt-4 flex flex-col items-center gap-2 text-sm">
           {m.email && (
-            <a href={`mailto:${m.email}`} className="flex items-center gap-2 hover:text-foreground">
-              <Mail className="h-4 w-4 text-primary" /> {m.email}
+            <a href={`mailto:${m.email}`} className="inline-flex items-center gap-2 rounded-md border border-primary/40 bg-background px-4 py-1.5 text-foreground hover:bg-primary hover:text-primary-foreground">
+              <Mail className="h-4 w-4" /> {m.email}
             </a>
           )}
           {m.phone && (
-            <a href={`tel:${m.phone.replace(/\s/g, "")}`} className="flex items-center gap-2 hover:text-foreground">
-              <Phone className="h-4 w-4 text-primary" /> {m.phone}
+            <a href={`tel:${m.phone.replace(/\s/g, "")}`} className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary">
+              <Phone className="h-4 w-4" /> {m.phone}
             </a>
           )}
         </div>
-      </div>
+      )}
     </article>
   );
 }
+
 
 function Grid({ items, empty }: { items: Member[]; empty: string }) {
   if (items.length === 0) {

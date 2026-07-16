@@ -46,17 +46,18 @@ function MissionVision() {
   return (
     <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
       <div className="grid gap-6 md:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-card p-8 shadow-[var(--shadow-card)]">
-          <Target className="h-8 w-8 text-primary" />
-          <h2 className="mt-4 text-2xl font-semibold text-foreground">Our mission</h2>
-          <p className="mt-3 text-muted-foreground">{content.mission}</p>
+        <div className="rounded-2xl bg-primary p-8 text-primary-foreground shadow-[var(--shadow-card)]">
+          <Target className="h-8 w-8" />
+          <h2 className="mt-4 text-3xl font-bold">Mission</h2>
+          <p className="mt-4 text-primary-foreground/90 leading-relaxed">{content.mission}</p>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-8 shadow-[var(--shadow-card)]">
-          <Eye className="h-8 w-8 text-primary" />
-          <h2 className="mt-4 text-2xl font-semibold text-foreground">Our vision</h2>
-          <p className="mt-3 text-muted-foreground">{content.vision}</p>
+        <div className="rounded-2xl bg-primary p-8 text-primary-foreground shadow-[var(--shadow-card)]">
+          <Eye className="h-8 w-8" />
+          <h2 className="mt-4 text-3xl font-bold">Vision</h2>
+          <p className="mt-4 text-primary-foreground/90 leading-relaxed">{content.vision}</p>
         </div>
       </div>
+
 
       <h2 className="mt-14 flex items-center gap-2 text-2xl font-semibold text-foreground">
         <Heart className="h-6 w-6 text-primary" /> Core values
