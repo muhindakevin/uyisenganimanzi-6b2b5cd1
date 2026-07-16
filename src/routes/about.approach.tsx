@@ -10,17 +10,10 @@ type ApproachStep = { title: string; description: string };
 
 type Content = { approachSteps: ApproachStep[] };
 
-const DEFAULT_CONTENT: Content = {
-  approachSteps: [
-    { title: "Listen first", description: "We start by listening to children, youth and families—their needs, their words and their pace." },
-    { title: "Heal the trauma", description: "Psychosocial and mental health care unlock the ability to learn, work and relate." },
-    { title: "Build the skills", description: "Education, vocational training and life skills give young people real choices." },
-    { title: "Strengthen the community", description: "Families, peer groups and partners sustain change long after a program ends." },
-  ],
-};
+const EMPTY_CONTENT: Content = { approachSteps: [] };
 
 function OurApproach() {
-  const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
+  const [content, setContent] = useState<Content>(EMPTY_CONTENT);
 
   useEffect(() => {
     fetch("/api/content")
@@ -33,7 +26,7 @@ function OurApproach() {
                 title: String(item?.title ?? ""),
                 description: String(item?.description ?? ""),
               }))
-            : DEFAULT_CONTENT.approachSteps,
+            : [],
         });
       })
       .catch(() => {});
