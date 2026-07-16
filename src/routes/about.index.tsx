@@ -11,15 +11,14 @@ type Content = {
   storyImage: string;
 };
 
-const DEFAULT_CONTENT: Content = {
-  storyTitle: "Our story since 2002",
-  storyText:
-    "Uyisenga Ni Imanzi (UNM) was founded in 2002, with a mission to provide orphans from the genocide and HIV/AIDS with social services, education and income-generating opportunities. UNM was established to implement child- and youth-focused programs that address their special needs.\n\nAfter two years of concerted efforts, it became clear that these children were too traumatized to fully participate in or benefit from the programs offered. With the addition of psychosocial and health services in 2004, UNM expanded and strengthened its activities greatly—especially in Kigali City and the Southern and Eastern Provinces.\n\nIn recognition of the needs of orphans in Rwanda, the Ministerial Decree granting legal entity to the Association Uyisenga Ni Imanzi is N° 70/11 of 10th August 2005, published in October 2005. Several awards have crowned UNM's activities, mainly in the fight against HIV/AIDS among youth, the care of children, and the promotion of children's rights.\n\nUNM is an active member of local and international umbrellas: Ibuka, Rwanda NGO Forum on AIDS and Health Promotion, the International Rehabilitation Council for Torture Victims, and Family for Every Child.",
+const EMPTY_CONTENT: Content = {
+  storyTitle: "",
+  storyText: "",
   storyImage: "",
 };
 
 function OurStory() {
-  const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
+  const [content, setContent] = useState<Content>(EMPTY_CONTENT);
 
   useEffect(() => {
     fetch("/api/content")
@@ -27,9 +26,9 @@ function OurStory() {
       .then((data) => {
         const about = data?.about || {};
         setContent({
-          storyTitle: typeof about?.storyTitle === "string" ? about.storyTitle : DEFAULT_CONTENT.storyTitle,
-          storyText: typeof about?.storyText === "string" ? about.storyText : DEFAULT_CONTENT.storyText,
-          storyImage: typeof about?.storyImage === "string" ? about.storyImage : DEFAULT_CONTENT.storyImage,
+          storyTitle: typeof about?.storyTitle === "string" ? about.storyTitle : "",
+          storyText: typeof about?.storyText === "string" ? about.storyText : "",
+          storyImage: typeof about?.storyImage === "string" ? about.storyImage : "",
         });
       })
       .catch(() => {});

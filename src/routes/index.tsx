@@ -34,10 +34,9 @@ type Stat = { value: string; label: string };
 type Program = { id: number; title: string; description: string; image?: string | null };
 
 const DEFAULT_HERO: HeroContent = {
-  badge: "Non-Governmental Organization · Kigali, Rwanda",
-  title: "Hope, healing and opportunity for every young Rwandan.",
-  description:
-    "Uyisenga Ni Imanzi walks alongside children, youth and families—providing psychosocial care, education and the tools to build resilient livelihoods.",
+  badge: "",
+  title: "",
+  description: "",
   ctaPrimaryLabel: "Donate",
   ctaPrimaryLink: "/donate",
   ctaSecondaryLabel: "Get Involved",

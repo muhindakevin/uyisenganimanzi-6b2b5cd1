@@ -13,24 +13,10 @@ type Content = {
   impactRecognition: string[];
 };
 
-const DEFAULT_CONTENT: Content = {
-  impactStats: [
-    { value: "20,000+", label: "Children & youth supported" },
-    { value: "20+", label: "Years of service since 2002" },
-    { value: "3", label: "Provinces actively served" },
-    { value: "Multiple", label: "Awards & recognition" },
-  ],
-  impactRecognition: [
-    "Ministerial Decree N° 70/11 of 10th August 2005 granting legal entity to UNM.",
-    "Awards in HIV/AIDS prevention among youth, child care, and children's rights.",
-    "Active member of Ibuka, Rwanda NGO Forum on AIDS and Health Promotion.",
-    "Member of the International Rehabilitation Council for Torture Victims (IRCT).",
-    "Member of Family for Every Child.",
-  ],
-};
+const EMPTY_CONTENT: Content = { impactStats: [], impactRecognition: [] };
 
 function OurImpact() {
-  const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
+  const [content, setContent] = useState<Content>(EMPTY_CONTENT);
 
   useEffect(() => {
     fetch("/api/content")
@@ -40,10 +26,10 @@ function OurImpact() {
         setContent({
           impactStats: Array.isArray(about?.impactStats)
             ? about.impactStats.map((item: any) => ({ value: String(item?.value ?? ""), label: String(item?.label ?? "") }))
-            : DEFAULT_CONTENT.impactStats,
+            : [],
           impactRecognition: Array.isArray(about?.impactRecognition)
             ? about.impactRecognition.map((item: any) => String(item ?? ""))
-            : DEFAULT_CONTENT.impactRecognition,
+            : [],
         });
       })
       .catch(() => {});

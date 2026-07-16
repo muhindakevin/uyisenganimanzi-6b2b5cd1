@@ -29,18 +29,16 @@ type ProgramsPageContent = {
   description2: string;
 };
 
-const DEFAULT_PROGRAMS: Program[] = [];
-
-const DEFAULT_PAGE_CONTENT: ProgramsPageContent = {
-  label: "Our Programs",
-  heading: "Uyisenga Ni Imanzi's Programs",
-  description1: "Since its establishment, Uyisenga Ni Imanzi has implemented various programs to support Rwandan children, youth, and families. Our work focuses on psychosocial support, education, livelihoods and community resilience.",
-  description2: "Through our strategic initiatives, we empower vulnerable populations and foster sustainable development across Rwanda. We prioritize holistic support, community engagement, and evidence-based practices."
+const EMPTY_PAGE_CONTENT: ProgramsPageContent = {
+  label: "",
+  heading: "",
+  description1: "",
+  description2: "",
 };
 
 function Programs() {
-  const [programs, setPrograms] = useState<Program[]>(DEFAULT_PROGRAMS);
-  const [pageContent, setPageContent] = useState<ProgramsPageContent>(DEFAULT_PAGE_CONTENT);
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [pageContent, setPageContent] = useState<ProgramsPageContent>(EMPTY_PAGE_CONTENT);
 
   useEffect(() => {
     Promise.all([
@@ -48,12 +46,8 @@ function Programs() {
       fetch("/api/content").then((response) => response.json()),
     ])
       .then(([programRows, content]) => {
-        if (Array.isArray(programRows) && programRows.length > 0) {
-          setPrograms(programRows);
-        }
-        if (content.programsPage) {
-          setPageContent(content.programsPage);
-        }
+        if (Array.isArray(programRows)) setPrograms(programRows);
+        if (content?.programsPage) setPageContent({ ...EMPTY_PAGE_CONTENT, ...content.programsPage });
       })
       .catch(() => {});
   }, []);

@@ -15,31 +15,25 @@ type Content = {
 
 type CoreValue = { id: number; title: string; description: string };
 
-const DEFAULT_CONTENT: Content = {
-  mission: "To accompany young Rwandans on their journey to healing and opportunity—through psychosocial care, education and economic empowerment.",
-  vision: "A Rwanda where every young person has the support, skills and hope to shape their own future—and uplift those around them.",
-  impact: "We have impacted thousands of lives.",
-  contact: { email: "info@uyisenganimanzi.org.rw", phone: "+250 788 729 994", address: "Kigali, Rwanda" },
+const EMPTY_CONTENT: Content = {
+  mission: "",
+  vision: "",
+  impact: "",
+  contact: { email: "", phone: "", address: "" },
 };
 
-const DEFAULT_VALUES: CoreValue[] = [
-  { id: 1, title: "Dignity", description: "Every person we serve is met with respect and confidentiality." },
-  { id: 2, title: "Listening", description: "Programs are co-designed with the youth and families who use them." },
-  { id: 3, title: "Long-term impact", description: "We measure success by lives changed, not activities delivered." },
-];
-
 function MissionVision() {
-  const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
-  const [values, setValues] = useState<CoreValue[]>(DEFAULT_VALUES);
+  const [content, setContent] = useState<Content>(EMPTY_CONTENT);
+  const [values, setValues] = useState<CoreValue[]>([]);
 
   useEffect(() => {
     fetch("/api/content")
       .then((r) => r.json())
-      .then((data) => setContent({ ...DEFAULT_CONTENT, ...data, contact: { ...DEFAULT_CONTENT.contact, ...(data.contact || {}) } }))
+      .then((data) => setContent({ ...EMPTY_CONTENT, ...data, contact: { ...EMPTY_CONTENT.contact, ...(data.contact || {}) } }))
       .catch(() => {});
     fetch("/api/core-values")
       .then((r) => r.json())
-      .then((data) => { if (Array.isArray(data) && data.length > 0) setValues(data); })
+      .then((data) => { if (Array.isArray(data)) setValues(data); })
       .catch(() => {});
   }, []);
 
