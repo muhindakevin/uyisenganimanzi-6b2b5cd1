@@ -7,21 +7,13 @@ export const Route = createFileRoute("/about/beneficiaries")({
 
 type Beneficiary = { id: number; title: string; description: string; filled: boolean };
 
-const DEFAULTS: Beneficiary[] = [
-  { id: 1, title: "Genocide Widows", description: "Our primary focus, providing comprehensive support for their physical, emotional, and economic well-being.", filled: true },
-  { id: 2, title: "Orphans and Vulnerable Children", description: "Offering educational support, psychosocial care, and pathways to a brighter future.", filled: false },
-  { id: 3, title: "Youth with Transgenerational Trauma", description: "Addressing the unique needs of the post-genocide generation through specialized mental health and social programs.", filled: true },
-  { id: 4, title: "Children Born of Rape", description: "Providing targeted support to address their complex psychosocial needs and promote social integration.", filled: false },
-  { id: 5, title: "General Public", description: "Through our health outreach, we extend our services to the broader community.", filled: true },
-];
-
 function OurBeneficiaries() {
-  const [items, setItems] = useState<Beneficiary[]>(DEFAULTS);
+  const [items, setItems] = useState<Beneficiary[]>([]);
 
   useEffect(() => {
     fetch("/api/beneficiaries")
       .then((r) => r.json())
-      .then((data) => { if (Array.isArray(data) && data.length > 0) setItems(data); })
+      .then((data) => { if (Array.isArray(data)) setItems(data); })
       .catch(() => {});
   }, []);
 
