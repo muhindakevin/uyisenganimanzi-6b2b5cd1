@@ -33,7 +33,7 @@ function OurImpact() {
   const [content, setContent] = useState<Content>(DEFAULT_CONTENT);
 
   useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
+    fetch("/api/content")
       .then((r) => r.json())
       .then((data) => {
         const about = data?.about || {};

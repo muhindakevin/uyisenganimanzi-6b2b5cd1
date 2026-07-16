@@ -65,11 +65,11 @@ function OurTeam() {
   const [board, setBoard] = useState<Member[]>([]);
 
   useEffect(() => {
-    fetch("/api/team", { cache: "no-store" })
+    fetch("/api/team")
       .then((r) => r.json())
       .then((data) => { if (Array.isArray(data)) setStaff(data); })
       .catch(() => {});
-    fetch("/api/content", { cache: "no-store" })
+    fetch("/api/content")
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data?.board)) setBoard(data.board as Member[]);
