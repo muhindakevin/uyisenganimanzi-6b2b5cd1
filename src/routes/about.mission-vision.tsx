@@ -33,11 +33,11 @@ function MissionVision() {
   const [values, setValues] = useState<CoreValue[]>(DEFAULT_VALUES);
 
   useEffect(() => {
-    fetch("/api/content", { cache: "no-store" })
+    fetch("/api/content")
       .then((r) => r.json())
       .then((data) => setContent({ ...DEFAULT_CONTENT, ...data, contact: { ...DEFAULT_CONTENT.contact, ...(data.contact || {}) } }))
       .catch(() => {});
-    fetch("/api/core-values", { cache: "no-store" })
+    fetch("/api/core-values")
       .then((r) => r.json())
       .then((data) => { if (Array.isArray(data) && data.length > 0) setValues(data); })
       .catch(() => {});

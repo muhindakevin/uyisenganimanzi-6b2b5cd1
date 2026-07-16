@@ -19,7 +19,7 @@ function OurBeneficiaries() {
   const [items, setItems] = useState<Beneficiary[]>(DEFAULTS);
 
   useEffect(() => {
-    fetch("/api/beneficiaries", { cache: "no-store" })
+    fetch("/api/beneficiaries")
       .then((r) => r.json())
       .then((data) => { if (Array.isArray(data) && data.length > 0) setItems(data); })
       .catch(() => {});
