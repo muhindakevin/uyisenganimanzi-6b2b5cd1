@@ -40,8 +40,8 @@ function ProgramDetail() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/programs").then((r) => r.json()),
-      fetch(`/api/sub-programs?program_id=${id}`).then((r) => r.json()),
+      fetch("/api/programs", { cache: "no-store" }).then((r) => r.json()),
+      fetch(`/api/sub-programs?program_id=${id}`, { cache: "no-store" }).then((r) => r.json()),
     ])
       .then(([progRows, subRows]) => {
         const found = Array.isArray(progRows) ? progRows.find((p: Program) => String(p.id) === String(id)) : null;
