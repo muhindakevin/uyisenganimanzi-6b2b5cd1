@@ -42,8 +42,8 @@ function Programs() {
 
   useEffect(() => {
     Promise.all([
-      fetch("/api/programs").then((response) => response.json()),
-      fetch("/api/content").then((response) => response.json()),
+      fetch("/api/programs", { cache: "no-store" }).then((response) => response.json()),
+      fetch("/api/content", { cache: "no-store" }).then((response) => response.json()),
     ])
       .then(([programRows, content]) => {
         if (Array.isArray(programRows)) setPrograms(programRows);
