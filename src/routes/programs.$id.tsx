@@ -117,9 +117,9 @@ function ProgramDetail() {
                     <p className="mt-2 text-sm text-muted-foreground">{sub.description}</p>
                     {isOpen && (
                       <div className="mt-4 space-y-3 border-t border-border pt-4">
-                        {sub.long_description ? (
-                          <p className="whitespace-pre-wrap text-sm leading-6 text-foreground/80">{sub.long_description}</p>
-                        ) : null}
+                        <p className="whitespace-pre-wrap text-sm leading-6 text-foreground/80">
+                          {sub.long_description || sub.description || "No additional details yet."}
+                        </p>
                         {sub.attachment_url ? (
                           <a href={sub.attachment_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
                             <Download className="h-4 w-4" />
