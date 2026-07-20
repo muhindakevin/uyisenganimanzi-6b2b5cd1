@@ -52,7 +52,7 @@ function Index() {
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    fetch("/api/content")
+    fetch("/api/content", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         const h = data?.hero as Partial<HeroContent> | undefined;
@@ -63,13 +63,13 @@ function Index() {
         if (Array.isArray(data?.stats)) setStats(data.stats);
       })
       .catch(() => {});
-    fetch("/api/programs")
+    fetch("/api/programs", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setPrograms(data.slice(0, 3));
       })
       .catch(() => {});
-    fetch("/api/press-room?category=News&limit=5")
+    fetch("/api/press-room?category=News&limit=5", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (Array.isArray(data)) setStories(data as Story[]);
