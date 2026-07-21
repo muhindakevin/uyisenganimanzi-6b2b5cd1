@@ -5,10 +5,15 @@ export const Route = createFileRoute("/api/team")({
   server: {
     handlers: {
       GET: async ({ request }) => {
-        const members = await listTeam();
-        if (await requireAdmin(request)) return Response.json(members);
-        // Public callers get only non-sensitive fields (no email/phone).
-        return Response.json(members.map(({ email: _e, phone: _p, ...rest }) => rest));
+        try {
+          const members = await listTeam();
+          if (await requireAdmin(request)) return Response.json(members);
+          // Public callers get only non-sensitive fields (no email/phone).
+          return Response.json(members.map(({ email: _e, phone: _p, ...rest }) => rest));
+        } catch (err) {
+          console.error("GET /api/team failed:", err);
+          return jsonError("Failed to load team.", 500);
+        }
       },
       POST: async ({ request }) => {
         const unauthorized = await requireAdminOr401(request);
