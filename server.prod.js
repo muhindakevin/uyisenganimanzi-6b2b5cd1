@@ -1,6 +1,6 @@
 import http from "node:http";
 import { Readable } from "node:stream";
-import server from "./dist/server/server.js";
+import server from "./dist/server/index.mjs";
 
 const port = Number(process.env.PORT || 3000);
 
