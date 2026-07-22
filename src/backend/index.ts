@@ -202,16 +202,35 @@ function numberIds<T extends Record<string, any>>(rows: T[]) {
 
 export async function listTeam() {
   try {
+    // Do NOT return `photo` inline — base64 blobs (5–10 MB each) overflow the
+    // Worker response. Return a URL clients fetch per-member instead.
     const { data, error } = await sql()
       .from("team_members")
       .select("id, name, title, email, phone, photo")
       .order("id", { ascending: true });
     if (error) throw error;
-    return numberIds(data ?? []) as TeamMember[];
+    return (data ?? []).map((r: any) => ({
+      id: Number(r.id),
+      name: r.name,
+      title: r.title,
+      email: r.email,
+      phone: r.phone,
+      photo: r.photo ? `/api/team/photo/${r.id}` : null,
+    })) as TeamMember[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.team ?? []).map((member) => ({ ...member, id: Number(member.id) }));
   }
+}
+
+export async function getTeamMemberPhoto(id: number): Promise<string | null> {
+  const { data, error } = await sql()
+    .from("team_members")
+    .select("photo")
+    .eq("id", id)
+    .single();
+  if (error) return null;
+  return (data as any)?.photo ?? null;
 }
 
 export async function saveTeamMember(member: Partial<TeamMember>) {
