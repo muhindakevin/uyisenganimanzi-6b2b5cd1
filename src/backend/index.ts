@@ -234,23 +234,37 @@ export async function getTeamMemberPhoto(id: number): Promise<string | null> {
 }
 
 export async function saveTeamMember(member: Partial<TeamMember>) {
+  // Ignore URL placeholders (e.g. "/api/team/photo/1") — they mean "keep existing photo".
+  const incomingPhoto = member.photo;
+  const photoIsUrlRef = typeof incomingPhoto === "string" && incomingPhoto.startsWith("/api/");
+  const cols = "id, name, title, email, phone, photo";
   try {
     if (member.id) {
+      const update: Record<string, unknown> = {
+        name: member.name,
+        title: member.title,
+        email: member.email ?? null,
+        phone: member.phone ?? null,
+        updated_at: new Date().toISOString(),
+      };
+      if (!photoIsUrlRef) update.photo = incomingPhoto ?? null;
       const { data, error } = await sql()
         .from("team_members")
-        .update({
-          name: member.name,
-          title: member.title,
-          email: member.email ?? null,
-          phone: member.phone ?? null,
-          photo: member.photo ?? null,
-          updated_at: new Date().toISOString(),
-        })
+        .update(update)
         .eq("id", member.id)
-        .select("id, name, title, email, phone, photo")
+        .select(cols)
         .single();
       if (error) throw error;
-      return data ? (numberId(data) as TeamMember) : undefined;
+      if (!data) return undefined;
+      const row: any = data;
+      return {
+        id: Number(row.id),
+        name: row.name,
+        title: row.title,
+        email: row.email,
+        phone: row.phone,
+        photo: row.photo ? `/api/team/photo/${row.id}` : null,
+      } as TeamMember;
     }
 
     const { data, error } = await sql()
@@ -260,12 +274,20 @@ export async function saveTeamMember(member: Partial<TeamMember>) {
         title: member.title,
         email: member.email ?? null,
         phone: member.phone ?? null,
-        photo: member.photo ?? null,
+        photo: photoIsUrlRef ? null : incomingPhoto ?? null,
       })
-      .select("id, name, title, email, phone, photo")
+      .select(cols)
       .single();
     if (error) throw error;
-    return numberId(data) as TeamMember;
+    const row: any = data;
+    return {
+      id: Number(row.id),
+      name: row.name,
+      title: row.title,
+      email: row.email,
+      phone: row.phone,
+      photo: row.photo ? `/api/team/photo/${row.id}` : null,
+    } as TeamMember;
   } catch (error) {
     if (error instanceof Error && error.message.includes("missing")) throw error;
     throw error;
