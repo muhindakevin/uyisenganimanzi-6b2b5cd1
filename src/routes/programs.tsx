@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
+import { Button } from "@/frontend/components/ui/button";
 import { Check } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({
@@ -72,12 +73,17 @@ function Programs() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Program areas</p>
             <div className="mt-6 space-y-4">
               {programs.map((program) => (
-                <div key={program.id} className="flex items-start gap-3">
+                <Link
+                  key={program.id}
+                  to="/programs/$id"
+                  params={{ id: String(program.id) }}
+                  className="flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-primary/10"
+                >
                   <span className="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white">
                     <Check className="h-4 w-4" />
                   </span>
                   <p className="text-sm leading-7 text-foreground">{program.title}</p>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -90,12 +96,16 @@ function Programs() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {programs.map((program) => (
-              <Link
+              <article
                 key={program.id}
-                to="/programs/$id"
-                params={{ id: String(program.id) }}
                 className="group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-slate-900 shadow-[var(--shadow-card)] transition-transform duration-300 hover:-translate-y-1"
               >
+                <Link
+                  to="/programs/$id"
+                  params={{ id: String(program.id) }}
+                  aria-label={`Read more about ${program.title}`}
+                  className="absolute inset-0 z-10"
+                />
                 {program.image ? (
                   <img
                     src={program.image}
@@ -109,19 +119,26 @@ function Programs() {
 
                 {/* Default: dark overlay at bottom with title only */}
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent transition-opacity duration-300 group-hover:opacity-0" />
-                <div className="absolute inset-x-0 bottom-0 p-5 transition-opacity duration-300 group-hover:opacity-0">
+                <div className="absolute inset-x-0 bottom-0 z-20 p-5 transition-opacity duration-300 group-hover:opacity-0">
                   <h2 className="text-xl font-bold leading-tight text-white drop-shadow">{program.title}</h2>
+                  <Button asChild size="sm" variant="secondary" className="mt-4 pointer-events-auto">
+                    <Link to="/programs/$id" params={{ id: String(program.id) }}>
+                      Learn More
+                    </Link>
+                  </Button>
                 </div>
 
                 {/* Hover: full dark overlay with title, description, Learn More */}
-                <div className="absolute inset-0 flex flex-col justify-center bg-primary/90 p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="absolute inset-0 z-20 flex flex-col justify-center bg-primary/90 p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <h2 className="text-xl font-bold leading-tight text-white">{program.title}</h2>
                   <p className="mt-3 line-clamp-6 text-sm leading-6 text-white/90">{program.description}</p>
-                  <span className="mt-5 inline-flex w-fit items-center rounded-md border border-white bg-transparent px-5 py-2 text-sm font-semibold text-white transition hover:bg-white hover:text-primary">
-                    Learn More
-                  </span>
+                  <Button asChild size="sm" variant="secondary" className="mt-5 w-fit pointer-events-auto">
+                    <Link to="/programs/$id" params={{ id: String(program.id) }}>
+                      Learn More
+                    </Link>
+                  </Button>
                 </div>
-              </Link>
+              </article>
             ))}
           </div>
 
