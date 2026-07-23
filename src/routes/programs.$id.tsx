@@ -5,6 +5,16 @@ import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { Button } from "@/frontend/components/ui/button";
 
 export const Route = createFileRoute("/programs/$id")({
+  head: () => ({
+    meta: [
+      { title: "Program Details — Uyisenga Ni Imanzi" },
+      { name: "description", content: "Read full program information and related sub-programs managed by the admin team." },
+      { property: "og:title", content: "Program Details — Uyisenga Ni Imanzi" },
+      { property: "og:description", content: "Full program descriptions and sub-program information from Uyisenga Ni Imanzi." },
+      { property: "og:type", content: "article" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: ProgramDetail,
 });
 
@@ -83,16 +93,17 @@ function ProgramDetail() {
         </section>
       )}
 
-      <section className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <section className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
         <Button asChild variant="ghost" size="sm" className="mb-6">
           <Link to="/programs"><ArrowLeft className="mr-2 h-4 w-4" />Back to all programs</Link>
         </Button>
-        <p className="text-lg leading-8 text-foreground">{program.description}</p>
-        {program.long_description ? (
-          <div className="prose prose-lg mt-6 max-w-none whitespace-pre-wrap text-muted-foreground">
-            {program.long_description}
+        <h2 className="text-2xl font-semibold text-foreground">Full description</h2>
+        <div className="mt-5 space-y-5 text-lg leading-8 text-foreground">
+          {program.description ? <p>{program.description}</p> : null}
+          <div className="whitespace-pre-wrap text-muted-foreground">
+            {program.long_description || program.description || "No program description has been added yet."}
           </div>
-        ) : null}
+        </div>
         {program.attachment_url ? (
           <a href={program.attachment_url} target="_blank" rel="noreferrer" className="mt-6 inline-flex items-center gap-2 rounded-md border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10">
             <Download className="h-4 w-4" />
@@ -101,47 +112,53 @@ function ProgramDetail() {
         ) : null}
       </section>
 
-      {subs.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-          <h2 className="text-2xl font-semibold text-foreground">Sub-programs &amp; Projects</h2>
-          <p className="mt-2 text-sm text-muted-foreground">Explore the initiatives running under this program.</p>
+      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+        <h2 className="text-2xl font-semibold text-foreground">Sub-programs &amp; Projects</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Cards below belong to this program only.</p>
+        {subs.length === 0 ? (
+          <p className="mt-8 rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
+            No sub-programs have been added for this program yet.
+          </p>
+        ) : (
           <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {subs.map((sub) => {
-              const isOpen = openSub === sub.id;
-              const subCover = sub.cover_image || sub.image;
-              return (
-                <div key={sub.id} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
-                  {subCover ? <img src={subCover} alt={sub.title} className="h-44 w-full object-cover" /> : null}
-                  <div className="p-5">
-                    <h3 className="text-lg font-semibold text-foreground">{sub.title}</h3>
-                    <p className="mt-2 text-sm text-muted-foreground">{sub.description}</p>
-                    {isOpen && (
-                      <div className="mt-4 space-y-3 border-t border-border pt-4">
-                        <p className="whitespace-pre-wrap text-sm leading-6 text-foreground/80">
-                          {sub.long_description || sub.description || "No additional details yet."}
-                        </p>
-                        {sub.attachment_url ? (
-                          <a href={sub.attachment_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
-                            <Download className="h-4 w-4" />
-                            {sub.attachment_name || "Download file"}
-                          </a>
-                        ) : null}
-                      </div>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setOpenSub(isOpen ? null : sub.id)}
-                      className="mt-4 inline-flex items-center rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary hover:bg-primary/10"
-                    >
-                      {isOpen ? "Show less" : "Learn more"}
-                    </button>
-                  </div>
+          {subs.map((sub) => {
+            const isOpen = openSub === sub.id;
+            const subCover = sub.cover_image || sub.image;
+            return (
+              <article key={sub.id} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
+                {subCover ? <img src={subCover} alt={sub.title} className="h-56 w-full object-cover" loading="lazy" /> : null}
+                <div className="p-5">
+                  <h3 className="text-lg font-semibold text-foreground">{sub.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{sub.description}</p>
+                  {isOpen && (
+                    <div className="mt-4 space-y-3 border-t border-border pt-4">
+                      <p className="whitespace-pre-wrap text-sm leading-6 text-foreground/80">
+                        {sub.long_description || sub.description || "No additional details yet."}
+                      </p>
+                      {sub.attachment_url ? (
+                        <a href={sub.attachment_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
+                          <Download className="h-4 w-4" />
+                          {sub.attachment_name || "Download file"}
+                        </a>
+                      ) : null}
+                    </div>
+                  )}
+                  <Button
+                    type="button"
+                    variant={isOpen ? "secondary" : "default"}
+                    size="sm"
+                    onClick={() => setOpenSub(isOpen ? null : sub.id)}
+                    className="mt-4"
+                  >
+                    {isOpen ? "Show less" : "Learn More"}
+                  </Button>
                 </div>
-              );
-            })}
+              </article>
+            );
+          })}
           </div>
-        </section>
-      )}
+        )}
+      </section>
     </SiteLayout>
   );
 }
