@@ -906,9 +906,11 @@ function ManagedList<T extends { id: number }>({
               Add
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>{formTitle(editing)}</DialogTitle>
-            {renderForm(editing, () => setOpen(false))}
+          <DialogContent className="flex max-h-[90vh] flex-col gap-0 p-0 sm:max-w-lg">
+            <DialogTitle className="border-b px-6 py-4">{formTitle(editing)}</DialogTitle>
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              {renderForm(editing, () => setOpen(false))}
+            </div>
           </DialogContent>
         </Dialog>
       </CardHeader>
