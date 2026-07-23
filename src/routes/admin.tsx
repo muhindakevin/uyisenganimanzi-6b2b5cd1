@@ -906,9 +906,11 @@ function ManagedList<T extends { id: number }>({
               Add
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>{formTitle(editing)}</DialogTitle>
-            {renderForm(editing, () => setOpen(false))}
+          <DialogContent className="flex max-h-[90vh] flex-col gap-0 p-0 sm:max-w-lg">
+            <DialogTitle className="border-b px-6 py-4">{formTitle(editing)}</DialogTitle>
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              {renderForm(editing, () => setOpen(false))}
+            </div>
           </DialogContent>
         </Dialog>
       </CardHeader>
@@ -948,10 +950,12 @@ function readFileAsDataUrl(file: File): Promise<string> {
 
 function SubmitButton({ saving }: { saving: boolean }) {
   return (
-    <Button type="submit" className="w-full" disabled={saving}>
-      <Save className="mr-2 h-4 w-4" />
-      {saving ? "Saving..." : "Save"}
-    </Button>
+    <div className="sticky bottom-0 -mx-6 -mb-4 mt-4 border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <Button type="submit" className="w-full" disabled={saving}>
+        <Save className="mr-2 h-4 w-4" />
+        {saving ? "Saving..." : "Save"}
+      </Button>
+    </div>
   );
 }
 
@@ -1130,16 +1134,18 @@ function PressRoomManager({
               New Item
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>{editing ? "Edit Press Item" : "Add Press Item"}</DialogTitle>
-            <PressRoomForm
-              item={editing}
-              saving={saving}
-              onSave={async (item) => {
-                await onSave(item);
-                setOpen(false);
-              }}
-            />
+          <DialogContent className="flex max-h-[90vh] flex-col gap-0 p-0 sm:max-w-lg">
+            <DialogTitle className="border-b px-6 py-4">{editing ? "Edit Press Item" : "Add Press Item"}</DialogTitle>
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              <PressRoomForm
+                item={editing}
+                saving={saving}
+                onSave={async (item) => {
+                  await onSave(item);
+                  setOpen(false);
+                }}
+              />
+            </div>
           </DialogContent>
         </Dialog>
       </CardHeader>
