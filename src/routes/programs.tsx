@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
-import { Button } from "@/frontend/components/ui/button";
 import { Check } from "lucide-react";
 
 export const Route = createFileRoute("/programs")({
@@ -96,16 +95,13 @@ function Programs() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {programs.map((program) => (
-              <article
+              <Link
                 key={program.id}
+                to="/programs/$id"
+                params={{ id: String(program.id) }}
+                aria-label={`Read more about ${program.title}`}
                 className="group relative block aspect-[3/4] overflow-hidden rounded-2xl bg-slate-900 shadow-[var(--shadow-card)] transition-transform duration-300 hover:-translate-y-1"
               >
-                <Link
-                  to="/programs/$id"
-                  params={{ id: String(program.id) }}
-                  aria-label={`Read more about ${program.title}`}
-                  className="absolute inset-0 z-10"
-                />
                 {program.image ? (
                   <img
                     src={program.image}
@@ -119,26 +115,22 @@ function Programs() {
 
                 {/* Default: dark overlay at bottom with title only */}
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/95 via-primary/40 to-transparent transition-opacity duration-300 group-hover:opacity-0" />
-                <div className="absolute inset-x-0 bottom-0 z-20 p-5 transition-opacity duration-300 group-hover:opacity-0">
+                <div className="absolute inset-x-0 bottom-0 p-5 transition-opacity duration-300 group-hover:opacity-0">
                   <h2 className="text-xl font-bold leading-tight text-white drop-shadow">{program.title}</h2>
-                  <Button asChild size="sm" variant="secondary" className="mt-4 pointer-events-auto">
-                    <Link to="/programs/$id" params={{ id: String(program.id) }}>
-                      Learn More
-                    </Link>
-                  </Button>
+                  <span className="mt-4 inline-flex w-fit items-center rounded-md border border-white bg-transparent px-5 py-2 text-sm font-semibold text-white transition group-hover:bg-white group-hover:text-primary">
+                    Learn More
+                  </span>
                 </div>
 
                 {/* Hover: full dark overlay with title, description, Learn More */}
-                <div className="absolute inset-0 z-20 flex flex-col justify-center bg-primary/90 p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="absolute inset-0 flex flex-col justify-center bg-primary/90 p-6 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   <h2 className="text-xl font-bold leading-tight text-white">{program.title}</h2>
                   <p className="mt-3 line-clamp-6 text-sm leading-6 text-white/90">{program.description}</p>
-                  <Button asChild size="sm" variant="secondary" className="mt-5 w-fit pointer-events-auto">
-                    <Link to="/programs/$id" params={{ id: String(program.id) }}>
-                      Learn More
-                    </Link>
-                  </Button>
+                  <span className="mt-5 inline-flex w-fit items-center rounded-md border border-white bg-transparent px-5 py-2 text-sm font-semibold text-white transition group-hover:bg-white group-hover:text-primary">
+                    Learn More
+                  </span>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
 
