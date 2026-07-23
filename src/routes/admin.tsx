@@ -1132,16 +1132,18 @@ function PressRoomManager({
               New Item
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>{editing ? "Edit Press Item" : "Add Press Item"}</DialogTitle>
-            <PressRoomForm
-              item={editing}
-              saving={saving}
-              onSave={async (item) => {
-                await onSave(item);
-                setOpen(false);
-              }}
-            />
+          <DialogContent className="flex max-h-[90vh] flex-col gap-0 p-0 sm:max-w-lg">
+            <DialogTitle className="border-b px-6 py-4">{editing ? "Edit Press Item" : "Add Press Item"}</DialogTitle>
+            <div className="flex-1 overflow-y-auto px-6 py-4">
+              <PressRoomForm
+                item={editing}
+                saving={saving}
+                onSave={async (item) => {
+                  await onSave(item);
+                  setOpen(false);
+                }}
+              />
+            </div>
           </DialogContent>
         </Dialog>
       </CardHeader>
