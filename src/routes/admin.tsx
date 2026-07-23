@@ -950,10 +950,12 @@ function readFileAsDataUrl(file: File): Promise<string> {
 
 function SubmitButton({ saving }: { saving: boolean }) {
   return (
-    <Button type="submit" className="w-full" disabled={saving}>
-      <Save className="mr-2 h-4 w-4" />
-      {saving ? "Saving..." : "Save"}
-    </Button>
+    <div className="sticky bottom-0 -mx-6 -mb-4 mt-4 border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <Button type="submit" className="w-full" disabled={saving}>
+        <Save className="mr-2 h-4 w-4" />
+        {saving ? "Saving..." : "Save"}
+      </Button>
+    </div>
   );
 }
 
