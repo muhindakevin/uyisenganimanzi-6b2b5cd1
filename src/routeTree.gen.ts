@@ -40,6 +40,8 @@ import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-v
 import { Route as AboutImpactRouteImport } from './routes/about.impact'
 import { Route as AboutBeneficiariesRouteImport } from './routes/about.beneficiaries'
 import { Route as AboutApproachRouteImport } from './routes/about.approach'
+import { Route as PressRoomNewsIdRouteImport } from './routes/press-room/news.$id'
+import { Route as ProgramsIdSubSubIdRouteImport } from './routes/programs.$id.sub.$subId'
 import { Route as ApiTeamPhotoIdRouteImport } from './routes/api/team.photo.$id'
 
 const ProgramsRoute = ProgramsRouteImport.update({
@@ -197,6 +199,16 @@ const AboutApproachRoute = AboutApproachRouteImport.update({
   path: '/approach',
   getParentRoute: () => AboutRoute,
 } as any)
+const PressRoomNewsIdRoute = PressRoomNewsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => PressRoomNewsRoute,
+} as any)
+const ProgramsIdSubSubIdRoute = ProgramsIdSubSubIdRouteImport.update({
+  id: '/sub/$subId',
+  path: '/sub/$subId',
+  getParentRoute: () => ProgramsIdRoute,
+} as any)
 const ApiTeamPhotoIdRoute = ApiTeamPhotoIdRouteImport.update({
   id: '/photo/$id',
   path: '/photo/$id',
@@ -230,12 +242,14 @@ export interface FileRoutesByFullPath {
   '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRouteWithChildren
   '/press-room/jobs': typeof PressRoomJobsRoute
-  '/press-room/news': typeof PressRoomNewsRoute
+  '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
-  '/programs/$id': typeof ProgramsIdRoute
+  '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
+  '/press-room/news/$id': typeof PressRoomNewsIdRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
+  '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -262,12 +276,14 @@ export interface FileRoutesByTo {
   '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRouteWithChildren
   '/press-room/jobs': typeof PressRoomJobsRoute
-  '/press-room/news': typeof PressRoomNewsRoute
+  '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
-  '/programs/$id': typeof ProgramsIdRoute
+  '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about': typeof AboutIndexRoute
   '/programs': typeof ProgramsIndexRoute
+  '/press-room/news/$id': typeof PressRoomNewsIdRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
+  '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -297,12 +313,14 @@ export interface FileRoutesById {
   '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRouteWithChildren
   '/press-room/jobs': typeof PressRoomJobsRoute
-  '/press-room/news': typeof PressRoomNewsRoute
+  '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
-  '/programs/$id': typeof ProgramsIdRoute
+  '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
+  '/press-room/news/$id': typeof PressRoomNewsIdRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
+  '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -338,7 +356,9 @@ export interface FileRouteTypes {
     | '/programs/$id'
     | '/about/'
     | '/programs/'
+    | '/press-room/news/$id'
     | '/api/team/photo/$id'
+    | '/programs/$id/sub/$subId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -370,7 +390,9 @@ export interface FileRouteTypes {
     | '/programs/$id'
     | '/about'
     | '/programs'
+    | '/press-room/news/$id'
     | '/api/team/photo/$id'
+    | '/programs/$id/sub/$subId'
   id:
     | '__root__'
     | '/'
@@ -404,7 +426,9 @@ export interface FileRouteTypes {
     | '/programs/$id'
     | '/about/'
     | '/programs/'
+    | '/press-room/news/$id'
     | '/api/team/photo/$id'
+    | '/programs/$id/sub/$subId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -429,7 +453,7 @@ export interface RootRouteChildren {
   ApiSubProgramsRoute: typeof ApiSubProgramsRoute
   ApiTeamRoute: typeof ApiTeamRouteWithChildren
   PressRoomJobsRoute: typeof PressRoomJobsRoute
-  PressRoomNewsRoute: typeof PressRoomNewsRoute
+  PressRoomNewsRoute: typeof PressRoomNewsRouteWithChildren
   PressRoomPublicationsRoute: typeof PressRoomPublicationsRoute
 }
 
@@ -652,6 +676,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutApproachRouteImport
       parentRoute: typeof AboutRoute
     }
+    '/press-room/news/$id': {
+      id: '/press-room/news/$id'
+      path: '/$id'
+      fullPath: '/press-room/news/$id'
+      preLoaderRoute: typeof PressRoomNewsIdRouteImport
+      parentRoute: typeof PressRoomNewsRoute
+    }
+    '/programs/$id/sub/$subId': {
+      id: '/programs/$id/sub/$subId'
+      path: '/sub/$subId'
+      fullPath: '/programs/$id/sub/$subId'
+      preLoaderRoute: typeof ProgramsIdSubSubIdRouteImport
+      parentRoute: typeof ProgramsIdRoute
+    }
     '/api/team/photo/$id': {
       id: '/api/team/photo/$id'
       path: '/photo/$id'
@@ -682,13 +720,25 @@ const AboutRouteChildren: AboutRouteChildren = {
 
 const AboutRouteWithChildren = AboutRoute._addFileChildren(AboutRouteChildren)
 
+interface ProgramsIdRouteChildren {
+  ProgramsIdSubSubIdRoute: typeof ProgramsIdSubSubIdRoute
+}
+
+const ProgramsIdRouteChildren: ProgramsIdRouteChildren = {
+  ProgramsIdSubSubIdRoute: ProgramsIdSubSubIdRoute,
+}
+
+const ProgramsIdRouteWithChildren = ProgramsIdRoute._addFileChildren(
+  ProgramsIdRouteChildren,
+)
+
 interface ProgramsRouteChildren {
-  ProgramsIdRoute: typeof ProgramsIdRoute
+  ProgramsIdRoute: typeof ProgramsIdRouteWithChildren
   ProgramsIndexRoute: typeof ProgramsIndexRoute
 }
 
 const ProgramsRouteChildren: ProgramsRouteChildren = {
-  ProgramsIdRoute: ProgramsIdRoute,
+  ProgramsIdRoute: ProgramsIdRouteWithChildren,
   ProgramsIndexRoute: ProgramsIndexRoute,
 }
 
@@ -706,6 +756,18 @@ const ApiTeamRouteChildren: ApiTeamRouteChildren = {
 
 const ApiTeamRouteWithChildren =
   ApiTeamRoute._addFileChildren(ApiTeamRouteChildren)
+
+interface PressRoomNewsRouteChildren {
+  PressRoomNewsIdRoute: typeof PressRoomNewsIdRoute
+}
+
+const PressRoomNewsRouteChildren: PressRoomNewsRouteChildren = {
+  PressRoomNewsIdRoute: PressRoomNewsIdRoute,
+}
+
+const PressRoomNewsRouteWithChildren = PressRoomNewsRoute._addFileChildren(
+  PressRoomNewsRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -729,7 +791,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiSubProgramsRoute: ApiSubProgramsRoute,
   ApiTeamRoute: ApiTeamRouteWithChildren,
   PressRoomJobsRoute: PressRoomJobsRoute,
-  PressRoomNewsRoute: PressRoomNewsRoute,
+  PressRoomNewsRoute: PressRoomNewsRouteWithChildren,
   PressRoomPublicationsRoute: PressRoomPublicationsRoute,
 }
 export const routeTree = rootRouteImport

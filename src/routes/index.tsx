@@ -87,46 +87,63 @@ function Index() {
   return (
     <SiteLayout>
       {stories.length > 0 && (
-        <section className="relative h-[calc(78vh-4rem)] min-h-[430px] max-h-[620px] w-full overflow-hidden text-white">
+        <section className="relative h-[calc(82vh-4rem)] min-h-[460px] max-h-[720px] w-full overflow-hidden text-white">
           <div className="absolute inset-0 bg-slate-950" />
           {stories[active]?.image ? (
-            <img src={stories[active].image} alt={stories[active].title} className="absolute inset-0 h-full w-full object-cover opacity-95" />
+            <>
+              {/* Blurred backdrop fills space */}
+              <img
+                src={stories[active].image}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
+              />
+              {/* Full image visible, contained */}
+              <img
+                src={stories[active].image}
+                alt={stories[active].title}
+                className="absolute inset-0 mx-auto h-full w-full object-contain"
+              />
+            </>
           ) : (
             <div className="absolute inset-0 bg-slate-900" />
           )}
-          <div className="absolute inset-0 bg-black/25" />
-          <div className="absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/90 via-black/55 to-transparent" />
 
           {stories.length > 1 && (
             <>
               <Button
                 type="button"
                 variant="ghost"
-                className="absolute left-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:left-8"
+                className="absolute left-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:left-6 sm:h-14 sm:w-14"
                 onClick={() => setActive((i) => (i - 1 + stories.length) % stories.length)}
                 aria-label="Previous story"
               >
-                <ChevronLeft className="h-12 w-12 stroke-[3]" />
+                <ChevronLeft className="h-8 w-8 stroke-[3] sm:h-12 sm:w-12" />
               </Button>
               <Button
                 type="button"
                 variant="ghost"
-                className="absolute right-3 top-1/2 z-30 h-14 w-14 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:right-8"
+                className="absolute right-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:right-6 sm:h-14 sm:w-14"
                 onClick={() => setActive((i) => (i + 1) % stories.length)}
                 aria-label="Next story"
               >
-                <ChevronRight className="h-12 w-12 stroke-[3]" />
+                <ChevronRight className="h-8 w-8 stroke-[3] sm:h-12 sm:w-12" />
               </Button>
             </>
           )}
 
-          <div className="absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-10 text-center sm:px-6 sm:pb-14">
-            <Link to="/press-room/news" className="max-w-5xl">
-              <h1 className="text-2xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.55)] hover:underline sm:text-3xl md:text-4xl">
+          <div className="absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-8 text-center sm:px-6 sm:pb-12">
+            <Link
+              to="/press-room/news/$id"
+              params={{ id: String(stories[active]?.id) }}
+              className="max-w-5xl"
+            >
+              <h1 className="text-xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.75)] hover:underline sm:text-2xl md:text-3xl lg:text-4xl">
                 {stories[active]?.title}
               </h1>
             </Link>
-            <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-4 flex flex-row flex-wrap items-center justify-center gap-3 sm:mt-5">
               <Button asChild size="lg" variant="secondary">
                 <Link to="/programs">Our Programs</Link>
               </Button>
@@ -136,6 +153,18 @@ function Index() {
             </div>
           </div>
 
+          {stories.length > 1 && (
+            <div className="absolute inset-x-0 bottom-2 z-30 flex justify-center gap-2">
+              {stories.map((_, i) => (
+                <button
+                  key={i}
+                  aria-label={`Go to story ${i + 1}`}
+                  onClick={() => setActive(i)}
+                  className={`h-1.5 rounded-full transition-all ${i === active ? "w-6 bg-white" : "w-2 bg-white/50"}`}
+                />
+              ))}
+            </div>
+          )}
         </section>
       )}
 
