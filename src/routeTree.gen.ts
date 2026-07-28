@@ -40,6 +40,7 @@ import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-v
 import { Route as AboutImpactRouteImport } from './routes/about.impact'
 import { Route as AboutBeneficiariesRouteImport } from './routes/about.beneficiaries'
 import { Route as AboutApproachRouteImport } from './routes/about.approach'
+import { Route as ProgramsIdIndexRouteImport } from './routes/programs.$id.index'
 import { Route as PressRoomNewsIdRouteImport } from './routes/press-room/news.$id'
 import { Route as ProgramsIdSubSubIdRouteImport } from './routes/programs.$id.sub.$subId'
 import { Route as ApiTeamPhotoIdRouteImport } from './routes/api/team.photo.$id'
@@ -199,6 +200,11 @@ const AboutApproachRoute = AboutApproachRouteImport.update({
   path: '/approach',
   getParentRoute: () => AboutRoute,
 } as any)
+const ProgramsIdIndexRoute = ProgramsIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProgramsIdRoute,
+} as any)
 const PressRoomNewsIdRoute = PressRoomNewsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -248,6 +254,7 @@ export interface FileRoutesByFullPath {
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
+  '/programs/$id/': typeof ProgramsIdIndexRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
   '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
@@ -278,10 +285,10 @@ export interface FileRoutesByTo {
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
-  '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about': typeof AboutIndexRoute
   '/programs': typeof ProgramsIndexRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
+  '/programs/$id': typeof ProgramsIdIndexRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
   '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
@@ -319,6 +326,7 @@ export interface FileRoutesById {
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
+  '/programs/$id/': typeof ProgramsIdIndexRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
   '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
@@ -357,6 +365,7 @@ export interface FileRouteTypes {
     | '/about/'
     | '/programs/'
     | '/press-room/news/$id'
+    | '/programs/$id/'
     | '/api/team/photo/$id'
     | '/programs/$id/sub/$subId'
   fileRoutesByTo: FileRoutesByTo
@@ -387,10 +396,10 @@ export interface FileRouteTypes {
     | '/press-room/jobs'
     | '/press-room/news'
     | '/press-room/publications'
-    | '/programs/$id'
     | '/about'
     | '/programs'
     | '/press-room/news/$id'
+    | '/programs/$id'
     | '/api/team/photo/$id'
     | '/programs/$id/sub/$subId'
   id:
@@ -427,6 +436,7 @@ export interface FileRouteTypes {
     | '/about/'
     | '/programs/'
     | '/press-room/news/$id'
+    | '/programs/$id/'
     | '/api/team/photo/$id'
     | '/programs/$id/sub/$subId'
   fileRoutesById: FileRoutesById
@@ -676,6 +686,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutApproachRouteImport
       parentRoute: typeof AboutRoute
     }
+    '/programs/$id/': {
+      id: '/programs/$id/'
+      path: '/'
+      fullPath: '/programs/$id/'
+      preLoaderRoute: typeof ProgramsIdIndexRouteImport
+      parentRoute: typeof ProgramsIdRoute
+    }
     '/press-room/news/$id': {
       id: '/press-room/news/$id'
       path: '/$id'
@@ -721,10 +738,12 @@ const AboutRouteChildren: AboutRouteChildren = {
 const AboutRouteWithChildren = AboutRoute._addFileChildren(AboutRouteChildren)
 
 interface ProgramsIdRouteChildren {
+  ProgramsIdIndexRoute: typeof ProgramsIdIndexRoute
   ProgramsIdSubSubIdRoute: typeof ProgramsIdSubSubIdRoute
 }
 
 const ProgramsIdRouteChildren: ProgramsIdRouteChildren = {
+  ProgramsIdIndexRoute: ProgramsIdIndexRoute,
   ProgramsIdSubSubIdRoute: ProgramsIdSubSubIdRoute,
 }
 
