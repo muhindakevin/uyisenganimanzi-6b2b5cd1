@@ -1274,7 +1274,6 @@ function ContentForm({ content, saving, onSave }: { content: Content; saving: bo
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <TextareaField label="Mission" value={form.mission} onChange={(mission) => setForm({ ...form, mission })} />
       <TextareaField label="Vision" value={form.vision} onChange={(vision) => setForm({ ...form, vision })} />
-      <TextareaField label="Impact" value={form.impact} onChange={(impact) => setForm({ ...form, impact })} />
       <Field label="Contact Email" value={form.contact.email} onChange={(email) => setForm({ ...form, contact: { ...form.contact, email } })} />
       <Field label="Contact Phone" value={form.contact.phone} onChange={(phone) => setForm({ ...form, contact: { ...form.contact, phone } })} />
       <Field label="Contact Address" value={form.contact.address} onChange={(address) => setForm({ ...form, contact: { ...form.contact, address } })} />
@@ -1282,6 +1281,7 @@ function ContentForm({ content, saving, onSave }: { content: Content; saving: bo
     </form>
   );
 }
+
 
 function AboutPageForm({ content, saving, onSave }: { content: AboutContent; saving: boolean; onSave: (content: AboutContent) => void }) {
   const [form, setForm] = useState<AboutContent>(content);
