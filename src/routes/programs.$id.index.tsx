@@ -111,7 +111,7 @@ function ProgramDetail() {
         ) : null}
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+      <section className="mx-auto max-w-4xl px-4 pb-20 sm:px-6">
         <h2 className="text-2xl font-semibold text-foreground">Sub-programs &amp; Projects</h2>
         <p className="mt-2 text-sm text-muted-foreground">Cards below belong to this program only.</p>
         {subs.length === 0 ? (
@@ -119,7 +119,8 @@ function ProgramDetail() {
             No sub-programs have been added for this program yet.
           </p>
         ) : (
-          <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2">
+
           {subs.map((sub) => {
             const subCover = sub.cover_image || sub.image;
             return (
