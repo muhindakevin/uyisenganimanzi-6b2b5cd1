@@ -1297,8 +1297,25 @@ function AboutPageForm({ content, saving, onSave }: { content: AboutContent; sav
     <form className="space-y-6" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Story title" value={form.storyTitle} onChange={(value) => setForm({ ...form, storyTitle: value })} />
       <TextareaField label="Story text" value={form.storyText} onChange={(value) => setForm({ ...form, storyText: value })} />
-      <Field label="Story image URL" value={form.storyImage} onChange={(value) => setForm({ ...form, storyImage: value })} />
-      <p className="text-sm text-muted-foreground">Enter a public image URL to display on the about story section.</p>
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Story photo</label>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => setForm({ ...form, storyImage: String(reader.result || "") });
+            reader.readAsDataURL(file);
+          }}
+        />
+        <Field label="Or paste an image URL" value={form.storyImage} onChange={(value) => setForm({ ...form, storyImage: value })} />
+        {form.storyImage ? (
+          <img src={form.storyImage} alt="Story preview" className="mt-2 h-32 w-full rounded-md object-cover" />
+        ) : null}
+      </div>
+
 
       <div className="rounded-2xl border border-border bg-muted p-4">
         <h3 className="text-lg font-semibold">Impact stats</h3>
