@@ -45,7 +45,6 @@ function ProgramDetail() {
   const { id } = Route.useParams();
   const [program, setProgram] = useState<Program | null>(null);
   const [subs, setSubs] = useState<SubProgram[]>([]);
-  const [openSub, setOpenSub] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -120,38 +119,28 @@ function ProgramDetail() {
             No sub-programs have been added for this program yet.
           </p>
         ) : (
-          <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
           {subs.map((sub) => {
-            const isOpen = openSub === sub.id;
             const subCover = sub.cover_image || sub.image;
             return (
-              <article key={sub.id} className="overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)]">
-                {subCover ? <img src={subCover} alt={sub.title} className="h-56 w-full object-cover" loading="lazy" /> : null}
-                <div className="p-5">
-                  <h3 className="text-lg font-semibold text-foreground">{sub.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{sub.description}</p>
-                  {isOpen && (
-                    <div className="mt-4 space-y-3 border-t border-border pt-4">
-                      <p className="whitespace-pre-wrap text-sm leading-6 text-foreground/80">
-                        {sub.long_description || sub.description || "No additional details yet."}
-                      </p>
-                      {sub.attachment_url ? (
-                        <a href={sub.attachment_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline">
-                          <Download className="h-4 w-4" />
-                          {sub.attachment_name || "Download file"}
-                        </a>
-                      ) : null}
-                    </div>
-                  )}
-                  <Button
-                    type="button"
-                    variant={isOpen ? "secondary" : "default"}
-                    size="sm"
-                    onClick={() => setOpenSub(isOpen ? null : sub.id)}
-                    className="mt-4"
-                  >
-                    {isOpen ? "Show less" : "Learn More"}
-                  </Button>
+              <article key={sub.id} className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+                {subCover ? (
+                  <Link to="/programs/$id/sub/$subId" params={{ id, subId: String(sub.id) }} className="block aspect-[16/10] w-full overflow-hidden bg-muted">
+                    <img src={subCover} alt={sub.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+                  </Link>
+                ) : null}
+                <div className="flex flex-1 flex-col p-5">
+                  <h3 className="text-lg font-semibold text-foreground">
+                    <Link to="/programs/$id/sub/$subId" params={{ id, subId: String(sub.id) }} className="hover:text-primary">
+                      {sub.title}
+                    </Link>
+                  </h3>
+                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground">{sub.description}</p>
+                  <div className="mt-4">
+                    <Button asChild size="sm">
+                      <Link to="/programs/$id/sub/$subId" params={{ id, subId: String(sub.id) }}>Learn More</Link>
+                    </Button>
+                  </div>
                 </div>
               </article>
             );
