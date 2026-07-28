@@ -20,7 +20,6 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProgramsIndexRouteImport } from './routes/programs.index'
 import { Route as AboutIndexRouteImport } from './routes/about.index'
-import { Route as ProgramsIdRouteImport } from './routes/programs.$id'
 import { Route as PressRoomPublicationsRouteImport } from './routes/press-room/publications'
 import { Route as PressRoomNewsRouteImport } from './routes/press-room/news'
 import { Route as PressRoomJobsRouteImport } from './routes/press-room/jobs'
@@ -40,6 +39,7 @@ import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-v
 import { Route as AboutImpactRouteImport } from './routes/about.impact'
 import { Route as AboutBeneficiariesRouteImport } from './routes/about.beneficiaries'
 import { Route as AboutApproachRouteImport } from './routes/about.approach'
+import { Route as ProgramsIdIndexRouteImport } from './routes/programs.$id.index'
 import { Route as PressRoomNewsIdRouteImport } from './routes/press-room/news.$id'
 import { Route as ProgramsIdSubSubIdRouteImport } from './routes/programs.$id.sub.$subId'
 import { Route as ApiTeamPhotoIdRouteImport } from './routes/api/team.photo.$id'
@@ -98,11 +98,6 @@ const AboutIndexRoute = AboutIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AboutRoute,
-} as any)
-const ProgramsIdRoute = ProgramsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => ProgramsRoute,
 } as any)
 const PressRoomPublicationsRoute = PressRoomPublicationsRouteImport.update({
   id: '/press-room/publications',
@@ -199,15 +194,20 @@ const AboutApproachRoute = AboutApproachRouteImport.update({
   path: '/approach',
   getParentRoute: () => AboutRoute,
 } as any)
+const ProgramsIdIndexRoute = ProgramsIdIndexRouteImport.update({
+  id: '/$id/',
+  path: '/$id/',
+  getParentRoute: () => ProgramsRoute,
+} as any)
 const PressRoomNewsIdRoute = PressRoomNewsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => PressRoomNewsRoute,
 } as any)
 const ProgramsIdSubSubIdRoute = ProgramsIdSubSubIdRouteImport.update({
-  id: '/sub/$subId',
-  path: '/sub/$subId',
-  getParentRoute: () => ProgramsIdRoute,
+  id: '/$id/sub/$subId',
+  path: '/$id/sub/$subId',
+  getParentRoute: () => ProgramsRoute,
 } as any)
 const ApiTeamPhotoIdRoute = ApiTeamPhotoIdRouteImport.update({
   id: '/photo/$id',
@@ -244,10 +244,10 @@ export interface FileRoutesByFullPath {
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
-  '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
+  '/programs/$id/': typeof ProgramsIdIndexRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
   '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
@@ -278,10 +278,10 @@ export interface FileRoutesByTo {
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
-  '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about': typeof AboutIndexRoute
   '/programs': typeof ProgramsIndexRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
+  '/programs/$id': typeof ProgramsIdIndexRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
   '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
@@ -315,10 +315,10 @@ export interface FileRoutesById {
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
-  '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
+  '/programs/$id/': typeof ProgramsIdIndexRoute
   '/api/team/photo/$id': typeof ApiTeamPhotoIdRoute
   '/programs/$id/sub/$subId': typeof ProgramsIdSubSubIdRoute
 }
@@ -353,10 +353,10 @@ export interface FileRouteTypes {
     | '/press-room/jobs'
     | '/press-room/news'
     | '/press-room/publications'
-    | '/programs/$id'
     | '/about/'
     | '/programs/'
     | '/press-room/news/$id'
+    | '/programs/$id/'
     | '/api/team/photo/$id'
     | '/programs/$id/sub/$subId'
   fileRoutesByTo: FileRoutesByTo
@@ -387,10 +387,10 @@ export interface FileRouteTypes {
     | '/press-room/jobs'
     | '/press-room/news'
     | '/press-room/publications'
-    | '/programs/$id'
     | '/about'
     | '/programs'
     | '/press-room/news/$id'
+    | '/programs/$id'
     | '/api/team/photo/$id'
     | '/programs/$id/sub/$subId'
   id:
@@ -423,10 +423,10 @@ export interface FileRouteTypes {
     | '/press-room/jobs'
     | '/press-room/news'
     | '/press-room/publications'
-    | '/programs/$id'
     | '/about/'
     | '/programs/'
     | '/press-room/news/$id'
+    | '/programs/$id/'
     | '/api/team/photo/$id'
     | '/programs/$id/sub/$subId'
   fileRoutesById: FileRoutesById
@@ -535,13 +535,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/about/'
       preLoaderRoute: typeof AboutIndexRouteImport
       parentRoute: typeof AboutRoute
-    }
-    '/programs/$id': {
-      id: '/programs/$id'
-      path: '/$id'
-      fullPath: '/programs/$id'
-      preLoaderRoute: typeof ProgramsIdRouteImport
-      parentRoute: typeof ProgramsRoute
     }
     '/press-room/publications': {
       id: '/press-room/publications'
@@ -676,6 +669,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutApproachRouteImport
       parentRoute: typeof AboutRoute
     }
+    '/programs/$id/': {
+      id: '/programs/$id/'
+      path: '/$id'
+      fullPath: '/programs/$id/'
+      preLoaderRoute: typeof ProgramsIdIndexRouteImport
+      parentRoute: typeof ProgramsRoute
+    }
     '/press-room/news/$id': {
       id: '/press-room/news/$id'
       path: '/$id'
@@ -685,10 +685,10 @@ declare module '@tanstack/react-router' {
     }
     '/programs/$id/sub/$subId': {
       id: '/programs/$id/sub/$subId'
-      path: '/sub/$subId'
+      path: '/$id/sub/$subId'
       fullPath: '/programs/$id/sub/$subId'
       preLoaderRoute: typeof ProgramsIdSubSubIdRouteImport
-      parentRoute: typeof ProgramsIdRoute
+      parentRoute: typeof ProgramsRoute
     }
     '/api/team/photo/$id': {
       id: '/api/team/photo/$id'
@@ -720,26 +720,16 @@ const AboutRouteChildren: AboutRouteChildren = {
 
 const AboutRouteWithChildren = AboutRoute._addFileChildren(AboutRouteChildren)
 
-interface ProgramsIdRouteChildren {
+interface ProgramsRouteChildren {
+  ProgramsIndexRoute: typeof ProgramsIndexRoute
+  ProgramsIdIndexRoute: typeof ProgramsIdIndexRoute
   ProgramsIdSubSubIdRoute: typeof ProgramsIdSubSubIdRoute
 }
 
-const ProgramsIdRouteChildren: ProgramsIdRouteChildren = {
-  ProgramsIdSubSubIdRoute: ProgramsIdSubSubIdRoute,
-}
-
-const ProgramsIdRouteWithChildren = ProgramsIdRoute._addFileChildren(
-  ProgramsIdRouteChildren,
-)
-
-interface ProgramsRouteChildren {
-  ProgramsIdRoute: typeof ProgramsIdRouteWithChildren
-  ProgramsIndexRoute: typeof ProgramsIndexRoute
-}
-
 const ProgramsRouteChildren: ProgramsRouteChildren = {
-  ProgramsIdRoute: ProgramsIdRouteWithChildren,
   ProgramsIndexRoute: ProgramsIndexRoute,
+  ProgramsIdIndexRoute: ProgramsIdIndexRoute,
+  ProgramsIdSubSubIdRoute: ProgramsIdSubSubIdRoute,
 }
 
 const ProgramsRouteWithChildren = ProgramsRoute._addFileChildren(

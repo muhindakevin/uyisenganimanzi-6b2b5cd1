@@ -4,7 +4,7 @@ import { ArrowLeft, Download } from "lucide-react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { Button } from "@/frontend/components/ui/button";
 
-export const Route = createFileRoute("/programs/$id")({
+export const Route = createFileRoute("/programs/$id/")({
   head: () => ({
     meta: [
       { title: "Program Details — Uyisenga Ni Imanzi" },
