@@ -1274,7 +1274,6 @@ function ContentForm({ content, saving, onSave }: { content: Content; saving: bo
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <TextareaField label="Mission" value={form.mission} onChange={(mission) => setForm({ ...form, mission })} />
       <TextareaField label="Vision" value={form.vision} onChange={(vision) => setForm({ ...form, vision })} />
-      <TextareaField label="Impact" value={form.impact} onChange={(impact) => setForm({ ...form, impact })} />
       <Field label="Contact Email" value={form.contact.email} onChange={(email) => setForm({ ...form, contact: { ...form.contact, email } })} />
       <Field label="Contact Phone" value={form.contact.phone} onChange={(phone) => setForm({ ...form, contact: { ...form.contact, phone } })} />
       <Field label="Contact Address" value={form.contact.address} onChange={(address) => setForm({ ...form, contact: { ...form.contact, address } })} />
@@ -1282,6 +1281,7 @@ function ContentForm({ content, saving, onSave }: { content: Content; saving: bo
     </form>
   );
 }
+
 
 function AboutPageForm({ content, saving, onSave }: { content: AboutContent; saving: boolean; onSave: (content: AboutContent) => void }) {
   const [form, setForm] = useState<AboutContent>(content);
@@ -1297,8 +1297,25 @@ function AboutPageForm({ content, saving, onSave }: { content: AboutContent; sav
     <form className="space-y-6" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Story title" value={form.storyTitle} onChange={(value) => setForm({ ...form, storyTitle: value })} />
       <TextareaField label="Story text" value={form.storyText} onChange={(value) => setForm({ ...form, storyText: value })} />
-      <Field label="Story image URL" value={form.storyImage} onChange={(value) => setForm({ ...form, storyImage: value })} />
-      <p className="text-sm text-muted-foreground">Enter a public image URL to display on the about story section.</p>
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Story photo</label>
+        <Input
+          type="file"
+          accept="image/*"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => setForm({ ...form, storyImage: String(reader.result || "") });
+            reader.readAsDataURL(file);
+          }}
+        />
+        <Field label="Or paste an image URL" value={form.storyImage} onChange={(value) => setForm({ ...form, storyImage: value })} />
+        {form.storyImage ? (
+          <img src={form.storyImage} alt="Story preview" className="mt-2 h-32 w-full rounded-md object-cover" />
+        ) : null}
+      </div>
+
 
       <div className="rounded-2xl border border-border bg-muted p-4">
         <h3 className="text-lg font-semibold">Impact stats</h3>

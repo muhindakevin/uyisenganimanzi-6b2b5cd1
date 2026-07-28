@@ -5,16 +5,28 @@ export const Route = createFileRoute("/about/beneficiaries")({
   component: OurBeneficiaries,
 });
 
-type Beneficiary = { id: number; title: string; description: string; filled: boolean };
+type Beneficiary = { id?: number; title: string; description: string; filled?: boolean };
 
 function OurBeneficiaries() {
   const [items, setItems] = useState<Beneficiary[]>([]);
 
   useEffect(() => {
-    fetch("/api/beneficiaries")
-      .then((r) => r.json())
-      .then((data) => { if (Array.isArray(data)) setItems(data); })
-      .catch(() => {});
+    Promise.all([
+      fetch("/api/beneficiaries").then((r) => r.json()).catch(() => []),
+      fetch("/api/content").then((r) => r.json()).catch(() => ({})),
+    ]).then(([tableRows, content]) => {
+      const list: Beneficiary[] = Array.isArray(tableRows) && tableRows.length > 0
+        ? tableRows
+        : Array.isArray(content?.about?.beneficiaries)
+          ? content.about.beneficiaries.map((b: any, i: number) => ({
+              id: i,
+              title: String(b?.title ?? ""),
+              description: String(b?.description ?? ""),
+              filled: i % 2 === 0,
+            }))
+          : [];
+      setItems(list);
+    });
   }, []);
 
   return (
@@ -25,9 +37,9 @@ function OurBeneficiaries() {
       </h2>
 
       <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {items.map((item) => (
+        {items.map((item, idx) => (
           <div
-            key={item.id}
+            key={item.id ?? idx}
             className={
               item.filled
                 ? "rounded-2xl bg-primary p-6 shadow-[var(--shadow-card)] text-primary-foreground"
