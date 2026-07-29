@@ -90,25 +90,15 @@ function Index() {
         <section className="relative h-[calc(82vh-4rem)] min-h-[460px] max-h-[720px] w-full overflow-hidden text-white">
           <div className="absolute inset-0 bg-slate-950" />
           {stories[active]?.image ? (
-            <>
-              {/* Blurred backdrop fills space */}
-              <img
-                src={stories[active].image}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 h-full w-full scale-110 object-cover opacity-40 blur-2xl"
-              />
-              {/* Full image visible, contained */}
-              <img
-                src={stories[active].image}
-                alt={stories[active].title}
-                className="absolute inset-0 mx-auto h-full w-full object-contain"
-              />
-            </>
+            <img
+              src={stories[active].image}
+              alt={stories[active].title}
+              className="absolute inset-0 h-full w-full object-cover object-center"
+            />
           ) : (
-            <div className="absolute inset-0 bg-slate-900" />
+            <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-glow to-accent" />
           )}
-          <div className="absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/90 via-black/55 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
 
           {stories.length > 1 && (
             <>
