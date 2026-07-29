@@ -37,25 +37,27 @@ function OurStory() {
   const paragraphs = content.storyText.split(/\r?\n\r?\n/).filter(Boolean);
 
   return (
-    <>
-      <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground">{content.storyTitle}</h2>
-        <div className="mt-6 space-y-5 text-base text-muted-foreground sm:text-lg">
-          {paragraphs.map((paragraph, index) => (
-            <p key={index}>{paragraph}</p>
-          ))}
-        </div>
-      </section>
+    <section className="mx-auto max-w-4xl px-4 py-14 sm:px-6">
+      <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+        {content.storyTitle}
+      </h2>
+
       {content.storyImage ? (
-        <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+        <figure className="mt-8 overflow-hidden rounded-3xl border border-border bg-muted shadow-[var(--shadow-card)]">
           <img
             src={content.storyImage}
             alt={content.storyTitle}
             loading="lazy"
-            className="w-full rounded-3xl object-cover aspect-[16/9] shadow-[var(--shadow-card)]"
+            className="h-auto w-full object-cover aspect-[16/9]"
           />
-        </section>
+        </figure>
       ) : null}
-    </>
+
+      <div className="mt-8 space-y-5 text-base leading-8 text-foreground/85 sm:text-lg">
+        {paragraphs.map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
+      </div>
+    </section>
   );
 }
