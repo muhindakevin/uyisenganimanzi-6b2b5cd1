@@ -40,6 +40,29 @@ function formatDate(iso?: string | null) {
   }
 }
 
+function renderStoryBody(text: string, title: string) {
+  return text
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block, index) => {
+      const imageMatch = block.match(/^!\[([^\]]*)\]\((data:image\/[^)]+|https?:\/\/[^)]+)\)$/);
+      if (imageMatch) {
+        return (
+          <figure key={`${index}-${imageMatch[2].slice(0, 24)}`} className="overflow-hidden rounded-2xl border border-border bg-muted shadow-[var(--shadow-card)]">
+            <img src={imageMatch[2]} alt={imageMatch[1] || title} loading="lazy" className="h-auto w-full object-contain" />
+          </figure>
+        );
+      }
+
+      return (
+        <p key={`${index}-${block.slice(0, 24)}`} className="whitespace-pre-line">
+          {block}
+        </p>
+      );
+    });
+}
+
 function NewsDetail() {
   const { id } = Route.useParams();
   const [story, setStory] = useState<Story | null>(null);
@@ -76,7 +99,7 @@ function NewsDetail() {
 
   return (
     <SiteLayout>
-      <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <article className="mx-auto max-w-4xl px-4 py-10 sm:px-6 sm:py-14">
         <Button asChild variant="ghost" size="sm" className="mb-6 -ml-2">
           <Link to="/press-room/news"><ArrowLeft className="mr-2 h-4 w-4" />Back to News</Link>
         </Button>
@@ -94,14 +117,14 @@ function NewsDetail() {
         ) : null}
 
         {story.image ? (
-          <figure className="mt-8 overflow-hidden rounded-2xl border border-border bg-muted">
+          <figure className="mt-8 overflow-hidden rounded-2xl border border-border bg-muted shadow-[var(--shadow-card)]">
             <img src={story.image} alt={story.title} className="h-auto w-full object-contain" />
           </figure>
         ) : null}
 
         {story.description ? (
-          <div className="prose prose-lg mt-8 max-w-none whitespace-pre-wrap text-base leading-8 text-foreground sm:text-lg">
-            {story.description}
+          <div className="mt-8 space-y-7 text-base leading-8 text-foreground sm:text-lg">
+            {renderStoryBody(story.description, story.title)}
           </div>
         ) : null}
 

@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Edit, Plus, RefreshCw, Save, Trash2 } from "lucide-react";
 import { Button } from "@/frontend/components/ui/button";
@@ -948,6 +948,38 @@ function readFileAsDataUrl(file: File): Promise<string> {
   });
 }
 
+function readImageAsDataUrl(file: File, maxSize = 1400): Promise<string> {
+  if (!file.type.startsWith("image/")) return readFileAsDataUrl(file);
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = reject;
+    reader.onload = () => {
+      const source = String(reader.result || "");
+      const image = new Image();
+      image.onerror = () => resolve(source);
+      image.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const width = Math.max(1, Math.round(image.width * scale));
+        const height = Math.max(1, Math.round(image.height * scale));
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const context = canvas.getContext("2d");
+        if (!context) {
+          resolve(source);
+          return;
+        }
+        context.drawImage(image, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.84));
+      };
+      image.src = source;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function SubmitButton({ saving }: { saving: boolean }) {
   return (
     <div className="sticky bottom-0 -mx-6 -mb-4 mt-4 border-t bg-background/95 px-6 py-3 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -1189,6 +1221,7 @@ function PressRoomForm({
 }) {
   const empty: PressRoomItem = { id: 0, title: "", summary: "", description: "", category: "News", image: "", document: "", document_name: "", link: "" };
   const [form, setForm] = useState<PressRoomItem>(item || empty);
+  const bodyRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     setForm(item || empty);
@@ -1198,7 +1231,26 @@ function PressRoomForm({
   async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     if (!file) return;
-    setForm({ ...form, image: await readFileAsDataUrl(file) });
+    setForm({ ...form, image: await readImageAsDataUrl(file) });
+  }
+
+  async function handleInlineImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const current = form.description || "";
+    const start = bodyRef.current?.selectionStart ?? current.length;
+    const end = bodyRef.current?.selectionEnd ?? start;
+    const image = await readImageAsDataUrl(file);
+    const marker = `\n\n![Story photo](${image})\n\n`;
+    const next = `${current.slice(0, start)}${marker}${current.slice(end)}`;
+    setForm({ ...form, description: next });
+    event.target.value = "";
+
+    window.requestAnimationFrame(() => {
+      bodyRef.current?.focus();
+      bodyRef.current?.setSelectionRange(start + marker.length, start + marker.length);
+    });
   }
 
   async function handleDocumentChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -1213,7 +1265,6 @@ function PressRoomForm({
     <form className="space-y-4" onSubmit={(event) => { event.preventDefault(); onSave(form); }}>
       <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
       <TextareaField label="Summary (short)" required value={form.summary} onChange={(summary) => setForm({ ...form, summary })} />
-      <TextareaField label="Full description (optional, visitors read this)" value={form.description || ""} onChange={(description) => setForm({ ...form, description })} />
       <div>
         <Label htmlFor="category">Category</Label>
         <select
@@ -1229,12 +1280,32 @@ function PressRoomForm({
       </div>
 
       <div>
-        <Label htmlFor="press-image">Story image (optional)</Label>
+        <Label htmlFor="press-image">Cover photo / hero story image (optional)</Label>
         <Input id="press-image" type="file" accept="image/*" onChange={handleImageChange} />
         <p className="mt-1 text-xs text-muted-foreground">
-          Upload a photo for the story. It will be used inside the story detail and can also appear on the homepage hero.
+          This main photo stays as the story cover and can also appear on the homepage hero.
         </p>
         {form.image ? <img src={form.image} alt="Press preview" className="mt-3 h-28 w-full rounded-md object-cover" /> : null}
+      </div>
+
+      <div>
+        <Label htmlFor="story-body">Full story body</Label>
+        <Textarea
+          ref={bodyRef}
+          id="story-body"
+          rows={10}
+          value={form.description || ""}
+          onChange={(event) => setForm({ ...form, description: event.target.value })}
+          className="min-h-56"
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="story-inline-image">Insert photo inside story body</Label>
+        <Input id="story-inline-image" type="file" accept="image/*" onChange={handleInlineImageChange} />
+        <p className="mt-1 text-xs text-muted-foreground">
+          Place the cursor in the story body, then choose a photo. It will be inserted there without replacing the cover photo.
+        </p>
       </div>
 
       {isPublication ? (
@@ -1249,14 +1320,6 @@ function PressRoomForm({
       <Field label="Story link (optional)" value={form.link || ""} onChange={(link) => setForm({ ...form, link })} />
       <p className="mt-1 text-xs text-muted-foreground">
         When present, the title on the homepage hero points directly to this story link.
-      </p>
-      <TextareaField
-        label="Description / body"
-        value={form.description || ""}
-        onChange={(description) => setForm({ ...form, description })}
-      />
-      <p className="mt-1 text-xs text-muted-foreground">
-        You can include additional text and links inside the description as needed.
       </p>
       <SubmitButton saving={saving} />
     </form>
