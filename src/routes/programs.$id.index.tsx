@@ -74,6 +74,23 @@ function ProgramDetail() {
 
   return (
     <SiteLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: program.title,
+            articleBody: program.long_description || program.description,
+            image: cover || undefined,
+            publisher: {
+              "@type": "NGO",
+              name: "Uyisenga Ni Imanzi",
+            },
+          }),
+        }}
+      />
+
       {cover ? (
         <div className="relative h-[42vh] min-h-[300px] w-full overflow-hidden">
           <img src={cover} alt={program.title} className="absolute inset-0 h-full w-full object-cover" />
@@ -139,7 +156,7 @@ function ProgramDetail() {
                   <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground">{sub.description}</p>
                   <div className="mt-4">
                     <Button asChild size="sm">
-                      <Link to="/programs/$id/sub/$subId" params={{ id, subId: String(sub.id) }}>Learn More</Link>
+                      <Link to="/programs/$id/sub/$subId" params={{ id, subId: String(sub.id) }}>{`Learn more about ${sub.title}`}</Link>
                     </Button>
                   </div>
                 </div>

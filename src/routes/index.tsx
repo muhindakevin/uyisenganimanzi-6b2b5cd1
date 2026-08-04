@@ -8,12 +8,16 @@ import { Button } from "@/frontend/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Uyisenga Ni Imanzi (UNM) — Hope, Healing, Opportunity in Rwanda" },
+      { title: "Uyisenga Ni Imanzi — Hope & Opportunity in Rwanda" },
       { name: "description", content: "UNM is a Rwandan NGO empowering young people and communities through psychosocial support, education, and economic opportunity." },
-      { property: "og:title", content: "Uyisenga Ni Imanzi (UNM)" },
-      { property: "og:description", content: "Empowering Rwandan youth and communities through care, learning, and livelihoods." },
+      { property: "og:title", content: "Uyisenga Ni Imanzi (UNM) — Empowering Rwandan Youth" },
+      { property: "og:description", content: "Empowering Rwandan youth and communities through psychosocial care, learning, and livelihoods." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://test.uyisenganimanzi.org.rw/" },
     ],
+    links: [{ rel: "canonical", href: "https://test.uyisenganimanzi.org.rw/" }],
   }),
+
   component: Index,
 });
 
@@ -86,6 +90,8 @@ function Index() {
 
   return (
     <SiteLayout>
+      <h1 className="sr-only">Uyisenga Ni Imanzi — Hope, Healing, and Opportunity in Rwanda</h1>
+
       {stories.length > 0 && (
         <section className="relative h-[calc(82vh-4rem)] min-h-[460px] max-h-[720px] w-full overflow-hidden text-white">
           <div className="absolute inset-0 bg-slate-950" />
@@ -129,9 +135,10 @@ function Index() {
               params={{ id: String(stories[active]?.id) }}
               className="max-w-5xl"
             >
-              <h1 className="text-xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.75)] hover:underline sm:text-2xl md:text-3xl lg:text-4xl">
+              <h2 className="text-xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.75)] hover:underline sm:text-2xl md:text-3xl lg:text-4xl">
                 {stories[active]?.title}
-              </h1>
+              </h2>
+
             </Link>
             <div className="mt-4 flex flex-row flex-wrap items-center justify-center gap-3 sm:mt-5">
               <Button asChild size="lg" variant="secondary">
@@ -196,7 +203,7 @@ function Index() {
                   <p className="mt-3 text-sm leading-6 text-muted-foreground line-clamp-3">{program.description}</p>
                   <div className="mt-6">
                     <Button asChild size="sm" variant="secondary">
-                      <Link to="/programs/$id" params={{ id: String(program.id) }}>Learn more</Link>
+                      <Link to="/programs/$id" params={{ id: String(program.id) }}>{`Learn more about ${program.title}`}</Link>
                     </Button>
                   </div>
                 </div>
