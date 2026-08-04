@@ -90,6 +90,8 @@ function Index() {
 
   return (
     <SiteLayout>
+      <h1 className="sr-only">Uyisenga Ni Imanzi — Hope, Healing, and Opportunity in Rwanda</h1>
+
       {stories.length > 0 && (
         <section className="relative h-[calc(82vh-4rem)] min-h-[460px] max-h-[720px] w-full overflow-hidden text-white">
           <div className="absolute inset-0 bg-slate-950" />
