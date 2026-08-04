@@ -8,12 +8,16 @@ import { Button } from "@/frontend/components/ui/button";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Uyisenga Ni Imanzi (UNM) — Hope, Healing, Opportunity in Rwanda" },
+      { title: "Uyisenga Ni Imanzi — Hope & Opportunity in Rwanda" },
       { name: "description", content: "UNM is a Rwandan NGO empowering young people and communities through psychosocial support, education, and economic opportunity." },
-      { property: "og:title", content: "Uyisenga Ni Imanzi (UNM)" },
-      { property: "og:description", content: "Empowering Rwandan youth and communities through care, learning, and livelihoods." },
+      { property: "og:title", content: "Uyisenga Ni Imanzi (UNM) — Empowering Rwandan Youth" },
+      { property: "og:description", content: "Empowering Rwandan youth and communities through psychosocial care, learning, and livelihoods." },
+      { property: "og:type", content: "website" },
+      { property: "og:url", content: "https://test.uyisenganimanzi.org.rw/" },
     ],
+    links: [{ rel: "canonical", href: "https://test.uyisenganimanzi.org.rw/" }],
   }),
+
   component: Index,
 });
 

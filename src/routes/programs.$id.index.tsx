@@ -139,7 +139,7 @@ function ProgramDetail() {
                   <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground">{sub.description}</p>
                   <div className="mt-4">
                     <Button asChild size="sm">
-                      <Link to="/programs/$id/sub/$subId" params={{ id, subId: String(sub.id) }}>Learn More</Link>
+                      <Link to="/programs/$id/sub/$subId" params={{ id, subId: String(sub.id) }}>{`Learn more about ${sub.title}`}</Link>
                     </Button>
                   </div>
                 </div>
