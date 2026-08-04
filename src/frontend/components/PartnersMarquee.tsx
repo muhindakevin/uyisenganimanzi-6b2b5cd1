@@ -22,6 +22,10 @@ const partners = [
   { name: "University of Leeds", src: leeds },
   { name: "IRCT", src: irct },
   { name: "CAFOD", src: cafod },
+  { name: "World Health Organization", src: who },
+  { name: "SURF Survivors Fund", src: surf },
+  { name: "UNICEF", src: unicef },
+  { name: "European Union", src: eu },
 ];
 
 export function PartnersMarquee() {
