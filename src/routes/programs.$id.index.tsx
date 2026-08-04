@@ -74,6 +74,23 @@ function ProgramDetail() {
 
   return (
     <SiteLayout>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: program.title,
+            articleBody: program.long_description || program.description,
+            image: cover || undefined,
+            publisher: {
+              "@type": "NGO",
+              name: "Uyisenga Ni Imanzi",
+            },
+          }),
+        }}
+      />
+
       {cover ? (
         <div className="relative h-[42vh] min-h-[300px] w-full overflow-hidden">
           <img src={cover} alt={program.title} className="absolute inset-0 h-full w-full object-cover" />
