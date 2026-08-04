@@ -7,6 +7,10 @@ import lemonaid from "@/frontend/assets/partners/lemonaid.jpg";
 import leeds from "@/frontend/assets/partners/leeds.jpg";
 import irct from "@/frontend/assets/partners/irct.jpg";
 import cafod from "@/frontend/assets/partners/cafod.jpg";
+import who from "@/frontend/assets/partners/who.png";
+import surf from "@/frontend/assets/partners/surf.jpg";
+import unicef from "@/frontend/assets/partners/unicef.png";
+import eu from "@/frontend/assets/partners/eu.jpg";
 
 const partners = [
   { name: "Imbuto Foundation", src: imbuto },
