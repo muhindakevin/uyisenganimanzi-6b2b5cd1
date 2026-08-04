@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as GetInvolvedRouteImport } from './routes/get-involved'
@@ -46,6 +47,11 @@ import { Route as PressRoomNewsIdRouteImport } from './routes/press-room/news.$i
 import { Route as ProgramsIdSubSubIdRouteImport } from './routes/programs.$id.sub.$subId'
 import { Route as ApiTeamPhotoIdRouteImport } from './routes/api/team.photo.$id'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProgramsRoute = ProgramsRouteImport.update({
   id: '/programs',
   path: '/programs',
@@ -237,6 +243,7 @@ export interface FileRoutesByFullPath {
   '/get-involved': typeof GetInvolvedRoute
   '/login': typeof LoginRoute
   '/programs': typeof ProgramsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/gallery': typeof GalleryRoute
   '/get-involved': typeof GetInvolvedRoute
   '/login': typeof LoginRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
@@ -310,6 +318,7 @@ export interface FileRoutesById {
   '/get-involved': typeof GetInvolvedRoute
   '/login': typeof LoginRoute
   '/programs': typeof ProgramsRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
@@ -350,6 +359,7 @@ export interface FileRouteTypes {
     | '/get-involved'
     | '/login'
     | '/programs'
+    | '/sitemap.xml'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/gallery'
     | '/get-involved'
     | '/login'
+    | '/sitemap.xml'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
@@ -422,6 +433,7 @@ export interface FileRouteTypes {
     | '/get-involved'
     | '/login'
     | '/programs'
+    | '/sitemap.xml'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
@@ -461,6 +473,7 @@ export interface RootRouteChildren {
   GetInvolvedRoute: typeof GetInvolvedRoute
   LoginRoute: typeof LoginRoute
   ProgramsRoute: typeof ProgramsRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiAuthRoute: typeof ApiAuthRoute
   ApiBeneficiariesRoute: typeof ApiBeneficiariesRoute
   ApiContactRoute: typeof ApiContactRoute
@@ -479,6 +492,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/programs': {
       id: '/programs'
       path: '/programs'
@@ -817,6 +837,7 @@ const rootRouteChildren: RootRouteChildren = {
   GetInvolvedRoute: GetInvolvedRoute,
   LoginRoute: LoginRoute,
   ProgramsRoute: ProgramsRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiAuthRoute: ApiAuthRoute,
   ApiBeneficiariesRoute: ApiBeneficiariesRoute,
   ApiContactRoute: ApiContactRoute,
