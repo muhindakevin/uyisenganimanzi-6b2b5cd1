@@ -313,6 +313,7 @@ export const MEDIA_SOURCES = {
   "press-cover": { table: "press_room_items", column: "cover_image" },
   gallery: { table: "gallery_items", column: "image" },
   "gallery-cover": { table: "gallery_items", column: "cover_image" },
+  "press-doc": { table: "press_room_items", column: "document" },
 } as const;
 
 export type MediaKind = keyof typeof MEDIA_SOURCES;
