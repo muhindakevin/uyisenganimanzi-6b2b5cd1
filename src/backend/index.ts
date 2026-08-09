@@ -303,14 +303,64 @@ export async function deleteTeamMember(id: number) {
   if (error) throw error;
 }
 
+// ---------- Media (photos are served separately so lists stay small/fast) ----------
+export const MEDIA_SOURCES = {
+  program: { table: "programs", column: "image" },
+  "program-cover": { table: "programs", column: "cover_image" },
+  sub: { table: "sub_programs", column: "image" },
+  "sub-cover": { table: "sub_programs", column: "cover_image" },
+  press: { table: "press_room_items", column: "image" },
+  "press-cover": { table: "press_room_items", column: "cover_image" },
+  gallery: { table: "gallery_items", column: "image" },
+  "gallery-cover": { table: "gallery_items", column: "cover_image" },
+  "press-doc": { table: "press_room_items", column: "document" },
+} as const;
+
+export type MediaKind = keyof typeof MEDIA_SOURCES;
+
+export function isMediaKind(kind: string): kind is MediaKind {
+  return Object.prototype.hasOwnProperty.call(MEDIA_SOURCES, kind);
+}
+
+export async function getMediaValue(kind: MediaKind, id: number) {
+  const source = MEDIA_SOURCES[kind];
+  const { data, error } = await sql().from(source.table).select(source.column).eq("id", id).single();
+  if (error) throw error;
+  return ((data as any)?.[source.column] as string | null) ?? null;
+}
+
+function mediaUrl(kind: MediaKind, id: number | string, has?: boolean | null) {
+  return has ? `/api/media/${kind}/${id}` : null;
+}
+
+function withMedia<T>(row: any, kind: MediaKind, coverKind?: MediaKind): T {
+  const { has_image, has_cover, ...rest } = row ?? {};
+  const mapped: any = { ...numberId(rest), image: mediaUrl(kind, row.id, has_image) };
+  if (coverKind) mapped.cover_image = mediaUrl(coverKind, row.id, has_cover);
+  return mapped as T;
+}
+
+// A "/api/..." value means "keep the existing photo" (the client only ever
+// receives the URL reference, never the raw blob).
+function mediaPayload(image: unknown, cover?: unknown) {
+  const out: Record<string, unknown> = {};
+  if (!(typeof image === "string" && image.startsWith("/api/"))) out.image = image ?? null;
+  if (cover !== undefined && !(typeof cover === "string" && cover.startsWith("/api/"))) {
+    out.cover_image = cover ?? null;
+  }
+  return out;
+}
+
+const PROGRAM_COLS = "id, title, description, long_description, attachment_url, attachment_name, has_image, has_cover";
+
 export async function listPrograms() {
   try {
     const { data, error } = await sql()
       .from("programs")
-      .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
+      .select(PROGRAM_COLS)
       .order("id", { ascending: true });
     if (error) throw error;
-    return numberIds(data ?? []) as Program[];
+    return (data ?? []).map((row: any) => withMedia<Program>(row, "program", "program-cover"));
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.programs ?? []).map((program) => ({
@@ -326,33 +376,31 @@ export async function saveProgram(program: Partial<Program>) {
     title: program.title,
     description: program.description,
     long_description: program.long_description ?? null,
-    image: program.image ?? null,
-    cover_image: program.cover_image ?? null,
     attachment_url: program.attachment_url ?? null,
     attachment_name: program.attachment_name ?? null,
+    ...mediaPayload(program.image, program.cover_image),
   };
-  const cols = "id, title, description, long_description, image, cover_image, attachment_url, attachment_name";
   if (program.id) {
     const { data, error } = await sql().from("programs")
       .update({ ...payload, updated_at: new Date().toISOString() })
-      .eq("id", program.id).select(cols).single();
+      .eq("id", program.id).select(PROGRAM_COLS).single();
     if (error) throw error;
-    return data ? (numberId(data) as Program) : undefined;
+    return data ? withMedia<Program>(data, "program", "program-cover") : undefined;
   }
-  const { data, error } = await sql().from("programs").insert(payload).select(cols).single();
+  const { data, error } = await sql().from("programs").insert(payload).select(PROGRAM_COLS).single();
   if (error) throw error;
-  return numberId(data) as Program;
+  return withMedia<Program>(data, "program", "program-cover");
 }
 
 export async function getProgram(id: number) {
   try {
     const { data, error } = await sql()
       .from("programs")
-      .select("id, title, description, long_description, image, cover_image, attachment_url, attachment_name")
+      .select(PROGRAM_COLS)
       .eq("id", id)
       .single();
     if (error) throw error;
-    return data ? (numberId(data) as Program) : undefined;
+    return data ? withMedia<Program>(data, "program", "program-cover") : undefined;
   } catch (error) {
     if (error instanceof Error && error.message.includes("no rows")) return undefined;
     throw error;
@@ -367,14 +415,17 @@ export async function deleteProgram(id: number) {
   if (error) throw error;
 }
 
+
+const GALLERY_COLS = "id, title, description, category, link, has_image, has_cover";
+
 export async function listGallery() {
   try {
     const { data, error } = await sql()
       .from("gallery_items")
-      .select("id, title, image, description, category, link")
+      .select(GALLERY_COLS)
       .order("id", { ascending: true });
     if (error) throw error;
-    return numberIds(data ?? []) as GalleryImage[];
+    return (data ?? []).map((row: any) => withMedia<GalleryImage>(row, "gallery", "gallery-cover"));
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.gallery ?? []).map((item) => ({
@@ -387,42 +438,31 @@ export async function listGallery() {
 }
 
 export async function saveGalleryImage(image: Partial<GalleryImage>) {
-  try {
-    if (image.id) {
-      const { data, error } = await sql()
-        .from("gallery_items")
-        .update({
-          title: image.title,
-          image: image.image,
-          description: image.description ?? null,
-          category: image.category ?? "Event",
-          link: image.link ?? null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", image.id)
-        .select("id, title, image, description, category, link")
-        .single();
-      if (error) throw error;
-      return data ? (numberId(data) as GalleryImage) : undefined;
-    }
-
+  const payload = {
+    title: image.title,
+    description: image.description ?? null,
+    category: image.category ?? "Event",
+    link: image.link ?? null,
+    ...mediaPayload(image.image, (image as any).cover_image),
+  };
+  if (image.id) {
     const { data, error } = await sql()
       .from("gallery_items")
-      .insert({
-        title: image.title,
-        image: image.image,
-        description: image.description ?? null,
-        category: image.category ?? "Event",
-        link: image.link ?? null,
-      })
-      .select("id, title, image, description, category, link")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", image.id)
+      .select(GALLERY_COLS)
       .single();
     if (error) throw error;
-    return numberId(data) as GalleryImage;
-  } catch (error) {
-    if (error instanceof Error && error.message.includes("missing")) throw error;
-    throw error;
+    return data ? withMedia<GalleryImage>(data, "gallery", "gallery-cover") : undefined;
   }
+
+  const { data, error } = await sql()
+    .from("gallery_items")
+    .insert(payload)
+    .select(GALLERY_COLS)
+    .single();
+  if (error) throw error;
+  return withMedia<GalleryImage>(data, "gallery", "gallery-cover");
 }
 
 export async function deleteGalleryImage(id: number) {
@@ -433,12 +473,22 @@ export async function deleteGalleryImage(id: number) {
   if (error) throw error;
 }
 
+const PRESS_COLS =
+  "id, title, summary, description, category, document_name, link, created_at, has_image, has_cover, has_document";
+
+function mapPress(row: any): PressRoomItem {
+  const { has_document, ...rest } = row ?? {};
+  const mapped = withMedia<PressRoomItem>(rest, "press", "press-cover") as any;
+  mapped.document = has_document ? `/api/media/press-doc/${row.id}` : null;
+  return mapped as PressRoomItem;
+}
+
 export async function listPressRoom(category?: string | null, limit?: number | null) {
   try {
     const limitValue = limit ? Math.max(1, Math.min(limit, 50)) : 200;
     let query = sql()
       .from("press_room_items")
-      .select("id, title, summary, description, category, image, document, document_name, link, created_at")
+      .select(PRESS_COLS)
       .order("created_at", { ascending: false });
 
     if (category) {
@@ -447,7 +497,7 @@ export async function listPressRoom(category?: string | null, limit?: number | n
 
     const { data, error } = await query.limit(limitValue);
     if (error) throw error;
-    return numberIds(data ?? []) as PressRoomItem[];
+    return (data ?? []).map((row: any) => mapPress(row));
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     const items = (fallbackData.pressRoom ?? []).filter((item) => !category || item.category === category);
@@ -464,49 +514,39 @@ export async function listPressRoom(category?: string | null, limit?: number | n
 }
 
 export async function savePressRoomItem(item: Partial<PressRoomItem>) {
-  try {
-    if (item.id) {
-      const { data, error } = await sql()
-        .from("press_room_items")
-        .update({
-          title: item.title,
-          summary: item.summary,
-          description: item.description ?? null,
-          category: item.category,
-          image: item.image ?? null,
-          document: item.document ?? null,
-          document_name: item.document_name ?? null,
-          link: item.link ?? null,
-          updated_at: new Date().toISOString(),
-        })
-        .eq("id", item.id)
-        .select("id, title, summary, description, category, image, document, document_name, link, created_at")
-        .single();
-      if (error) throw error;
-      return data ? (numberId(data) as PressRoomItem) : undefined;
-    }
+  const payload: Record<string, unknown> = {
+    title: item.title,
+    summary: item.summary,
+    description: item.description ?? null,
+    category: item.category,
+    document_name: item.document_name ?? null,
+    link: item.link ?? null,
+    ...mediaPayload(item.image, (item as any).cover_image),
+  };
+  if (!(typeof item.document === "string" && item.document.startsWith("/api/"))) {
+    payload.document = item.document ?? null;
+  }
 
+  if (item.id) {
     const { data, error } = await sql()
       .from("press_room_items")
-      .insert({
-        title: item.title,
-        summary: item.summary,
-        description: item.description ?? null,
-        category: item.category,
-        image: item.image ?? null,
-        document: item.document ?? null,
-        document_name: item.document_name ?? null,
-        link: item.link ?? null,
-      })
-      .select("id, title, summary, description, category, image, document, document_name, link, created_at")
+      .update({ ...payload, updated_at: new Date().toISOString() })
+      .eq("id", item.id)
+      .select(PRESS_COLS)
       .single();
     if (error) throw error;
-    return numberId(data) as PressRoomItem;
-  } catch (error) {
-    if (error instanceof Error && error.message.includes("missing")) throw error;
-    throw error;
+    return data ? mapPress(data) : undefined;
   }
+
+  const { data, error } = await sql()
+    .from("press_room_items")
+    .insert(payload)
+    .select(PRESS_COLS)
+    .single();
+  if (error) throw error;
+  return mapPress(data);
 }
+
 
 export async function deletePressRoomItem(id: number) {
   const { error } = await sql()
@@ -596,14 +636,14 @@ export async function deleteContactMessage(id: number) {
 }
 
 // ---------- Sub-programs ----------
-const SUB_COLS = "id, program_id, title, description, long_description, image, cover_image, attachment_url, attachment_name, sort_order";
+const SUB_COLS = "id, program_id, title, description, long_description, attachment_url, attachment_name, sort_order, has_image, has_cover";
 
 export async function listSubPrograms(programId?: number | null) {
   let q = sql().from("sub_programs").select(SUB_COLS).order("sort_order", { ascending: true }).order("id", { ascending: true });
   if (programId) q = q.eq("program_id", programId);
   const { data, error } = await q;
   if (error) throw error;
-  return numberIds(data ?? []) as SubProgram[];
+  return (data ?? []).map((row: any) => withMedia<SubProgram>(row, "sub", "sub-cover"));
 }
 export async function saveSubProgram(item: Partial<SubProgram>) {
   const payload = {
@@ -611,23 +651,23 @@ export async function saveSubProgram(item: Partial<SubProgram>) {
     title: item.title,
     description: item.description,
     long_description: item.long_description ?? null,
-    image: item.image ?? null,
-    cover_image: item.cover_image ?? null,
     attachment_url: item.attachment_url ?? null,
     attachment_name: item.attachment_name ?? null,
     sort_order: item.sort_order ?? 0,
+    ...mediaPayload(item.image, item.cover_image),
   };
   if (item.id) {
     const { data, error } = await sql().from("sub_programs")
       .update({ ...payload, updated_at: new Date().toISOString() })
       .eq("id", item.id).select(SUB_COLS).single();
     if (error) throw error;
-    return data ? (numberId(data) as SubProgram) : undefined;
+    return data ? withMedia<SubProgram>(data, "sub", "sub-cover") : undefined;
   }
   const { data, error } = await sql().from("sub_programs").insert(payload).select(SUB_COLS).single();
   if (error) throw error;
-  return numberId(data) as SubProgram;
+  return withMedia<SubProgram>(data, "sub", "sub-cover");
 }
+
 export async function deleteSubProgram(id: number) {
   const { error } = await sql().from("sub_programs").delete().eq("id", id);
   if (error) throw error;
