@@ -33,7 +33,7 @@ export function SiteHeader() {
   const [aboutOpen, setAboutOpen] = useState(false);
   const [pressRoomOpen, setPressRoomOpen] = useState(false);
   return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-gradient-to-r from-[oklch(0.28_0.12_260)] via-primary to-primary-glow shadow-[0_8px_24px_-12px_oklch(0.13_0.02_260/0.5)] backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-gradient-to-r from-[oklch(0.30_0.16_268)] via-primary to-primary-glow shadow-[0_8px_24px_-12px_oklch(0.22_0.11_268/0.5)] backdrop-blur">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
         <Link to="/" className="flex min-w-0 items-center gap-2 font-semibold tracking-tight text-white sm:gap-3">
           <img src={logo} alt="Uyisenga Ni Imanzi logo" className="h-10 w-auto shrink-0 rounded-md bg-white/95 p-1 sm:h-11" />
@@ -94,7 +94,7 @@ export function SiteHeader() {
         </button>
       </div>
       {open && (
-        <div className="border-t border-white/10 bg-[oklch(0.18_0.05_260)] md:hidden">
+        <div className="border-t border-white/10 bg-[oklch(0.22_0.11_268)] md:hidden">
           <nav className="mx-auto max-w-6xl p-4 max-h-[calc(100vh-6rem)] overflow-y-auto">
             <div className="space-y-2">
               <Link to="/" onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
