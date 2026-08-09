@@ -179,6 +179,7 @@ export type Database = {
           document: string | null
           document_name: string | null
           has_cover: boolean | null
+          has_document: boolean | null
           has_image: boolean | null
           id: number
           image: string | null
@@ -195,6 +196,7 @@ export type Database = {
           document?: string | null
           document_name?: string | null
           has_cover?: boolean | null
+          has_document?: boolean | null
           has_image?: boolean | null
           id?: never
           image?: string | null
@@ -211,6 +213,7 @@ export type Database = {
           document?: string | null
           document_name?: string | null
           has_cover?: boolean | null
+          has_document?: boolean | null
           has_image?: boolean | null
           id?: never
           image?: string | null
