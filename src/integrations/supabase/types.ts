@@ -130,6 +130,8 @@ export type Database = {
           cover_image: string | null
           created_at: string
           description: string | null
+          has_cover: boolean | null
+          has_image: boolean | null
           id: number
           image: string
           link: string | null
@@ -143,6 +145,8 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           description?: string | null
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image: string
           link?: string | null
@@ -156,6 +160,8 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           description?: string | null
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image?: string
           link?: string | null
@@ -172,6 +178,8 @@ export type Database = {
           description: string | null
           document: string | null
           document_name: string | null
+          has_cover: boolean | null
+          has_image: boolean | null
           id: number
           image: string | null
           link: string | null
@@ -186,6 +194,8 @@ export type Database = {
           description?: string | null
           document?: string | null
           document_name?: string | null
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image?: string | null
           link?: string | null
@@ -200,6 +210,8 @@ export type Database = {
           description?: string | null
           document?: string | null
           document_name?: string | null
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image?: string | null
           link?: string | null
@@ -216,6 +228,8 @@ export type Database = {
           cover_image: string | null
           created_at: string
           description: string
+          has_cover: boolean | null
+          has_image: boolean | null
           id: number
           image: string | null
           long_description: string | null
@@ -228,6 +242,8 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           description: string
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image?: string | null
           long_description?: string | null
@@ -240,6 +256,8 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           description?: string
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image?: string | null
           long_description?: string | null
@@ -273,6 +291,8 @@ export type Database = {
           cover_image: string | null
           created_at: string
           description: string
+          has_cover: boolean | null
+          has_image: boolean | null
           id: number
           image: string | null
           long_description: string | null
@@ -287,6 +307,8 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           description: string
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image?: string | null
           long_description?: string | null
@@ -301,6 +323,8 @@ export type Database = {
           cover_image?: string | null
           created_at?: string
           description?: string
+          has_cover?: boolean | null
+          has_image?: boolean | null
           id?: never
           image?: string | null
           long_description?: string | null
