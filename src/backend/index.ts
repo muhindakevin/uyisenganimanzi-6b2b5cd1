@@ -359,7 +359,7 @@ export async function listPrograms() {
       .select(PROGRAM_COLS)
       .order("id", { ascending: true });
     if (error) throw error;
-    return (data ?? []).map((row) => withMedia<Program>(row, "program", "program-cover"));
+    return (data ?? []).map((row: any) => withMedia<Program>(row, "program", "program-cover"));
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
     return (fallbackData.programs ?? []).map((program) => ({
