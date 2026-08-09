@@ -635,14 +635,14 @@ export async function deleteContactMessage(id: number) {
 }
 
 // ---------- Sub-programs ----------
-const SUB_COLS = "id, program_id, title, description, long_description, image, cover_image, attachment_url, attachment_name, sort_order";
+const SUB_COLS = "id, program_id, title, description, long_description, attachment_url, attachment_name, sort_order, has_image, has_cover";
 
 export async function listSubPrograms(programId?: number | null) {
   let q = sql().from("sub_programs").select(SUB_COLS).order("sort_order", { ascending: true }).order("id", { ascending: true });
   if (programId) q = q.eq("program_id", programId);
   const { data, error } = await q;
   if (error) throw error;
-  return numberIds(data ?? []) as SubProgram[];
+  return (data ?? []).map((row: any) => withMedia<SubProgram>(row, "sub", "sub-cover"));
 }
 export async function saveSubProgram(item: Partial<SubProgram>) {
   const payload = {
@@ -650,23 +650,23 @@ export async function saveSubProgram(item: Partial<SubProgram>) {
     title: item.title,
     description: item.description,
     long_description: item.long_description ?? null,
-    image: item.image ?? null,
-    cover_image: item.cover_image ?? null,
     attachment_url: item.attachment_url ?? null,
     attachment_name: item.attachment_name ?? null,
     sort_order: item.sort_order ?? 0,
+    ...mediaPayload(item.image, item.cover_image),
   };
   if (item.id) {
     const { data, error } = await sql().from("sub_programs")
       .update({ ...payload, updated_at: new Date().toISOString() })
       .eq("id", item.id).select(SUB_COLS).single();
     if (error) throw error;
-    return data ? (numberId(data) as SubProgram) : undefined;
+    return data ? withMedia<SubProgram>(data, "sub", "sub-cover") : undefined;
   }
   const { data, error } = await sql().from("sub_programs").insert(payload).select(SUB_COLS).single();
   if (error) throw error;
-  return numberId(data) as SubProgram;
+  return withMedia<SubProgram>(data, "sub", "sub-cover");
 }
+
 export async function deleteSubProgram(id: number) {
   const { error } = await sql().from("sub_programs").delete().eq("id", id);
   if (error) throw error;
