@@ -1,2 +1,2 @@
-- [ ] Give news links readable titles and story-specific sharing previews; preserve old links.
-- [ ] Display complete homepage photos and verify story navigation.
+- [x] Give news links readable titles and story-specific sharing previews; preserve old links.
+- [x] Display complete homepage photos and verify story navigation.
