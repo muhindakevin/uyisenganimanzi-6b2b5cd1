@@ -9,83 +9,48 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AboutRouteImport } from './routes/about'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as DonateRouteImport } from './routes/donate'
-import { Route as GalleryRouteImport } from './routes/gallery'
-import { Route as GetInvolvedRouteImport } from './routes/get-involved'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as AboutIndexRouteImport } from './routes/about.index'
-import { Route as AboutApproachRouteImport } from './routes/about.approach'
-import { Route as AboutBeneficiariesRouteImport } from './routes/about.beneficiaries'
-import { Route as AboutImpactRouteImport } from './routes/about.impact'
-import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-vision'
-import { Route as AboutTeamRouteImport } from './routes/about.team'
-import { Route as ApiAuthRouteImport } from './routes/api/auth'
-import { Route as ApiBeneficiariesRouteImport } from './routes/api/beneficiaries'
-import { Route as ApiContactRouteImport } from './routes/api/contact'
-import { Route as ApiContactMessagesRouteImport } from './routes/api/contact-messages'
-import { Route as ApiContentRouteImport } from './routes/api/content'
-import { Route as ApiCoreValuesRouteImport } from './routes/api/core-values'
-import { Route as ApiGalleryRouteImport } from './routes/api/gallery'
-import { Route as ApiPressRoomRouteImport } from './routes/api/press-room'
-import { Route as ApiProgramsRouteImport } from './routes/api/programs'
-import { Route as ApiSubProgramsRouteImport } from './routes/api/sub-programs'
-import { Route as ApiTeamRouteImport } from './routes/api/team'
-import { Route as PressRoomJobsRouteImport } from './routes/press-room/jobs'
-import { Route as PressRoomNewsRouteImport } from './routes/press-room/news'
-import { Route as PressRoomPublicationsRouteImport } from './routes/press-room/publications'
+import { Route as ProgramsRouteImport } from './routes/programs'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as GetInvolvedRouteImport } from './routes/get-involved'
+import { Route as GalleryRouteImport } from './routes/gallery'
+import { Route as DonateRouteImport } from './routes/donate'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProgramsIndexRouteImport } from './routes/programs.index'
+import { Route as AboutIndexRouteImport } from './routes/about.index'
 import { Route as ProgramsIdRouteImport } from './routes/programs.$id'
+import { Route as PressRoomPublicationsRouteImport } from './routes/press-room/publications'
+import { Route as PressRoomNewsRouteImport } from './routes/press-room/news'
+import { Route as PressRoomJobsRouteImport } from './routes/press-room/jobs'
+import { Route as ApiTeamRouteImport } from './routes/api/team'
+import { Route as ApiSubProgramsRouteImport } from './routes/api/sub-programs'
+import { Route as ApiProgramsRouteImport } from './routes/api/programs'
+import { Route as ApiPressRoomRouteImport } from './routes/api/press-room'
+import { Route as ApiGalleryRouteImport } from './routes/api/gallery'
+import { Route as ApiCoreValuesRouteImport } from './routes/api/core-values'
+import { Route as ApiContentRouteImport } from './routes/api/content'
+import { Route as ApiContactMessagesRouteImport } from './routes/api/contact-messages'
+import { Route as ApiContactRouteImport } from './routes/api/contact'
+import { Route as ApiBeneficiariesRouteImport } from './routes/api/beneficiaries'
+import { Route as ApiAuthRouteImport } from './routes/api/auth'
+import { Route as AboutTeamRouteImport } from './routes/about.team'
+import { Route as AboutMissionVisionRouteImport } from './routes/about.mission-vision'
+import { Route as AboutImpactRouteImport } from './routes/about.impact'
+import { Route as AboutBeneficiariesRouteImport } from './routes/about.beneficiaries'
+import { Route as AboutApproachRouteImport } from './routes/about.approach'
+import { Route as ProgramsIdIndexRouteImport } from './routes/programs.$id.index'
 import { Route as PressRoomNewsIndexRouteImport } from './routes/press-room/news.index'
 import { Route as PressRoomNewsIdRouteImport } from './routes/press-room/news.$id'
-import { Route as ProgramsIdIndexRouteImport } from './routes/programs.$id.index'
-import { Route as ApiMediaKindIdRouteImport } from './routes/api/media.$kind.$id'
-import { Route as ApiTeamPhotoIdRouteImport } from './routes/api/team.photo.$id'
 import { Route as ProgramsIdSubSubIdRouteImport } from './routes/programs.$id.sub.$subId'
+import { Route as ApiTeamPhotoIdRouteImport } from './routes/api/team.photo.$id'
+import { Route as ApiMediaKindIdRouteImport } from './routes/api/media.$kind.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonateRoute = DonateRouteImport.update({
-  id: '/donate',
-  path: '/donate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GalleryRoute = GalleryRouteImport.update({
-  id: '/gallery',
-  path: '/gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GetInvolvedRoute = GetInvolvedRouteImport.update({
-  id: '/get-involved',
-  path: '/get-involved',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgramsRoute = ProgramsRouteImport.update({
@@ -93,109 +58,44 @@ const ProgramsRoute = ProgramsRouteImport.update({
   path: '/programs',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutIndexRoute = AboutIndexRouteImport.update({
+const GetInvolvedRoute = GetInvolvedRouteImport.update({
+  id: '/get-involved',
+  path: '/get-involved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GalleryRoute = GalleryRouteImport.update({
+  id: '/gallery',
+  path: '/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonateRoute = DonateRouteImport.update({
+  id: '/donate',
+  path: '/donate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AboutRoute,
-} as any)
-const AboutApproachRoute = AboutApproachRouteImport.update({
-  id: '/approach',
-  path: '/approach',
-  getParentRoute: () => AboutRoute,
-} as any)
-const AboutBeneficiariesRoute = AboutBeneficiariesRouteImport.update({
-  id: '/beneficiaries',
-  path: '/beneficiaries',
-  getParentRoute: () => AboutRoute,
-} as any)
-const AboutImpactRoute = AboutImpactRouteImport.update({
-  id: '/impact',
-  path: '/impact',
-  getParentRoute: () => AboutRoute,
-} as any)
-const AboutMissionVisionRoute = AboutMissionVisionRouteImport.update({
-  id: '/mission-vision',
-  path: '/mission-vision',
-  getParentRoute: () => AboutRoute,
-} as any)
-const AboutTeamRoute = AboutTeamRouteImport.update({
-  id: '/team',
-  path: '/team',
-  getParentRoute: () => AboutRoute,
-} as any)
-const ApiAuthRoute = ApiAuthRouteImport.update({
-  id: '/api/auth',
-  path: '/api/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiBeneficiariesRoute = ApiBeneficiariesRouteImport.update({
-  id: '/api/beneficiaries',
-  path: '/api/beneficiaries',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiContactRoute = ApiContactRouteImport.update({
-  id: '/api/contact',
-  path: '/api/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiContactMessagesRoute = ApiContactMessagesRouteImport.update({
-  id: '/api/contact-messages',
-  path: '/api/contact-messages',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiContentRoute = ApiContentRouteImport.update({
-  id: '/api/content',
-  path: '/api/content',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiCoreValuesRoute = ApiCoreValuesRouteImport.update({
-  id: '/api/core-values',
-  path: '/api/core-values',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiGalleryRoute = ApiGalleryRouteImport.update({
-  id: '/api/gallery',
-  path: '/api/gallery',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPressRoomRoute = ApiPressRoomRouteImport.update({
-  id: '/api/press-room',
-  path: '/api/press-room',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiProgramsRoute = ApiProgramsRouteImport.update({
-  id: '/api/programs',
-  path: '/api/programs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiSubProgramsRoute = ApiSubProgramsRouteImport.update({
-  id: '/api/sub-programs',
-  path: '/api/sub-programs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiTeamRoute = ApiTeamRouteImport.update({
-  id: '/api/team',
-  path: '/api/team',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PressRoomJobsRoute = PressRoomJobsRouteImport.update({
-  id: '/press-room/jobs',
-  path: '/press-room/jobs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PressRoomNewsRoute = PressRoomNewsRouteImport.update({
-  id: '/press-room/news',
-  path: '/press-room/news',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PressRoomPublicationsRoute = PressRoomPublicationsRouteImport.update({
-  id: '/press-room/publications',
-  path: '/press-room/publications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProgramsIndexRoute = ProgramsIndexRouteImport.update({
@@ -203,10 +103,115 @@ const ProgramsIndexRoute = ProgramsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ProgramsRoute,
 } as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AboutRoute,
+} as any)
 const ProgramsIdRoute = ProgramsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ProgramsRoute,
+} as any)
+const PressRoomPublicationsRoute = PressRoomPublicationsRouteImport.update({
+  id: '/press-room/publications',
+  path: '/press-room/publications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoomNewsRoute = PressRoomNewsRouteImport.update({
+  id: '/press-room/news',
+  path: '/press-room/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PressRoomJobsRoute = PressRoomJobsRouteImport.update({
+  id: '/press-room/jobs',
+  path: '/press-room/jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTeamRoute = ApiTeamRouteImport.update({
+  id: '/api/team',
+  path: '/api/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSubProgramsRoute = ApiSubProgramsRouteImport.update({
+  id: '/api/sub-programs',
+  path: '/api/sub-programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiProgramsRoute = ApiProgramsRouteImport.update({
+  id: '/api/programs',
+  path: '/api/programs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPressRoomRoute = ApiPressRoomRouteImport.update({
+  id: '/api/press-room',
+  path: '/api/press-room',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiGalleryRoute = ApiGalleryRouteImport.update({
+  id: '/api/gallery',
+  path: '/api/gallery',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoreValuesRoute = ApiCoreValuesRouteImport.update({
+  id: '/api/core-values',
+  path: '/api/core-values',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContentRoute = ApiContentRouteImport.update({
+  id: '/api/content',
+  path: '/api/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContactMessagesRoute = ApiContactMessagesRouteImport.update({
+  id: '/api/contact-messages',
+  path: '/api/contact-messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContactRoute = ApiContactRouteImport.update({
+  id: '/api/contact',
+  path: '/api/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiBeneficiariesRoute = ApiBeneficiariesRouteImport.update({
+  id: '/api/beneficiaries',
+  path: '/api/beneficiaries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthRoute = ApiAuthRouteImport.update({
+  id: '/api/auth',
+  path: '/api/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutTeamRoute = AboutTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutMissionVisionRoute = AboutMissionVisionRouteImport.update({
+  id: '/mission-vision',
+  path: '/mission-vision',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutImpactRoute = AboutImpactRouteImport.update({
+  id: '/impact',
+  path: '/impact',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutBeneficiariesRoute = AboutBeneficiariesRouteImport.update({
+  id: '/beneficiaries',
+  path: '/beneficiaries',
+  getParentRoute: () => AboutRoute,
+} as any)
+const AboutApproachRoute = AboutApproachRouteImport.update({
+  id: '/approach',
+  path: '/approach',
+  getParentRoute: () => AboutRoute,
+} as any)
+const ProgramsIdIndexRoute = ProgramsIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProgramsIdRoute,
 } as any)
 const PressRoomNewsIndexRoute = PressRoomNewsIndexRouteImport.update({
   id: '/',
@@ -218,25 +223,20 @@ const PressRoomNewsIdRoute = PressRoomNewsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => PressRoomNewsRoute,
 } as any)
-const ProgramsIdIndexRoute = ProgramsIdIndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ProgramsIdSubSubIdRoute = ProgramsIdSubSubIdRouteImport.update({
+  id: '/sub/$subId',
+  path: '/sub/$subId',
   getParentRoute: () => ProgramsIdRoute,
-} as any)
-const ApiMediaKindIdRoute = ApiMediaKindIdRouteImport.update({
-  id: '/api/media/$kind/$id',
-  path: '/api/media/$kind/$id',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiTeamPhotoIdRoute = ApiTeamPhotoIdRouteImport.update({
   id: '/photo/$id',
   path: '/photo/$id',
   getParentRoute: () => ApiTeamRoute,
 } as any)
-const ProgramsIdSubSubIdRoute = ProgramsIdSubSubIdRouteImport.update({
-  id: '/sub/$subId',
-  path: '/sub/$subId',
-  getParentRoute: () => ProgramsIdRoute,
+const ApiMediaKindIdRoute = ApiMediaKindIdRouteImport.update({
+  id: '/api/media/$kind/$id',
+  path: '/api/media/$kind/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -505,60 +505,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/donate': {
-      id: '/donate'
-      path: '/donate'
-      fullPath: '/donate'
-      preLoaderRoute: typeof DonateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gallery': {
-      id: '/gallery'
-      path: '/gallery'
-      fullPath: '/gallery'
-      preLoaderRoute: typeof GalleryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/get-involved': {
-      id: '/get-involved'
-      path: '/get-involved'
-      fullPath: '/get-involved'
-      preLoaderRoute: typeof GetInvolvedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/programs': {
@@ -568,151 +519,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProgramsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about/': {
-      id: '/about/'
+    '/get-involved': {
+      id: '/get-involved'
+      path: '/get-involved'
+      fullPath: '/get-involved'
+      preLoaderRoute: typeof GetInvolvedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gallery': {
+      id: '/gallery'
+      path: '/gallery'
+      fullPath: '/gallery'
+      preLoaderRoute: typeof GalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donate': {
+      id: '/donate'
+      path: '/donate'
+      fullPath: '/donate'
+      preLoaderRoute: typeof DonateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
       path: '/'
-      fullPath: '/about/'
-      preLoaderRoute: typeof AboutIndexRouteImport
-      parentRoute: typeof AboutRoute
-    }
-    '/about/approach': {
-      id: '/about/approach'
-      path: '/approach'
-      fullPath: '/about/approach'
-      preLoaderRoute: typeof AboutApproachRouteImport
-      parentRoute: typeof AboutRoute
-    }
-    '/about/beneficiaries': {
-      id: '/about/beneficiaries'
-      path: '/beneficiaries'
-      fullPath: '/about/beneficiaries'
-      preLoaderRoute: typeof AboutBeneficiariesRouteImport
-      parentRoute: typeof AboutRoute
-    }
-    '/about/impact': {
-      id: '/about/impact'
-      path: '/impact'
-      fullPath: '/about/impact'
-      preLoaderRoute: typeof AboutImpactRouteImport
-      parentRoute: typeof AboutRoute
-    }
-    '/about/mission-vision': {
-      id: '/about/mission-vision'
-      path: '/mission-vision'
-      fullPath: '/about/mission-vision'
-      preLoaderRoute: typeof AboutMissionVisionRouteImport
-      parentRoute: typeof AboutRoute
-    }
-    '/about/team': {
-      id: '/about/team'
-      path: '/team'
-      fullPath: '/about/team'
-      preLoaderRoute: typeof AboutTeamRouteImport
-      parentRoute: typeof AboutRoute
-    }
-    '/api/auth': {
-      id: '/api/auth'
-      path: '/api/auth'
-      fullPath: '/api/auth'
-      preLoaderRoute: typeof ApiAuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/beneficiaries': {
-      id: '/api/beneficiaries'
-      path: '/api/beneficiaries'
-      fullPath: '/api/beneficiaries'
-      preLoaderRoute: typeof ApiBeneficiariesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/contact': {
-      id: '/api/contact'
-      path: '/api/contact'
-      fullPath: '/api/contact'
-      preLoaderRoute: typeof ApiContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/contact-messages': {
-      id: '/api/contact-messages'
-      path: '/api/contact-messages'
-      fullPath: '/api/contact-messages'
-      preLoaderRoute: typeof ApiContactMessagesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/content': {
-      id: '/api/content'
-      path: '/api/content'
-      fullPath: '/api/content'
-      preLoaderRoute: typeof ApiContentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/core-values': {
-      id: '/api/core-values'
-      path: '/api/core-values'
-      fullPath: '/api/core-values'
-      preLoaderRoute: typeof ApiCoreValuesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/gallery': {
-      id: '/api/gallery'
-      path: '/api/gallery'
-      fullPath: '/api/gallery'
-      preLoaderRoute: typeof ApiGalleryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/press-room': {
-      id: '/api/press-room'
-      path: '/api/press-room'
-      fullPath: '/api/press-room'
-      preLoaderRoute: typeof ApiPressRoomRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/programs': {
-      id: '/api/programs'
-      path: '/api/programs'
-      fullPath: '/api/programs'
-      preLoaderRoute: typeof ApiProgramsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/sub-programs': {
-      id: '/api/sub-programs'
-      path: '/api/sub-programs'
-      fullPath: '/api/sub-programs'
-      preLoaderRoute: typeof ApiSubProgramsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/team': {
-      id: '/api/team'
-      path: '/api/team'
-      fullPath: '/api/team'
-      preLoaderRoute: typeof ApiTeamRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/press-room/jobs': {
-      id: '/press-room/jobs'
-      path: '/press-room/jobs'
-      fullPath: '/press-room/jobs'
-      preLoaderRoute: typeof PressRoomJobsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/press-room/news': {
-      id: '/press-room/news'
-      path: '/press-room/news'
-      fullPath: '/press-room/news'
-      preLoaderRoute: typeof PressRoomNewsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/press-room/publications': {
-      id: '/press-room/publications'
-      path: '/press-room/publications'
-      fullPath: '/press-room/publications'
-      preLoaderRoute: typeof PressRoomPublicationsRouteImport
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/programs/': {
@@ -722,12 +582,159 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProgramsIndexRouteImport
       parentRoute: typeof ProgramsRoute
     }
+    '/about/': {
+      id: '/about/'
+      path: '/'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof AboutRoute
+    }
     '/programs/$id': {
       id: '/programs/$id'
       path: '/$id'
       fullPath: '/programs/$id'
       preLoaderRoute: typeof ProgramsIdRouteImport
       parentRoute: typeof ProgramsRoute
+    }
+    '/press-room/publications': {
+      id: '/press-room/publications'
+      path: '/press-room/publications'
+      fullPath: '/press-room/publications'
+      preLoaderRoute: typeof PressRoomPublicationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press-room/news': {
+      id: '/press-room/news'
+      path: '/press-room/news'
+      fullPath: '/press-room/news'
+      preLoaderRoute: typeof PressRoomNewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/press-room/jobs': {
+      id: '/press-room/jobs'
+      path: '/press-room/jobs'
+      fullPath: '/press-room/jobs'
+      preLoaderRoute: typeof PressRoomJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/team': {
+      id: '/api/team'
+      path: '/api/team'
+      fullPath: '/api/team'
+      preLoaderRoute: typeof ApiTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/sub-programs': {
+      id: '/api/sub-programs'
+      path: '/api/sub-programs'
+      fullPath: '/api/sub-programs'
+      preLoaderRoute: typeof ApiSubProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/programs': {
+      id: '/api/programs'
+      path: '/api/programs'
+      fullPath: '/api/programs'
+      preLoaderRoute: typeof ApiProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/press-room': {
+      id: '/api/press-room'
+      path: '/api/press-room'
+      fullPath: '/api/press-room'
+      preLoaderRoute: typeof ApiPressRoomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/gallery': {
+      id: '/api/gallery'
+      path: '/api/gallery'
+      fullPath: '/api/gallery'
+      preLoaderRoute: typeof ApiGalleryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/core-values': {
+      id: '/api/core-values'
+      path: '/api/core-values'
+      fullPath: '/api/core-values'
+      preLoaderRoute: typeof ApiCoreValuesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/content': {
+      id: '/api/content'
+      path: '/api/content'
+      fullPath: '/api/content'
+      preLoaderRoute: typeof ApiContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/contact-messages': {
+      id: '/api/contact-messages'
+      path: '/api/contact-messages'
+      fullPath: '/api/contact-messages'
+      preLoaderRoute: typeof ApiContactMessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/contact': {
+      id: '/api/contact'
+      path: '/api/contact'
+      fullPath: '/api/contact'
+      preLoaderRoute: typeof ApiContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/beneficiaries': {
+      id: '/api/beneficiaries'
+      path: '/api/beneficiaries'
+      fullPath: '/api/beneficiaries'
+      preLoaderRoute: typeof ApiBeneficiariesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth': {
+      id: '/api/auth'
+      path: '/api/auth'
+      fullPath: '/api/auth'
+      preLoaderRoute: typeof ApiAuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about/team': {
+      id: '/about/team'
+      path: '/team'
+      fullPath: '/about/team'
+      preLoaderRoute: typeof AboutTeamRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/mission-vision': {
+      id: '/about/mission-vision'
+      path: '/mission-vision'
+      fullPath: '/about/mission-vision'
+      preLoaderRoute: typeof AboutMissionVisionRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/impact': {
+      id: '/about/impact'
+      path: '/impact'
+      fullPath: '/about/impact'
+      preLoaderRoute: typeof AboutImpactRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/beneficiaries': {
+      id: '/about/beneficiaries'
+      path: '/beneficiaries'
+      fullPath: '/about/beneficiaries'
+      preLoaderRoute: typeof AboutBeneficiariesRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/about/approach': {
+      id: '/about/approach'
+      path: '/approach'
+      fullPath: '/about/approach'
+      preLoaderRoute: typeof AboutApproachRouteImport
+      parentRoute: typeof AboutRoute
+    }
+    '/programs/$id/': {
+      id: '/programs/$id/'
+      path: '/'
+      fullPath: '/programs/$id/'
+      preLoaderRoute: typeof ProgramsIdIndexRouteImport
+      parentRoute: typeof ProgramsIdRoute
     }
     '/press-room/news/': {
       id: '/press-room/news/'
@@ -743,19 +750,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PressRoomNewsIdRouteImport
       parentRoute: typeof PressRoomNewsRoute
     }
-    '/programs/$id/': {
-      id: '/programs/$id/'
-      path: '/'
-      fullPath: '/programs/$id/'
-      preLoaderRoute: typeof ProgramsIdIndexRouteImport
+    '/programs/$id/sub/$subId': {
+      id: '/programs/$id/sub/$subId'
+      path: '/sub/$subId'
+      fullPath: '/programs/$id/sub/$subId'
+      preLoaderRoute: typeof ProgramsIdSubSubIdRouteImport
       parentRoute: typeof ProgramsIdRoute
-    }
-    '/api/media/$kind/$id': {
-      id: '/api/media/$kind/$id'
-      path: '/api/media/$kind/$id'
-      fullPath: '/api/media/$kind/$id'
-      preLoaderRoute: typeof ApiMediaKindIdRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/api/team/photo/$id': {
       id: '/api/team/photo/$id'
@@ -764,12 +764,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTeamPhotoIdRouteImport
       parentRoute: typeof ApiTeamRoute
     }
-    '/programs/$id/sub/$subId': {
-      id: '/programs/$id/sub/$subId'
-      path: '/sub/$subId'
-      fullPath: '/programs/$id/sub/$subId'
-      preLoaderRoute: typeof ProgramsIdSubSubIdRouteImport
-      parentRoute: typeof ProgramsIdRoute
+    '/api/media/$kind/$id': {
+      id: '/api/media/$kind/$id'
+      path: '/api/media/$kind/$id'
+      fullPath: '/api/media/$kind/$id'
+      preLoaderRoute: typeof ApiMediaKindIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
