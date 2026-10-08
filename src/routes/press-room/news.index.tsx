@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { useState, useEffect } from "react";
+import { newsSlug } from "@/lib/news-links";
 
 export const Route = createFileRoute("/press-room/news/")({
   head: () => ({
@@ -67,7 +68,7 @@ function NewsPage() {
               <Link
                 key={item.id}
                 to="/press-room/news/$id"
-                params={{ id: String(item.id) }}
+                params={{ id: newsSlug(item) }}
                 className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]"
               >
                 {item.image ? (

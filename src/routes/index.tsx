@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { PartnersMarquee } from "@/frontend/components/PartnersMarquee";
 import { Button } from "@/frontend/components/ui/button";
+import { newsSlug } from "@/lib/news-links";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -13,6 +14,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Uyisenga Ni Imanzi (UNM) — Empowering Rwandan Youth" },
       { property: "og:description", content: "Empowering Rwandan youth and communities through psychosocial care, learning, and livelihoods." },
       { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "https://test.uyisenganimanzi.org.rw/" },
     ],
     links: [{ rel: "canonical", href: "https://test.uyisenganimanzi.org.rw/" }],
@@ -93,25 +95,26 @@ function Index() {
       <h1 className="sr-only">Uyisenga Ni Imanzi — Hope, Healing, and Opportunity in Rwanda</h1>
 
       {stories.length > 0 && (
-        <section className="relative h-[calc(82vh-4rem)] min-h-[460px] max-h-[720px] w-full overflow-hidden text-white">
-          <div className="absolute inset-0 bg-slate-950" />
+        <section className="relative w-full overflow-hidden bg-muted text-primary-foreground">
+          <div className="relative w-full">
           {stories[active]?.image ? (
+            <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} aria-label={`Read ${stories[active].title}`} className="block">
             <img
               src={stories[active].image}
               alt={stories[active].title}
-              className="absolute inset-0 h-full w-full object-cover object-center"
+              className="block h-auto max-h-[72vh] w-full object-contain object-center"
             />
+            </Link>
           ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary-glow to-accent" />
+            <div className="h-48 bg-primary" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
 
           {stories.length > 1 && (
             <>
               <Button
                 type="button"
                 variant="ghost"
-                className="absolute left-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:left-6 sm:h-14 sm:w-14"
+                className="absolute left-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full bg-primary/80 p-0 text-primary-foreground hover:bg-primary hover:text-primary-foreground sm:left-6"
                 onClick={() => setActive((i) => (i - 1 + stories.length) % stories.length)}
                 aria-label="Previous story"
               >
@@ -120,7 +123,7 @@ function Index() {
               <Button
                 type="button"
                 variant="ghost"
-                className="absolute right-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full p-0 text-white hover:bg-white/10 hover:text-white sm:right-6 sm:h-14 sm:w-14"
+                className="absolute right-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full bg-primary/80 p-0 text-primary-foreground hover:bg-primary hover:text-primary-foreground sm:right-6"
                 onClick={() => setActive((i) => (i + 1) % stories.length)}
                 aria-label="Next story"
               >
@@ -129,13 +132,14 @@ function Index() {
             </>
           )}
 
-          <div className="absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-8 text-center sm:px-6 sm:pb-12">
+          </div>
+          <div className="relative z-20 flex flex-col items-center bg-primary px-4 py-6 text-center sm:px-6 sm:py-7">
             <Link
               to="/press-room/news/$id"
-              params={{ id: String(stories[active]?.id) }}
+              params={{ id: newsSlug(stories[active]) }}
               className="max-w-5xl"
             >
-              <h2 className="text-xl font-bold leading-tight text-white drop-shadow-[0_3px_12px_rgba(0,0,0,0.75)] hover:underline sm:text-2xl md:text-3xl lg:text-4xl">
+              <h2 className="text-xl font-bold leading-tight text-primary-foreground hover:underline sm:text-2xl md:text-3xl lg:text-4xl">
                 {stories[active]?.title}
               </h2>
 
@@ -144,20 +148,20 @@ function Index() {
               <Button asChild size="lg" variant="secondary">
                 <Link to="/programs">Our Programs</Link>
               </Button>
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
                 <Link to="/donate">Support our work</Link>
               </Button>
             </div>
           </div>
 
           {stories.length > 1 && (
-            <div className="absolute inset-x-0 bottom-2 z-30 flex justify-center gap-2">
+            <div className="flex justify-center gap-2 bg-primary pb-4">
               {stories.map((_, i) => (
-                <button
+                <Button variant="ghost"
                   key={i}
                   aria-label={`Go to story ${i + 1}`}
                   onClick={() => setActive(i)}
-                  className={`h-1.5 rounded-full transition-all ${i === active ? "w-6 bg-white" : "w-2 bg-white/50"}`}
+                   className={`h-2 min-w-0 rounded-full p-0 transition-all hover:bg-primary-foreground ${i === active ? "w-6 bg-primary-foreground" : "w-2 bg-primary-foreground/50"}`}
                 />
               ))}
             </div>

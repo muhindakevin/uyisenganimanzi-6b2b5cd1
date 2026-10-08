@@ -1,20 +1,42 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { getNewsStory } from "@/lib/news.functions";
+import { newsId, newsSlug } from "@/lib/news-links";
 import { ArrowLeft, Download } from "lucide-react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { Button } from "@/frontend/components/ui/button";
 
+const storyQuery = (id: number) => queryOptions({
+  queryKey: ["news-story", id], queryFn: () => getNewsStory({ data: id }), staleTime: 0,
+});
+
 export const Route = createFileRoute("/press-room/news/$id")({
-  head: () => ({
+  loader: async ({ params, context }) => {
+    const id = newsId(params.id);
+    if (!id) throw notFound();
+    const story = await context.queryClient.ensureQueryData(storyQuery(id));
+    if (!story) throw notFound();
+    const slug = newsSlug(story);
+    if (params.id !== slug) throw redirect({ to: "/press-room/news/$id", params: { id: slug }, statusCode: 301 });
+    return story;
+  },
+  head: ({ loaderData: story }) => ({
     meta: [
-      { title: "News Story — Uyisenga Ni Imanzi" },
-      { name: "description", content: "Read the full news story from Uyisenga Ni Imanzi." },
-      { property: "og:title", content: "News Story — Uyisenga Ni Imanzi" },
-      { property: "og:description", content: "Full news story from Uyisenga Ni Imanzi." },
+      { title: story ? `${story.title} — Uyisenga Ni Imanzi` : "Story unavailable — Uyisenga Ni Imanzi" },
+      { name: "description", content: story?.summary || "News from Uyisenga Ni Imanzi." },
+      { property: "og:title", content: story?.title || "Story unavailable — Uyisenga Ni Imanzi" },
+      { property: "og:description", content: story?.summary || "News from Uyisenga Ni Imanzi." },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary_large_image" },
+      ...(story?.image ? [
+        { property: "og:image", content: `https://test.uyisenganimanzi.org.rw${story.image}` },
+        { name: "twitter:image", content: `https://test.uyisenganimanzi.org.rw${story.image}` },
+      ] : []),
+      ...(story ? [{ property: "og:url", content: `https://test.uyisenganimanzi.org.rw/press-room/news/${newsSlug(story)}` }] : []),
     ],
+    links: story ? [{ rel: "canonical", href: `https://test.uyisenganimanzi.org.rw/press-room/news/${newsSlug(story)}` }] : [],
   }),
+  notFoundComponent: () => <SiteLayout><div className="mx-auto max-w-3xl px-4 py-24 text-center"><h1>Story not found.</h1><Button asChild className="mt-6"><Link to="/press-room/news">Back to News</Link></Button></div></SiteLayout>,
   component: NewsDetail,
 });
 
@@ -65,26 +87,7 @@ function renderStoryBody(text: string, title: string) {
 
 function NewsDetail() {
   const { id } = Route.useParams();
-  const [story, setStory] = useState<Story | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch("/api/press-room?category=News", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((rows: Story[]) => {
-        const found = Array.isArray(rows) ? rows.find((r) => String(r.id) === String(id)) : null;
-        setStory(found || null);
-      })
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  if (loading) {
-    return (
-      <SiteLayout>
-        <div className="mx-auto max-w-3xl px-4 py-24 text-center text-muted-foreground">Loading…</div>
-      </SiteLayout>
-    );
-  }
+  const { data: story } = useSuspenseQuery(storyQuery(newsId(id) ?? 0));
 
   if (!story) {
     return (
