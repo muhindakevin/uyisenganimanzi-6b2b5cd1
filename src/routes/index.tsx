@@ -95,19 +95,20 @@ function Index() {
       <h1 className="sr-only">Uyisenga Ni Imanzi — Hope, Healing, and Opportunity in Rwanda</h1>
 
       {stories.length > 0 && (
-        <section className="relative w-full overflow-hidden bg-muted text-primary-foreground">
-          <div className="relative w-full">
+        <section className="relative h-[calc(82vh-4rem)] min-h-[460px] max-h-[720px] w-full overflow-hidden bg-muted text-primary-foreground">
+          <div className="absolute inset-0">
           {stories[active]?.image ? (
-            <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} aria-label={`Read ${stories[active].title}`} className="block">
+            <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} aria-label={`Read ${stories[active].title}`} className="block h-full">
             <img
               src={stories[active].image}
               alt={stories[active].title}
-              className="block h-auto max-h-[72vh] w-full object-contain object-center"
+              className="absolute inset-0 h-full w-full object-cover object-center"
             />
             </Link>
           ) : (
-            <div className="h-48 bg-primary" />
+            <div className="absolute inset-0 bg-primary" />
           )}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-hero-shade/85 via-hero-shade/40 to-hero-shade/20" />
 
           {stories.length > 1 && (
             <>
@@ -133,29 +134,29 @@ function Index() {
           )}
 
           </div>
-          <div className="relative z-20 flex flex-col items-center bg-primary px-4 py-6 text-center sm:px-6 sm:py-7">
+          <div className="pointer-events-none absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-8 text-center sm:px-6 sm:pb-12">
             <Link
               to="/press-room/news/$id"
               params={{ id: newsSlug(stories[active]) }}
-              className="max-w-5xl"
+              className="pointer-events-auto max-w-5xl"
             >
               <h2 className="text-xl font-bold leading-tight text-primary-foreground hover:underline sm:text-2xl md:text-3xl lg:text-4xl">
                 {stories[active]?.title}
               </h2>
 
             </Link>
-            <div className="mt-4 flex flex-row flex-wrap items-center justify-center gap-3 sm:mt-5">
+            <div className="pointer-events-auto mt-4 flex flex-row flex-wrap items-center justify-center gap-3 sm:mt-5">
               <Button asChild size="lg" variant="secondary">
                 <Link to="/programs">Our Programs</Link>
               </Button>
-              <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90">
+              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
                 <Link to="/donate">Support our work</Link>
               </Button>
             </div>
           </div>
 
           {stories.length > 1 && (
-            <div className="flex justify-center gap-2 bg-primary pb-4">
+            <div className="absolute inset-x-0 bottom-2 z-30 flex justify-center gap-2">
               {stories.map((_, i) => (
                 <Button variant="ghost"
                   key={i}

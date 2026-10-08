@@ -63,6 +63,7 @@
   --color-brand-blue: var(--brand-blue);
   --color-brand-blue-light: var(--brand-blue-light);
   --color-brand-red: var(--brand-red);
+  --color-hero-shade: var(--hero-shade);
 }
 
 :root {
@@ -77,6 +78,7 @@
   --brand-blue: oklch(0.47 0.24 268);
   --brand-blue-light: oklch(0.62 0.19 265);
   --brand-red: oklch(0.63 0.21 27);
+  --hero-shade: oklch(0 0 0);
   --primary: var(--brand-blue);
   --primary-foreground: oklch(0.99 0.005 250);
   --primary-glow: var(--brand-blue-light);
