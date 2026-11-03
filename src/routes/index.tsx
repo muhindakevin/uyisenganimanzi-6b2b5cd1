@@ -140,8 +140,14 @@ function Index() {
             <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} aria-label={`Read ${stories[active].title}`} className="block h-full">
             <img
               src={stories[active].image}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 h-full w-full scale-110 object-cover object-center opacity-40 blur-xl"
+            />
+            <img
+              src={stories[active].image}
               alt={stories[active].title}
-              className="absolute inset-0 h-full w-full object-cover object-center"
+              className="absolute inset-0 h-full w-full object-contain object-center"
             />
             </Link>
           ) : (
