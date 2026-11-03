@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { PartnersMarquee } from "@/frontend/components/PartnersMarquee";
@@ -37,6 +37,45 @@ type HeroContent = {
 };
 
 type Stat = { value: string; label: string };
+
+function CountUp({ value }: { value: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [display, setDisplay] = useState(value);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const match = value.match(/^([\d,.\s]+)(.*)$/);
+    if (!match) { setDisplay(value); return; }
+    const target = parseFloat(match[1].replace(/[,\s]/g, ""));
+    const suffix = match[2] ?? "";
+    if (!Number.isFinite(target) || target <= 0) { setDisplay(value); return; }
+    const decimals = (match[1].split(".")[1] || "").length;
+    const format = (n: number) =>
+      (decimals > 0 ? n.toFixed(decimals) : String(Math.round(n)))
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + suffix;
+
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries[0].isIntersecting || started.current) return;
+      started.current = true;
+      observer.disconnect();
+      const duration = 1600;
+      const t0 = performance.now();
+      const tick = (t: number) => {
+        const p = Math.min((t - t0) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        setDisplay(format(target * eased));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    }, { threshold: 0.4 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [value]);
+
+  return <span ref={ref}>{display}</span>;
+}
 type Program = { id: number; title: string; description: string; image?: string | null };
 
 const DEFAULT_HERO: HeroContent = {
@@ -175,7 +214,7 @@ function Index() {
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-5 px-4 py-6 sm:px-6 md:grid-cols-4">
             {stats.map((s, i) => (
               <div key={i}>
-                <p className="text-3xl font-semibold text-primary">{s.value}</p>
+                <p className="text-3xl font-semibold text-primary"><CountUp value={s.value} /></p>
                 <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
               </div>
             ))}
