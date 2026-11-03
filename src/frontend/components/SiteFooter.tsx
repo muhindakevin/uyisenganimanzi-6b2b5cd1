@@ -4,7 +4,7 @@ import { Button } from "@/frontend/components/ui/button";
 
 export function SiteFooter() {
   return (
-    <footer className="mt-24 bg-gradient-to-br from-[oklch(0.22_0.11_268)] via-[oklch(0.30_0.16_268)] to-brand-blue text-white">
+    <footer className="mt-24 bg-gradient-to-br from-[oklch(0.28_0.11_252)] via-[oklch(0.36_0.14_252)] to-brand-blue text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-4">
         <div className="md:col-span-2">
           <p className="text-lg font-semibold">Uyisenga Ni Imanzi</p>

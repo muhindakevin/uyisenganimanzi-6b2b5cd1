@@ -74,9 +74,9 @@
   --card-foreground: oklch(0.13 0.02 260);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.13 0.02 260);
-  /* Brand palette taken from the logo: royal blue, signal red, white */
-  --brand-blue: oklch(0.47 0.24 268);
-  --brand-blue-light: oklch(0.62 0.19 265);
+  /* Brand palette: blue from the Forum & General Meeting 2026 artwork (#00549A), signal red, white */
+  --brand-blue: oklch(0.444 0.133 252);
+  --brand-blue-light: oklch(0.557 0.135 248);
   --brand-red: oklch(0.63 0.21 27);
   --hero-shade: oklch(0 0 0);
   --primary: var(--brand-blue);
@@ -90,13 +90,13 @@
   --accent-foreground: oklch(0.99 0.005 250);
   --gradient-hero: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-red) 100%);
   --gradient-soft: linear-gradient(180deg, oklch(0.99 0.005 250) 0%, oklch(0.95 0.025 268) 100%);
-  --shadow-elegant: 0 20px 50px -20px oklch(0.47 0.24 268 / 0.30);
+  --shadow-elegant: 0 20px 50px -20px oklch(0.444 0.133 252 / 0.30);
   --shadow-card: 0 4px 20px -8px oklch(0.20 0.06 268 / 0.14);
   --destructive: var(--brand-red);
   --destructive-foreground: oklch(0.99 0.005 250);
   --border: oklch(0.92 0.015 268);
   --input: oklch(0.92 0.015 268);
-  --ring: oklch(0.62 0.19 265);
+  --ring: oklch(0.557 0.135 248);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
