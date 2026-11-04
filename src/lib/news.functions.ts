@@ -7,10 +7,13 @@ export const getNewsStory = createServerFn({ method: "GET" })
     return id;
   })
   .handler(async ({ data: id }) => {
-    const url = import.meta.env.VITE_SUPABASE_URL;
-    const key = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    // Published server requests must use runtime configuration, not the
+    // browser's preview database proxy or build-time VITE variables.
+    const url = process.env["SUPABASE_URL"];
+    const key = process.env["SUPABASE_PUBLISHABLE_KEY"] || process.env["SUPABASE_ANON_KEY"];
+    if (!url || !key) throw new Error("News service is temporarily unavailable.");
     const client = createClient(url, key, {
-      auth: { persistSession: false, autoRefreshToken: false },
+      auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
       global: { fetch: (input, init) => {
         const headers = new Headers(init?.headers);
         if (key.startsWith("sb_publishable_") && headers.get("Authorization") === `Bearer ${key}`) headers.delete("Authorization");
