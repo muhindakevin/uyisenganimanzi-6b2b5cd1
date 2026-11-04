@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect, useMemo } from "react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
+import { PhotoLightbox } from "@/frontend/components/PhotoLightbox";
 
 export const Route = createFileRoute("/gallery")({
   head: () => ({
@@ -26,6 +27,7 @@ type GalleryImage = {
 function Gallery() {
   const [photos, setPhotos] = useState<GalleryImage[]>([]);
   const [filter, setFilter] = useState<string>("All");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/gallery")
@@ -79,52 +81,48 @@ function Gallery() {
           </p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {visible.map((p) => {
-              const Wrapper: any = p.link ? "a" : "figure";
-              const wrapperProps = p.link
-                ? {
-                    href: p.link,
-                    target: "_blank",
-                    rel: "noopener noreferrer",
-                    "aria-label": `Open ${p.title}`,
-                  }
-                : {};
-              return (
-                <Wrapper
-                  key={p.id}
-                  {...wrapperProps}
-                  className="group block overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] focus:outline-none focus:ring-2 focus:ring-primary"
-                >
-                  <div className="relative">
-                    <img
-                      src={p.image}
-                      alt={p.title}
-                      loading="lazy"
-                      className="aspect-[4/3] w-full object-cover transition-transform group-hover:scale-105"
-                    />
-                    {p.link ? (
-                      <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 text-sm font-medium text-white opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100">
-                        Open ↗
-                      </span>
-                    ) : null}
+            {visible.map((p, i) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setLightboxIndex(i)}
+                aria-label={`View ${p.title} full screen`}
+                className="group block overflow-hidden rounded-2xl border border-border bg-card text-left shadow-[var(--shadow-card)] focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <div className="relative">
+                  <img
+                    src={p.image}
+                    alt={p.title}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full object-cover transition-transform group-hover:scale-105"
+                  />
+                  <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 text-sm font-medium text-white opacity-0 transition group-hover:bg-black/40 group-hover:opacity-100">
+                    View full screen
+                  </span>
+                </div>
+                <div className="space-y-1 px-4 py-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-medium text-foreground">{p.title}</p>
+                    <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                      {p.category || "Event"}
+                    </span>
                   </div>
-                  <div className="space-y-1 px-4 py-3">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-medium text-foreground">{p.title}</p>
-                      <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                        {p.category || "Event"}
-                      </span>
-                    </div>
-                    {p.description ? (
-                      <p className="text-sm text-muted-foreground">{p.description}</p>
-                    ) : null}
-                  </div>
-                </Wrapper>
-              );
-            })}
+                  {p.description ? (
+                    <p className="text-sm text-muted-foreground">{p.description}</p>
+                  ) : null}
+                </div>
+              </button>
+            ))}
           </div>
         )}
       </section>
+
+      <PhotoLightbox
+        photos={visible}
+        index={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onNavigate={setLightboxIndex}
+      />
     </SiteLayout>
   );
 }
