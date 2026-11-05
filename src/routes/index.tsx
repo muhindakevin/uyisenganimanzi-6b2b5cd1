@@ -147,13 +147,8 @@ function Index() {
             />
           ) : null)}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-hero-shade/80 via-hero-shade/45 to-hero-shade/10" />
-          <div className="relative z-20 mx-auto flex h-full max-w-6xl flex-col justify-center px-4 sm:px-6">
-            {hero.badge ? <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary-foreground/80">{hero.badge}</p> : null}
-            <p className="mt-3 max-w-3xl text-3xl font-extrabold uppercase leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-              {hero.title || "Uyisenga Ni Imanzi"}
-            </p>
-            {hero.description ? <p className="mt-5 max-w-2xl text-base text-primary-foreground/90 sm:text-lg">{hero.description}</p> : null}
-            <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} className="mt-8 block max-w-2xl border-l-4 border-accent pl-4 hover:underline">
+          <div className="relative z-20 mx-auto flex h-full max-w-6xl flex-col justify-end px-4 pb-16 md:px-20 sm:px-6">
+            <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} className="block max-w-2xl border-l-4 border-accent pl-4 hover:underline">
               <span className="text-xs uppercase tracking-widest text-primary-foreground/70">Latest news</span>
               <h2 className="text-lg font-semibold sm:text-2xl">{stories[active]?.title}</h2>
             </Link>
