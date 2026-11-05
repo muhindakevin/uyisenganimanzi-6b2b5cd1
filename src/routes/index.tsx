@@ -95,6 +95,7 @@ function Index() {
   const [programs, setPrograms] = useState<Program[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [active, setActive] = useState(0);
+  const [about, setAbout] = useState<{ storyTitle?: string; storyText?: string; storyImage?: string }>({});
 
   useEffect(() => {
     fetch("/api/content", { cache: "no-store" })
@@ -106,6 +107,7 @@ function Index() {
           setHero({ ...DEFAULT_HERO, ...h, slides });
         }
         if (Array.isArray(data?.stats)) setStats(data.stats);
+        if (data?.about) setAbout(data.about);
       })
       .catch(() => {});
     fetch("/api/programs", { cache: "no-store" })
@@ -125,7 +127,7 @@ function Index() {
 
   useEffect(() => {
     if (stories.length < 2) return;
-    const id = setInterval(() => setActive((i) => (i + 1) % stories.length), 5000);
+    const id = setInterval(() => setActive((i) => (i + 1) % stories.length), 6000);
     return () => clearInterval(id);
   }, [stories.length]);
 
@@ -134,83 +136,42 @@ function Index() {
       <h1 className="sr-only">Uyisenga Ni Imanzi — Hope, Healing, and Opportunity in Rwanda</h1>
 
       {stories.length > 0 && (
-        <section className="relative h-[calc(82vh-4rem)] min-h-[460px] max-h-[720px] w-full overflow-hidden bg-muted text-primary-foreground">
-          <div className="absolute inset-0">
-          {stories[active]?.image ? (
-            <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} aria-label={`Read ${stories[active].title}`} className="block h-full">
+        <section className="relative h-[calc(100vh-4rem)] min-h-[520px] w-full overflow-hidden bg-primary text-primary-foreground">
+          {stories.map((s, i) => s.image ? (
             <img
-              src={stories[active].image}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full scale-110 object-cover object-center opacity-40 blur-xl"
+              key={s.id}
+              src={s.image}
+              alt={i === active ? s.title : ""}
+              aria-hidden={i !== active}
+              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[1500ms] ${i === active ? "opacity-100 animate-kenburns" : "opacity-0"}`}
             />
-            <img
-              src={stories[active].image}
-              alt={stories[active].title}
-              className="absolute inset-0 h-full w-full object-contain object-center"
-            />
+          ) : null)}
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-hero-shade/80 via-hero-shade/45 to-hero-shade/10" />
+          <div className="relative z-20 mx-auto flex h-full max-w-6xl flex-col justify-center px-4 sm:px-6">
+            {hero.badge ? <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary-foreground/80">{hero.badge}</p> : null}
+            <p className="mt-3 max-w-3xl text-3xl font-extrabold uppercase leading-tight tracking-tight sm:text-5xl lg:text-6xl">
+              {hero.title || "Uyisenga Ni Imanzi"}
+            </p>
+            {hero.description ? <p className="mt-5 max-w-2xl text-base text-primary-foreground/90 sm:text-lg">{hero.description}</p> : null}
+            <Link to="/press-room/news/$id" params={{ id: newsSlug(stories[active]) }} className="mt-8 block max-w-2xl border-l-4 border-accent pl-4 hover:underline">
+              <span className="text-xs uppercase tracking-widest text-primary-foreground/70">Latest news</span>
+              <h2 className="text-lg font-semibold sm:text-2xl">{stories[active]?.title}</h2>
             </Link>
-          ) : (
-            <div className="absolute inset-0 bg-primary" />
-          )}
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-hero-shade/85 via-hero-shade/40 to-hero-shade/20" />
-
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button asChild size="lg" variant="secondary"><Link to="/programs">Our Programs</Link></Button>
+              <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90"><Link to="/donate">Support our work</Link></Button>
+            </div>
+          </div>
           {stories.length > 1 && (
             <>
-              <Button
-                type="button"
-                variant="ghost"
-                className="absolute left-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full bg-primary/80 p-0 text-primary-foreground hover:bg-primary hover:text-primary-foreground sm:left-6"
-                onClick={() => setActive((i) => (i - 1 + stories.length) % stories.length)}
-                aria-label="Previous story"
-              >
-                <ChevronLeft className="h-8 w-8 stroke-[3] sm:h-12 sm:w-12" />
-              </Button>
-              <Button
-                type="button"
-                variant="ghost"
-                className="absolute right-2 top-1/2 z-30 h-12 w-12 -translate-y-1/2 rounded-full bg-primary/80 p-0 text-primary-foreground hover:bg-primary hover:text-primary-foreground sm:right-6"
-                onClick={() => setActive((i) => (i + 1) % stories.length)}
-                aria-label="Next story"
-              >
-                <ChevronRight className="h-8 w-8 stroke-[3] sm:h-12 sm:w-12" />
-              </Button>
+              <Button type="button" variant="ghost" className="absolute left-2 top-1/2 z-30 hidden h-12 w-12 -translate-y-1/2 rounded-full bg-primary/70 p-0 text-primary-foreground hover:bg-primary hover:text-primary-foreground md:flex" onClick={() => setActive((i) => (i - 1 + stories.length) % stories.length)} aria-label="Previous story"><ChevronLeft className="h-8 w-8" /></Button>
+              <Button type="button" variant="ghost" className="absolute right-2 top-1/2 z-30 hidden h-12 w-12 -translate-y-1/2 rounded-full bg-primary/70 p-0 text-primary-foreground hover:bg-primary hover:text-primary-foreground md:flex" onClick={() => setActive((i) => (i + 1) % stories.length)} aria-label="Next story"><ChevronRight className="h-8 w-8" /></Button>
+              <div className="absolute inset-x-0 bottom-6 z-30 flex justify-center gap-2">
+                {stories.map((_, i) => (
+                  <Button variant="ghost" key={i} aria-label={`Go to story ${i + 1}`} onClick={() => setActive(i)} className={`h-2 min-w-0 rounded-full p-0 transition-all hover:bg-primary-foreground ${i === active ? "w-8 bg-primary-foreground" : "w-2 bg-primary-foreground/50"}`} />
+                ))}
+              </div>
             </>
-          )}
-
-          </div>
-          <div className="pointer-events-none absolute inset-0 z-20 flex h-full flex-col items-center justify-end px-4 pb-8 text-center sm:px-6 sm:pb-12">
-            <Link
-              to="/press-room/news/$id"
-              params={{ id: newsSlug(stories[active]) }}
-              className="pointer-events-auto max-w-5xl"
-            >
-              <h2 className="text-xl font-bold leading-tight text-primary-foreground hover:underline sm:text-2xl md:text-3xl lg:text-4xl">
-                {stories[active]?.title}
-              </h2>
-
-            </Link>
-            <div className="pointer-events-auto mt-4 flex flex-row flex-wrap items-center justify-center gap-3 sm:mt-5">
-              <Button asChild size="lg" variant="secondary">
-                <Link to="/programs">Our Programs</Link>
-              </Button>
-              <Button asChild size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <Link to="/donate">Support our work</Link>
-              </Button>
-            </div>
-          </div>
-
-          {stories.length > 1 && (
-            <div className="absolute inset-x-0 bottom-2 z-30 flex justify-center gap-2">
-              {stories.map((_, i) => (
-                <Button variant="ghost"
-                  key={i}
-                  aria-label={`Go to story ${i + 1}`}
-                  onClick={() => setActive(i)}
-                   className={`h-2 min-w-0 rounded-full p-0 transition-all hover:bg-primary-foreground ${i === active ? "w-6 bg-primary-foreground" : "w-2 bg-primary-foreground/50"}`}
-                />
-              ))}
-            </div>
           )}
         </section>
       )}
@@ -227,6 +188,20 @@ function Index() {
           </div>
         </section>
       )}
+
+      {about.storyText ? (
+        <section className="mx-auto max-w-6xl px-4 pt-20 sm:px-6">
+          <div className="grid overflow-hidden rounded-[2rem] bg-primary text-primary-foreground md:grid-cols-2">
+            {about.storyImage ? <img src={about.storyImage} alt={about.storyTitle || "Who we are"} loading="lazy" className="h-72 w-full object-cover md:h-full" /> : null}
+            <div className="p-8 sm:p-12">
+              <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary-foreground/70">Who we are</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">{about.storyTitle}</h2>
+              <p className="mt-5 line-clamp-6 leading-7 text-primary-foreground/90">{about.storyText}</p>
+              <Button asChild size="lg" variant="secondary" className="mt-8"><Link to="/about">Read more</Link></Button>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <section className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
         <div className="max-w-2xl">
@@ -263,7 +238,35 @@ function Index() {
         )}
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+      {stories.length > 0 && (
+        <section className="bg-muted py-20">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-sm font-medium uppercase tracking-wider text-primary">Latest news</p>
+                <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Stories from our communities</h2>
+              </div>
+              <Button asChild variant="outline"><Link to="/press-room/news">All news</Link></Button>
+            </div>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {stories.slice(0, 3).map((s) => (
+                <Link key={s.id} to="/press-room/news/$id" params={{ id: newsSlug(s) }} className="group overflow-hidden rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-1">
+                  <div className="aspect-[4/3] overflow-hidden bg-primary/10">
+                    {s.image ? <img src={s.image} alt={s.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" /> : null}
+                  </div>
+                  <div className="p-5">
+                    {s.created_at ? <p className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</p> : null}
+                    <h3 className="mt-2 text-lg font-semibold text-foreground group-hover:text-primary">{s.title}</h3>
+                    <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{s.summary}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-glow to-accent p-10 text-primary-foreground sm:p-14">
           <h2 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
             Stand with Rwanda's next generation.

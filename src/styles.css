@@ -179,3 +179,11 @@
     font: inherit;
   }
 }
+
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.12); }
+}
+@utility animate-kenburns {
+  animation: kenburns 9s ease-out forwards;
+}
