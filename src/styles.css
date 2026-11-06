@@ -62,6 +62,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-primary-glow: var(--primary-glow);
   --color-brand-blue: var(--brand-blue);
+  --color-brand-header: var(--brand-header);
   --color-brand-blue-light: var(--brand-blue-light);
   --color-brand-red: var(--brand-red);
   --color-hero-shade: var(--hero-shade);
@@ -77,6 +78,8 @@
   --popover-foreground: oklch(0.13 0.02 260);
   /* Brand palette: blue from the Forum & General Meeting 2026 artwork (#00549A), signal red, white */
   --brand-blue: oklch(0.444 0.133 252);
+  --brand-header: oklch(0.36 0.14 252);
+  --shadow-header: 0 8px 24px -12px oklch(0.28 0.11 252 / 0.5);
   --brand-blue-light: oklch(0.557 0.135 248);
   --brand-red: oklch(0.63 0.21 27);
   --hero-shade: oklch(0 0 0);
