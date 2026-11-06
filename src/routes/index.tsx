@@ -152,10 +152,6 @@ function Index() {
               <span className="text-xs uppercase tracking-widest text-primary-foreground/70">Latest news</span>
               <h2 className="text-lg font-semibold sm:text-2xl">{stories[active]?.title}</h2>
             </Link>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild size="lg" variant="secondary"><Link to="/programs">Our Programs</Link></Button>
-              <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90"><Link to="/donate">Support our work</Link></Button>
-            </div>
           </div>
           {stories.length > 1 && (
             <>
