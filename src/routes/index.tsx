@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { PartnersMarquee } from "@/frontend/components/PartnersMarquee";
 import { Button } from "@/frontend/components/ui/button";
+import { ProgramCard } from "@/frontend/components/ProgramCard";
 import { newsSlug } from "@/lib/news-links";
 
 export const Route = createFileRoute("/")({
@@ -19,7 +20,6 @@ export const Route = createFileRoute("/")({
     ],
     links: [
       { rel: "canonical", href: "https://test.uyisenganimanzi.org.rw/" },
-      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" },
     ],
   }),
 
@@ -224,25 +224,9 @@ function Index() {
         {programs.length === 0 ? (
           <p className="mt-10 text-muted-foreground">Programs will appear here once the admin adds them.</p>
         ) : (
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {programs.map((program) => (
-              <article key={program.id} className="group overflow-hidden rounded-[2rem] border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
-                <div className="relative h-64 overflow-hidden bg-gradient-to-br from-primary/15 to-primary/40">
-                  {program.image ? (
-                    <img src={program.image} alt={program.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  ) : null}
-                </div>
-                <div className="p-6">
-                  <p className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">Program</p>
-                  <h3 className="mt-4 text-2xl font-semibold text-foreground">{program.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground line-clamp-3">{program.description}</p>
-                  <div className="mt-6">
-                    <Button asChild size="sm" variant="secondary">
-                      <Link to="/programs/$id" params={{ id: String(program.id) }}>{`Learn more about ${program.title}`}</Link>
-                    </Button>
-                  </div>
-                </div>
-              </article>
+              <ProgramCard key={program.id} program={program} />
             ))}
           </div>
         )}

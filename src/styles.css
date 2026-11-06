@@ -19,8 +19,9 @@
  */
 
 @theme inline {
-  --font-menu: "Arial", "Helvetica", sans-serif;
-  --font-impact: "Manrope", "Arial", sans-serif;
+  --font-sans: "Montserrat", "Arial", sans-serif;
+  --font-menu: "Montserrat", "Arial", sans-serif;
+  --font-impact: "Montserrat", "Arial", sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -164,6 +165,8 @@
   body {
     min-width: 100%;
     overflow-x: hidden;
+    font-family: var(--font-sans);
+    letter-spacing: 0;
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
@@ -205,3 +208,6 @@
   letter-spacing: 0;
   text-transform: uppercase;
 }
+
+/* Consistent lettering throughout public pages and the admin dashboard. */
+:where(h1, h2, h3, h4, h5, h6, p, a, span, label) { letter-spacing: 0; }
