@@ -17,7 +17,10 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
       { property: "og:url", content: "https://test.uyisenganimanzi.org.rw/" },
     ],
-    links: [{ rel: "canonical", href: "https://test.uyisenganimanzi.org.rw/" }],
+    links: [
+      { rel: "canonical", href: "https://test.uyisenganimanzi.org.rw/" },
+      { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&display=swap" },
+    ],
   }),
 
   component: Index,
@@ -41,7 +44,6 @@ type Stat = { value: string; label: string };
 function CountUp({ value }: { value: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState(value);
-  const started = useRef(false);
 
   useEffect(() => {
     const match = value.match(/^([\d,.\s]+)(.*)$/);
@@ -55,26 +57,43 @@ function CountUp({ value }: { value: string }) {
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",") + suffix;
 
     const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver((entries) => {
-      if (!entries[0].isIntersecting || started.current) return;
-      started.current = true;
-      observer.disconnect();
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setDisplay(value);
+      return;
+    }
+    let frame = 0;
+    let repeat: ReturnType<typeof setInterval> | undefined;
+    const animate = () => {
+      cancelAnimationFrame(frame);
       const duration = 1600;
       const t0 = performance.now();
       const tick = (t: number) => {
         const p = Math.min((t - t0) / duration, 1);
         const eased = 1 - Math.pow(1 - p, 3);
         setDisplay(format(target * eased));
-        if (p < 1) requestAnimationFrame(tick);
+        if (p < 1) frame = requestAnimationFrame(tick);
       };
-      requestAnimationFrame(tick);
+      frame = requestAnimationFrame(tick);
+    };
+    const observer = new IntersectionObserver((entries) => {
+      clearInterval(repeat);
+      cancelAnimationFrame(frame);
+      if (entries[0]?.isIntersecting) {
+        animate();
+        repeat = setInterval(animate, 6500);
+      } else {
+        setDisplay(value);
+      }
     }, { threshold: 0.4 });
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      clearInterval(repeat);
+      cancelAnimationFrame(frame);
+    };
   }, [value]);
 
-  return <span ref={ref}>{display}</span>;
+  return <span ref={ref} aria-label={value}><span aria-hidden="true">{display}</span></span>;
 }
 type Program = { id: number; title: string; description: string; image?: string | null };
 
@@ -169,11 +188,11 @@ function Index() {
 
       {stats.length > 0 && (
         <section className="border-y border-border bg-card">
-          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-5 px-4 py-6 sm:px-6 md:grid-cols-4">
+          <div className="mx-auto grid max-w-5xl grid-cols-2 gap-x-3 gap-y-4 px-4 py-5 font-impact sm:grid-cols-3 sm:px-6 md:grid-cols-5">
             {stats.map((s, i) => (
-              <div key={i}>
-                <p className="text-3xl font-semibold text-primary"><CountUp value={s.value} /></p>
-                <p className="mt-1 text-sm text-muted-foreground">{s.label}</p>
+              <div key={i} className="min-w-0">
+                <p className="whitespace-nowrap text-3xl font-extrabold leading-tight tracking-normal text-primary tabular-nums"><CountUp value={s.value} /></p>
+                <p className="mt-1 text-sm font-medium leading-5 text-muted-foreground">{s.label}</p>
               </div>
             ))}
           </div>
