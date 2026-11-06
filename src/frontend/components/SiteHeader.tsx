@@ -20,8 +20,7 @@ const pressRoomLinks = [
 ] as const;
 
 const nav = [
-  { to: "/gallery", label: "Gallery" },
-  { to: "/contact", label: "Contact" },
+  { to: "/contact", label: "UNM CLINIC" },
 ] as const;
 
 const linkBase = "rounded-md px-3 py-2 text-sm font-medium text-primary-foreground/85 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground";
@@ -48,7 +47,7 @@ export function SiteHeader() {
         <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior })} className="flex min-w-0 items-center gap-2 font-semibold tracking-tight text-primary-foreground sm:gap-3">
           <img src={logo} alt="Uyisenga Ni Imanzi logo" className="h-14 w-auto shrink-0 rounded-md bg-card p-1 sm:h-[60px]" />
         </Link>
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav aria-label="Main menu" className="site-menu hidden items-center gap-1 md:flex">
           <Link to="/" className={linkBase} activeProps={{ className: linkActive }} activeOptions={{ exact: true }}>
             Home
           </Link>
@@ -77,7 +76,6 @@ export function SiteHeader() {
               ))}
             </div>
           </div>
-          <Link to="/gallery" className={linkBase} activeProps={{ className: linkActive }}>Gallery</Link>
 
           <div className="group relative">
             <Link to="/get-involved" className={`flex items-center gap-1 ${linkBase}`} activeProps={{ className: `flex items-center gap-1 ${linkActive}` }}>
@@ -92,7 +90,7 @@ export function SiteHeader() {
             </div>
           </div>
 
-          <Link to="/contact" className={linkBase} activeProps={{ className: linkActive }}>Contact</Link>
+          <Link to="/contact" className={linkBase} activeProps={{ className: linkActive }}>UNM CLINIC</Link>
 
           <Button asChild size="sm" variant="secondary" className="ml-2 font-semibold shadow-md">
             <Link to="/donate">Donate</Link>
@@ -115,7 +113,7 @@ export function SiteHeader() {
       </div>
       {open && (
         <div className="border-t border-primary-foreground/10 bg-brand-header md:hidden">
-          <nav className="mx-auto max-w-6xl p-4 max-h-[calc(100vh-6rem)] overflow-y-auto">
+          <nav aria-label="Main menu" className="site-menu mx-auto max-w-6xl p-4 max-h-[calc(100vh-6rem)] overflow-y-auto">
             <div className="space-y-2">
               <Link to="/" onClick={() => setOpen(false)} className="block rounded-xl px-3 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary-foreground/10">
                 Home

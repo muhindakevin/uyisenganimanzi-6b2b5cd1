@@ -23,8 +23,8 @@ export function SiteFooter() {
           </Button>
         </div>
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wider text-white/90">Explore</p>
-          <ul className="mt-3 space-y-2 text-sm text-white/75">
+          <p className="text-sm font-semibold uppercase tracking-wider text-white/90">Useful Links</p>
+          <ul aria-label="Useful links" className="site-menu mt-3 space-y-2 text-sm text-white/75">
             <li><Link to="/about" className="hover:text-white">About</Link></li>
             <li><Link to="/programs" className="hover:text-white">Programs</Link></li>
             <li><Link to="/gallery" className="hover:text-white">Gallery</Link></li>
