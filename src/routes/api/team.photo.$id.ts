@@ -4,7 +4,7 @@ import { getTeamMemberPhoto } from "@/backend";
 export const Route = createFileRoute("/api/team/photo/$id")({
   server: {
     handlers: {
-      GET: async ({ params }) => {
+      GET: async ({ params, request }) => {
         const id = Number(params.id);
         if (!Number.isFinite(id)) return new Response("Bad id", { status: 400 });
         const photo = await getTeamMemberPhoto(id);
@@ -23,7 +23,9 @@ export const Route = createFileRoute("/api/team/photo/$id")({
         return new Response(bin, {
           headers: {
             "Content-Type": mime,
-            "Cache-Control": "public, max-age=86400",
+            "Cache-Control": new URL(request.url).searchParams.has("v")
+              ? "public, max-age=86400"
+              : "no-cache, max-age=0, must-revalidate",
           },
         });
       },

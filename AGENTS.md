@@ -5,3 +5,4 @@
 
 - Homepage and program listing reuse ProgramCard so program previews remain consistent and use admin-managed content.
 - Load the shared website font in the root head and define its families in global theme tokens so every page uses the same typography.
+- Team photo URLs include the saved updated_at revision; team lists bypass caching and the visible team page refreshes staff and board every five seconds so edits replace stale content without recreating records.

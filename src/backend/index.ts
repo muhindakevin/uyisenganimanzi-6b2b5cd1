@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import seedData from "@/backend/seed-data.json";
+import { teamPhotoUrl } from "@/lib/team-photo";
 
 type JsonRecord = Record<string, unknown>;
 
@@ -207,7 +208,7 @@ export async function listTeam() {
     // and let the image request load/caches each photo separately.
     const { data, error } = await sql()
       .from("team_members")
-      .select("id, name, title, email, phone")
+      .select("id, name, title, email, phone, updated_at")
       .order("id", { ascending: true });
     if (error) throw error;
     return (data ?? []).map((r: any) => ({
@@ -216,7 +217,7 @@ export async function listTeam() {
       title: r.title,
       email: r.email,
       phone: r.phone,
-      photo: `/api/team/photo/${r.id}`,
+      photo: teamPhotoUrl(Number(r.id), r.updated_at),
     })) as TeamMember[];
   } catch (error) {
     if (!isMissingDatabaseError(error)) throw error;
@@ -238,7 +239,7 @@ export async function saveTeamMember(member: Partial<TeamMember>) {
   // Ignore URL placeholders (e.g. "/api/team/photo/1") — they mean "keep existing photo".
   const incomingPhoto = member.photo;
   const photoIsUrlRef = typeof incomingPhoto === "string" && incomingPhoto.startsWith("/api/");
-  const cols = "id, name, title, email, phone";
+  const cols = "id, name, title, email, phone, updated_at";
   try {
     if (member.id) {
       const update: Record<string, unknown> = {
@@ -264,7 +265,7 @@ export async function saveTeamMember(member: Partial<TeamMember>) {
         title: row.title,
         email: row.email,
         phone: row.phone,
-        photo: photoIsUrlRef || incomingPhoto ? `/api/team/photo/${row.id}` : null,
+        photo: photoIsUrlRef || incomingPhoto ? teamPhotoUrl(Number(row.id), row.updated_at) : null,
       } as TeamMember;
     }
 
@@ -287,7 +288,7 @@ export async function saveTeamMember(member: Partial<TeamMember>) {
       title: row.title,
       email: row.email,
       phone: row.phone,
-      photo: incomingPhoto ? `/api/team/photo/${row.id}` : null,
+      photo: incomingPhoto ? teamPhotoUrl(Number(row.id), row.updated_at) : null,
     } as TeamMember;
   } catch (error) {
     if (error instanceof Error && error.message.includes("missing")) throw error;

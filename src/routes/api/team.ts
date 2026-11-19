@@ -7,9 +7,10 @@ export const Route = createFileRoute("/api/team")({
       GET: async ({ request }) => {
         try {
           const members = await listTeam();
-          if (await requireAdmin(request)) return Response.json(members);
+          const headers = { "Cache-Control": "no-store" };
+          if (await requireAdmin(request)) return Response.json(members, { headers });
           // Public callers get only non-sensitive fields (no email/phone).
-          return Response.json(members.map(({ email: _e, phone: _p, ...rest }) => rest));
+          return Response.json(members.map(({ email: _e, phone: _p, ...rest }) => rest), { headers });
         } catch (err) {
           console.error("GET /api/team failed:", err);
           return jsonError("Failed to load team.", 500);

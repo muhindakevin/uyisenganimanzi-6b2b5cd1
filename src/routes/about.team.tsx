@@ -4,6 +4,16 @@ import { Mail, Phone, User } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/frontend/components/ui/tabs";
 
 export const Route = createFileRoute("/about/team")({
+  head: () => ({
+    meta: [
+      { title: "Our Team — Uyisenga Ni Imanzi" },
+      { name: "description", content: "Meet the staff and board of Uyisenga Ni Imanzi supporting children, youth and families in Rwanda." },
+      { property: "og:title", content: "Our Team — Uyisenga Ni Imanzi" },
+      { property: "og:description", content: "Meet our staff and board working with Rwandan children, youth and families." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: OurTeam,
 });
 
@@ -65,16 +75,37 @@ function OurTeam() {
   const [board, setBoard] = useState<Member[]>([]);
 
   useEffect(() => {
-    fetch("/api/team")
-      .then((r) => r.json())
-      .then((data) => { if (Array.isArray(data)) setStaff(data); })
-      .catch(() => {});
-    fetch("/api/content")
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data?.board)) setBoard(data.board as Member[]);
-      })
-      .catch(() => {});
+    const controller = new AbortController();
+    let loading = false;
+    async function refresh() {
+      if (loading || document.visibilityState === "hidden") return;
+      loading = true;
+      const options = { cache: "no-store" as const, signal: controller.signal };
+      await Promise.all([
+        fetch("/api/team", options)
+          .then((r) => { if (!r.ok) throw new Error("Unable to load team"); return r.json(); })
+          .then((data) => { if (!controller.signal.aborted && Array.isArray(data)) setStaff(data); })
+          .catch(() => {}),
+        fetch("/api/content", options)
+          .then((r) => { if (!r.ok) throw new Error("Unable to load board"); return r.json(); })
+          .then((data) => {
+            if (!controller.signal.aborted && Array.isArray(data?.board)) setBoard(data.board as Member[]);
+          })
+          .catch(() => {}),
+      ]);
+      loading = false;
+    }
+    void refresh();
+    const interval = window.setInterval(() => { void refresh(); }, 5000);
+    const onFocus = () => { void refresh(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => {
+      controller.abort();
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onFocus);
+    };
   }, []);
 
   return (
