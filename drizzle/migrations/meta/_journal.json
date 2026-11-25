@@ -8,6 +8,13 @@
       "when": 1794502309281,
       "tag": "0000_lock_beneficiaries_reads",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795594860035,
+      "tag": "0001_create_testimonials",
+      "breakpoints": true
     }
   ]
 }

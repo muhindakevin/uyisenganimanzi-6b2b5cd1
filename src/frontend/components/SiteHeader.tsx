@@ -20,11 +20,12 @@ const pressRoomLinks = [
 ] as const;
 
 const nav = [
+  { to: "/testimonials", label: "TESTIMONIALS" },
   { to: "/contact", label: "UNM CLINIC" },
 ] as const;
 
-const linkBase = "rounded-md px-3 py-2 text-sm font-medium text-primary-foreground/85 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground";
-const linkActive = "rounded-md px-3 py-2 text-sm font-semibold text-primary-foreground bg-primary-foreground/15";
+const linkBase = "rounded-md px-2 py-1.5 text-xs font-medium text-primary-foreground/85 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground";
+const linkActive = "rounded-md px-2 py-1.5 text-xs font-semibold text-primary-foreground bg-primary-foreground/15";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -62,7 +63,7 @@ export function SiteHeader() {
           </div>
 
           <div className="group relative">
-            <Button type="button" variant="ghost" onClick={() => setProgramsOpen((value) => !value)} aria-expanded={programsOpen} aria-controls="desktop-programs-menu" className={`flex items-center gap-1 ${linkBase}`}>
+            <Button type="button" variant="ghost" onClick={() => setProgramsOpen((value) => !value)} aria-expanded={programsOpen} aria-controls="desktop-programs-menu" className={`flex h-auto items-center gap-1 ${linkBase}`}>
               WHAT WE DO <ChevronDown className="h-3.5 w-3.5" />
             </Button>
             <div id="desktop-programs-menu" className={`absolute left-0 top-full z-50 max-h-80 w-64 overflow-y-auto rounded-xl border border-border bg-popover p-1.5 shadow-lg transition-all group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100 ${programsOpen ? "visible translate-y-0 opacity-100" : "invisible translate-y-1 opacity-0"}`}>
@@ -86,9 +87,10 @@ export function SiteHeader() {
             </div>
           </div>
 
+          <Link to="/testimonials" className={linkBase} activeProps={{ className: linkActive }}>TESTIMONIALS</Link>
           <Link to="/contact" className={linkBase} activeProps={{ className: linkActive }}>UNM CLINIC</Link>
 
-          <Button asChild size="sm" variant="secondary" className="ml-2 font-semibold shadow-md">
+          <Button asChild size="sm" variant="secondary" className="ml-1 h-8 px-3 text-xs font-semibold shadow-md">
             <Link to="/donate">Donate</Link>
           </Button>
         </nav>

@@ -5,6 +5,7 @@ import { SiteLayout } from "@/frontend/components/SiteLayout";
 import { PartnersMarquee } from "@/frontend/components/PartnersMarquee";
 import { Button } from "@/frontend/components/ui/button";
 import { ProgramCard } from "@/frontend/components/ProgramCard";
+import { TestimonialVideos } from "@/frontend/components/TestimonialVideos";
 import { newsSlug } from "@/lib/news-links";
 
 export const Route = createFileRoute("/")({
@@ -260,24 +261,7 @@ function Index() {
         </section>
       )}
 
-      <section className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-primary-glow to-accent p-10 text-primary-foreground sm:p-14">
-          <h2 className="max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
-            Stand with Rwanda's next generation.
-          </h2>
-          <p className="mt-3 max-w-xl text-primary-foreground/90">
-            A small monthly gift funds counseling, school fees and starter kits for families.
-          </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Button asChild size="lg" variant="secondary">
-              <Link to="/donate">Donate</Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground">
-              <Link to="/contact">Volunteer</Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <TestimonialVideos limit={3} />
 
       <PartnersMarquee />
     </SiteLayout>

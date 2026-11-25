@@ -19,6 +19,7 @@ import { Route as GetInvolvedRouteImport } from './routes/get-involved'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as ProgramsRouteImport } from './routes/programs'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as TestimonialsRouteImport } from './routes/testimonials'
 import { Route as AboutIndexRouteImport } from './routes/about.index'
 import { Route as AboutApproachRouteImport } from './routes/about.approach'
 import { Route as AboutBeneficiariesRouteImport } from './routes/about.beneficiaries'
@@ -36,11 +37,13 @@ import { Route as ApiPressRoomRouteImport } from './routes/api/press-room'
 import { Route as ApiProgramsRouteImport } from './routes/api/programs'
 import { Route as ApiSubProgramsRouteImport } from './routes/api/sub-programs'
 import { Route as ApiTeamRouteImport } from './routes/api/team'
+import { Route as ApiTestimonialsRouteImport } from './routes/api/testimonials'
 import { Route as PressRoomJobsRouteImport } from './routes/press-room/jobs'
 import { Route as PressRoomNewsRouteImport } from './routes/press-room/news'
 import { Route as PressRoomPublicationsRouteImport } from './routes/press-room/publications'
 import { Route as ProgramsIndexRouteImport } from './routes/programs.index'
 import { Route as ProgramsIdRouteImport } from './routes/programs.$id'
+import { Route as ApiTestimonialsUploadRouteImport } from './routes/api/testimonials.upload'
 import { Route as PressRoomNewsIndexRouteImport } from './routes/press-room/news.index'
 import { Route as PressRoomNewsIdRouteImport } from './routes/press-room/news.$id'
 import { Route as ProgramsIdIndexRouteImport } from './routes/programs.$id.index'
@@ -96,6 +99,11 @@ const ProgramsRoute = ProgramsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestimonialsRoute = TestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutIndexRoute = AboutIndexRouteImport.update({
@@ -183,6 +191,11 @@ const ApiTeamRoute = ApiTeamRouteImport.update({
   path: '/api/team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTestimonialsRoute = ApiTestimonialsRouteImport.update({
+  id: '/api/testimonials',
+  path: '/api/testimonials',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PressRoomJobsRoute = PressRoomJobsRouteImport.update({
   id: '/press-room/jobs',
   path: '/press-room/jobs',
@@ -207,6 +220,11 @@ const ProgramsIdRoute = ProgramsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
   getParentRoute: () => ProgramsRoute,
+} as any)
+const ApiTestimonialsUploadRoute = ApiTestimonialsUploadRouteImport.update({
+  id: '/upload',
+  path: '/upload',
+  getParentRoute: () => ApiTestimonialsRoute,
 } as any)
 const PressRoomNewsIndexRoute = PressRoomNewsIndexRouteImport.update({
   id: '/',
@@ -250,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/programs': typeof ProgramsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/testimonials': typeof TestimonialsRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
@@ -266,12 +285,14 @@ export interface FileRoutesByFullPath {
   '/api/programs': typeof ApiProgramsRoute
   '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRouteWithChildren
+  '/api/testimonials': typeof ApiTestimonialsRouteWithChildren
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
   '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
+  '/api/testimonials/upload': typeof ApiTestimonialsUploadRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
   '/press-room/news/': typeof PressRoomNewsIndexRoute
   '/programs/$id/': typeof ProgramsIdIndexRoute
@@ -288,6 +309,7 @@ export interface FileRoutesByTo {
   '/get-involved': typeof GetInvolvedRoute
   '/login': typeof LoginRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/testimonials': typeof TestimonialsRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
@@ -304,10 +326,12 @@ export interface FileRoutesByTo {
   '/api/programs': typeof ApiProgramsRoute
   '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRouteWithChildren
+  '/api/testimonials': typeof ApiTestimonialsRouteWithChildren
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/publications': typeof PressRoomPublicationsRoute
   '/about': typeof AboutIndexRoute
   '/programs': typeof ProgramsIndexRoute
+  '/api/testimonials/upload': typeof ApiTestimonialsUploadRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
   '/press-room/news': typeof PressRoomNewsIndexRoute
   '/programs/$id': typeof ProgramsIdIndexRoute
@@ -327,6 +351,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/programs': typeof ProgramsRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/testimonials': typeof TestimonialsRoute
   '/about/approach': typeof AboutApproachRoute
   '/about/beneficiaries': typeof AboutBeneficiariesRoute
   '/about/impact': typeof AboutImpactRoute
@@ -343,12 +368,14 @@ export interface FileRoutesById {
   '/api/programs': typeof ApiProgramsRoute
   '/api/sub-programs': typeof ApiSubProgramsRoute
   '/api/team': typeof ApiTeamRouteWithChildren
+  '/api/testimonials': typeof ApiTestimonialsRouteWithChildren
   '/press-room/jobs': typeof PressRoomJobsRoute
   '/press-room/news': typeof PressRoomNewsRouteWithChildren
   '/press-room/publications': typeof PressRoomPublicationsRoute
   '/programs/$id': typeof ProgramsIdRouteWithChildren
   '/about/': typeof AboutIndexRoute
   '/programs/': typeof ProgramsIndexRoute
+  '/api/testimonials/upload': typeof ApiTestimonialsUploadRoute
   '/press-room/news/$id': typeof PressRoomNewsIdRoute
   '/press-room/news/': typeof PressRoomNewsIndexRoute
   '/programs/$id/': typeof ProgramsIdIndexRoute
@@ -369,6 +396,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/programs'
     | '/sitemap.xml'
+    | '/testimonials'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
@@ -385,12 +413,14 @@ export interface FileRouteTypes {
     | '/api/programs'
     | '/api/sub-programs'
     | '/api/team'
+    | '/api/testimonials'
     | '/press-room/jobs'
     | '/press-room/news'
     | '/press-room/publications'
     | '/programs/$id'
     | '/about/'
     | '/programs/'
+    | '/api/testimonials/upload'
     | '/press-room/news/$id'
     | '/press-room/news/'
     | '/programs/$id/'
@@ -407,6 +437,7 @@ export interface FileRouteTypes {
     | '/get-involved'
     | '/login'
     | '/sitemap.xml'
+    | '/testimonials'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
@@ -423,10 +454,12 @@ export interface FileRouteTypes {
     | '/api/programs'
     | '/api/sub-programs'
     | '/api/team'
+    | '/api/testimonials'
     | '/press-room/jobs'
     | '/press-room/publications'
     | '/about'
     | '/programs'
+    | '/api/testimonials/upload'
     | '/press-room/news/$id'
     | '/press-room/news'
     | '/programs/$id'
@@ -445,6 +478,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/programs'
     | '/sitemap.xml'
+    | '/testimonials'
     | '/about/approach'
     | '/about/beneficiaries'
     | '/about/impact'
@@ -461,12 +495,14 @@ export interface FileRouteTypes {
     | '/api/programs'
     | '/api/sub-programs'
     | '/api/team'
+    | '/api/testimonials'
     | '/press-room/jobs'
     | '/press-room/news'
     | '/press-room/publications'
     | '/programs/$id'
     | '/about/'
     | '/programs/'
+    | '/api/testimonials/upload'
     | '/press-room/news/$id'
     | '/press-room/news/'
     | '/programs/$id/'
@@ -486,6 +522,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ProgramsRoute: typeof ProgramsRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TestimonialsRoute: typeof TestimonialsRoute
   ApiAuthRoute: typeof ApiAuthRoute
   ApiBeneficiariesRoute: typeof ApiBeneficiariesRoute
   ApiContactRoute: typeof ApiContactRoute
@@ -497,6 +534,7 @@ export interface RootRouteChildren {
   ApiProgramsRoute: typeof ApiProgramsRoute
   ApiSubProgramsRoute: typeof ApiSubProgramsRoute
   ApiTeamRoute: typeof ApiTeamRouteWithChildren
+  ApiTestimonialsRoute: typeof ApiTestimonialsRouteWithChildren
   PressRoomJobsRoute: typeof PressRoomJobsRoute
   PressRoomNewsRoute: typeof PressRoomNewsRouteWithChildren
   PressRoomPublicationsRoute: typeof PressRoomPublicationsRoute
@@ -573,6 +611,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/testimonials': {
+      id: '/testimonials'
+      path: '/testimonials'
+      fullPath: '/testimonials'
+      preLoaderRoute: typeof TestimonialsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about/': {
@@ -694,6 +739,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiTeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/testimonials': {
+      id: '/api/testimonials'
+      path: '/api/testimonials'
+      fullPath: '/api/testimonials'
+      preLoaderRoute: typeof ApiTestimonialsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/press-room/jobs': {
       id: '/press-room/jobs'
       path: '/press-room/jobs'
@@ -728,6 +780,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/programs/$id'
       preLoaderRoute: typeof ProgramsIdRouteImport
       parentRoute: typeof ProgramsRoute
+    }
+    '/api/testimonials/upload': {
+      id: '/api/testimonials/upload'
+      path: '/upload'
+      fullPath: '/api/testimonials/upload'
+      preLoaderRoute: typeof ApiTestimonialsUploadRouteImport
+      parentRoute: typeof ApiTestimonialsRoute
     }
     '/press-room/news/': {
       id: '/press-room/news/'
@@ -833,6 +892,18 @@ const ApiTeamRouteChildren: ApiTeamRouteChildren = {
 const ApiTeamRouteWithChildren =
   ApiTeamRoute._addFileChildren(ApiTeamRouteChildren)
 
+interface ApiTestimonialsRouteChildren {
+  ApiTestimonialsUploadRoute: typeof ApiTestimonialsUploadRoute
+}
+
+const ApiTestimonialsRouteChildren: ApiTestimonialsRouteChildren = {
+  ApiTestimonialsUploadRoute: ApiTestimonialsUploadRoute,
+}
+
+const ApiTestimonialsRouteWithChildren = ApiTestimonialsRoute._addFileChildren(
+  ApiTestimonialsRouteChildren,
+)
+
 interface PressRoomNewsRouteChildren {
   PressRoomNewsIdRoute: typeof PressRoomNewsIdRoute
   PressRoomNewsIndexRoute: typeof PressRoomNewsIndexRoute
@@ -858,6 +929,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ProgramsRoute: ProgramsRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TestimonialsRoute: TestimonialsRoute,
   ApiAuthRoute: ApiAuthRoute,
   ApiBeneficiariesRoute: ApiBeneficiariesRoute,
   ApiContactRoute: ApiContactRoute,
@@ -869,6 +941,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiProgramsRoute: ApiProgramsRoute,
   ApiSubProgramsRoute: ApiSubProgramsRoute,
   ApiTeamRoute: ApiTeamRouteWithChildren,
+  ApiTestimonialsRoute: ApiTestimonialsRouteWithChildren,
   PressRoomJobsRoute: PressRoomJobsRoute,
   PressRoomNewsRoute: PressRoomNewsRouteWithChildren,
   PressRoomPublicationsRoute: PressRoomPublicationsRoute,

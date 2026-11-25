@@ -253,6 +253,7 @@ function AdminDashboard() {
   const [subPrograms, setSubPrograms] = useState<SubProgram[]>([]);
   const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
   const [coreValues, setCoreValues] = useState<CoreValue[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [programsPage, setProgramsPage] = useState<ProgramsPageContent>(DEFAULT_PROGRAMS_PAGE);
   const [hero, setHero] = useState<HeroContent>(DEFAULT_HERO);
   const [donation, setDonation] = useState<DonationContent>(DEFAULT_DONATION);
@@ -268,7 +269,7 @@ function AdminDashboard() {
     setError("");
 
     try {
-      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows, subRows, benRows, cvRows] = await Promise.all([
+      const [teamRows, programRows, galleryRows, pressRows, siteContent, messageRows, subRows, benRows, cvRows, tmRows] = await Promise.all([
         apiRequest<Member[]>("/api/team"),
         apiRequest<Program[]>("/api/programs"),
         apiRequest<GalleryImage[]>("/api/gallery"),
@@ -278,6 +279,7 @@ function AdminDashboard() {
         apiRequest<SubProgram[]>("/api/sub-programs").catch(() => []),
         apiRequest<Beneficiary[]>("/api/beneficiaries").catch(() => []),
         apiRequest<CoreValue[]>("/api/core-values").catch(() => []),
+        apiRequest<Testimonial[]>("/api/testimonials").catch(() => []),
       ]);
 
       setTeam(teamRows);
@@ -288,6 +290,7 @@ function AdminDashboard() {
       setSubPrograms(Array.isArray(subRows) ? subRows : []);
       setBeneficiaries(Array.isArray(benRows) ? benRows : []);
       setCoreValues(Array.isArray(cvRows) ? cvRows : []);
+      setTestimonials(Array.isArray(tmRows) ? tmRows : []);
       setProgramsPage((siteContent.programsPage as ProgramsPageContent) || DEFAULT_PROGRAMS_PAGE);
       const heroIn = (siteContent.hero as Partial<HeroContent>) || {};
       setHero({
@@ -540,6 +543,7 @@ function AdminDashboard() {
           <TabsTrigger value="press">Press Room</TabsTrigger>
           <TabsTrigger value="beneficiaries">Beneficiaries</TabsTrigger>
           <TabsTrigger value="values">Core Values</TabsTrigger>
+          <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
           <TabsTrigger value="messages">Messages</TabsTrigger>
           <TabsTrigger value="content">Content</TabsTrigger>
           <TabsTrigger value="about">About Pages</TabsTrigger>
@@ -742,6 +746,32 @@ function AdminDashboard() {
           />
         </TabsContent>
 
+
+        <TabsContent value="testimonials">
+          <ManagedList
+            title="Testimonial Videos"
+            empty="No testimonial videos yet."
+            items={testimonials}
+            renderItem={(t) => (
+              <>
+                <p className="font-semibold">{t.name}</p>
+                <p className="text-sm text-muted-foreground">{t.role}</p>
+              </>
+            )}
+            formTitle={(t) => (t ? "Edit Testimonial" : "Add Testimonial")}
+            renderForm={(t, close) => (
+              <TestimonialForm
+                item={t}
+                saving={saving}
+                onSave={async (saved) => {
+                  await saveEntity("/api/testimonials", saved, setTestimonials, testimonials, "item");
+                  close();
+                }}
+              />
+            )}
+            onDelete={(id) => deleteEntity<Testimonial>("/api/testimonials", id, setTestimonials, testimonials)}
+          />
+        </TabsContent>
 
         <TabsContent value="prog-page">
           <Card>
@@ -1680,6 +1710,46 @@ function CoreValueForm({ item, saving, onSave }: { item?: CoreValue | null; savi
       <Field label="Title" required value={form.title} onChange={(title) => setForm({ ...form, title })} />
       <TextareaField label="Description" required value={form.description} onChange={(description) => setForm({ ...form, description })} />
       <SubmitButton saving={saving} />
+    </form>
+  );
+}
+
+type Testimonial = { id: number; name: string; role: string | null; quote: string | null; video_url: string; sort_order: number };
+
+function TestimonialForm({ item, saving, onSave }: { item?: Testimonial | null; saving: boolean; onSave: (v: Testimonial) => void }) {
+  const empty: Testimonial = { id: 0, name: "", role: "", quote: "", video_url: "", sort_order: 0 };
+  const [form, setForm] = useState<Testimonial>(item || empty);
+  const [uploading, setUploading] = useState(false);
+  useEffect(() => { setForm(item || empty); }, [item]);
+  async function upload(file: File) {
+    setUploading(true);
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/testimonials/upload", { method: "POST", headers: { Authorization: `Bearer ${getToken()}` }, body });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.url) throw new Error(data?.message || "Upload failed.");
+      setForm((f) => ({ ...f, video_url: data.url }));
+      toast.success("Video uploaded. Click Save to publish it.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Upload failed.");
+    } finally {
+      setUploading(false);
+    }
+  }
+  return (
+    <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); if (!form.video_url) { toast.error("Upload a video or paste a YouTube link first."); return; } onSave(form); }}>
+      <Field label="Person name" required value={form.name} onChange={(name) => setForm({ ...form, name })} />
+      <Field label="Role (e.g. Parent, Youth beneficiary)" value={form.role || ""} onChange={(role) => setForm({ ...form, role })} />
+      <TextareaField label="Short quote" value={form.quote || ""} onChange={(quote) => setForm({ ...form, quote })} />
+      <div className="space-y-2">
+        <label className="text-sm font-medium">Upload video (max 100MB)</label>
+        <input type="file" accept="video/*" disabled={uploading} onChange={(e) => { const f = e.target.files?.[0]; if (f) void upload(f); }} className="block w-full text-sm" />
+        {uploading && <p className="text-sm text-muted-foreground">Uploading video, please wait...</p>}
+      </div>
+      <Field label="…or paste a YouTube / video link" value={form.video_url} onChange={(video_url) => setForm({ ...form, video_url })} />
+      {form.video_url && !/youtu/.test(form.video_url) && <video src={form.video_url} controls className="w-full rounded-lg" />}
+      <SubmitButton saving={saving || uploading} />
     </form>
   );
 }

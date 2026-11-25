@@ -726,3 +726,34 @@ export async function deleteCoreValue(id: number) {
   const { error } = await sql().from("core_values").delete().eq("id", id);
   if (error) throw error;
 }
+
+// ---------- Testimonials ----------
+export type Testimonial = { id: number; name: string; role: string | null; quote: string | null; video_url: string; sort_order: number };
+const TM_COLS = "id, name, role, quote, video_url, sort_order";
+export async function listTestimonials() {
+  const { data, error } = await sql().from("testimonials").select(TM_COLS).order("sort_order", { ascending: true }).order("id", { ascending: false });
+  if (error) throw error;
+  return numberIds(data ?? []) as Testimonial[];
+}
+export async function saveTestimonial(item: Partial<Testimonial>) {
+  if (!item.name?.trim() || !item.video_url?.trim()) throw new Error("Name and video are required.");
+  const payload = { name: item.name.trim(), role: item.role || null, quote: item.quote || null, video_url: item.video_url.trim(), sort_order: item.sort_order ?? 0 };
+  const q = item.id
+    ? sql().from("testimonials").update({ ...payload, updated_at: new Date().toISOString() }).eq("id", item.id)
+    : sql().from("testimonials").insert(payload);
+  const { data, error } = await q.select(TM_COLS).single();
+  if (error) throw error;
+  return numberId(data) as Testimonial;
+}
+export async function deleteTestimonial(id: number) {
+  const { error } = await sql().from("testimonials").delete().eq("id", id);
+  if (error) throw error;
+}
+export async function uploadTestimonialVideo(file: File) {
+  if (!file.type.startsWith("video/")) throw new Error("Please choose a video file.");
+  const ext = (file.name.split(".").pop() || "mp4").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const { error } = await sql().storage.from("testimonial-videos").upload(path, file, { contentType: file.type, upsert: false });
+  if (error) throw error;
+  return sql().storage.from("testimonial-videos").getPublicUrl(path).data.publicUrl as string;
+}
