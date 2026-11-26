@@ -1,6 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 import { Button } from "@/frontend/components/ui/button";
+import { WhatsAppIcon } from "@/frontend/components/WhatsAppIcon";
+
+const WHATSAPP_LINK = "https://wa.me/250788729994";
 
 export function SiteFooter() {
   return (
@@ -17,6 +20,7 @@ export function SiteFooter() {
             <a href="https://www.instagram.com/uyisenganimanzi_/" target="_blank" rel="noreferrer" aria-label="Instagram" className="rounded-full bg-white/10 p-2 hover:bg-white/20"><Instagram className="h-4 w-4" /></a>
             <a href="https://x.com/UyisenganImanzi" target="_blank" rel="noreferrer" aria-label="X" className="rounded-full bg-white/10 p-2 hover:bg-white/20"><Twitter className="h-4 w-4" /></a>
             <a href="https://www.linkedin.com/in/uyisenga-ni-imanzi-b8820a97/" target="_blank" rel="noreferrer" aria-label="LinkedIn" className="rounded-full bg-white/10 p-2 hover:bg-white/20"><Linkedin className="h-4 w-4" /></a>
+            <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" aria-label="WhatsApp" className="rounded-full bg-whatsapp p-2 text-background hover:brightness-110"><WhatsAppIcon className="h-4 w-4" /></a>
           </div>
           <Button asChild size="sm" variant="secondary" className="mt-5 font-semibold">
             <Link to="/donate">Donate now</Link>
@@ -25,10 +29,11 @@ export function SiteFooter() {
         <div>
           <p className="text-sm font-semibold uppercase tracking-wider text-white/90">Useful Links</p>
           <ul aria-label="Useful links" className="site-menu mt-3 space-y-2 text-sm text-white/75">
-            <li><Link to="/about" className="hover:text-white">About</Link></li>
-            <li><Link to="/programs" className="hover:text-white">Programs</Link></li>
-            <li><Link to="/gallery" className="hover:text-white">Gallery</Link></li>
+            <li><Link to="/about" className="hover:text-white">Who we are</Link></li>
+            <li><Link to="/programs" className="hover:text-white">What we do</Link></li>
             <li><Link to="/get-involved" className="hover:text-white">Press Room</Link></li>
+            <li><Link to="/testimonials" className="hover:text-white">Testimonials</Link></li>
+            <li><Link to="/contact" className="hover:text-white">UNM Clinic</Link></li>
             <li><Link to="/donate" className="hover:text-white">Donate</Link></li>
             <li><Link to="/contact" className="hover:text-white">Contact</Link></li>
             <li><Link to="/admin" className="hover:text-white">Admin</Link></li>
@@ -39,6 +44,7 @@ export function SiteFooter() {
           <ul className="mt-3 space-y-2 text-sm text-white/75">
             <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0" /> Kacyiru, KIGALI-RWANDA</li>
             <li className="flex items-center gap-2"><Phone className="h-4 w-4" /> <a href="tel:+250788729994" className="hover:text-white">0788 729 994</a></li>
+            <li className="flex items-center gap-2"><WhatsAppIcon className="h-4 w-4 shrink-0" /> <a href={WHATSAPP_LINK} target="_blank" rel="noreferrer" className="hover:text-white">WhatsApp: +250 788 729 994</a></li>
             <li className="flex items-center gap-2"><Mail className="h-4 w-4" /> <a href="mailto:info@uyisenganimanzi.org.rw" className="hover:text-white">info@uyisenganimanzi.org.rw</a></li>
           </ul>
         </div>

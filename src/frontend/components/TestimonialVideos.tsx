@@ -23,8 +23,7 @@ export function TestimonialVideos({ limit, heading = true }: { limit?: number; h
     <section id="testimonials" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
       {heading && (
         <div className="mb-10 text-center">
-          <p className="site-menu text-sm text-accent">Testimonials</p>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-primary sm:text-4xl">Voices of the people we walk with</h2>
+          <h2 className="site-menu text-3xl font-bold tracking-tight text-primary sm:text-4xl">Testimonials</h2>
         </div>
       )}
       {items && list.length === 0 && <p className="text-center text-muted-foreground">Testimonial videos will appear here soon.</p>}
